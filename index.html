@@ -71,7 +71,7 @@
 const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
 const W = 540, H = 960;
 const OUT = '#4a3b32';           // cor de contorno cartoon
-const save = { noe1:0, noe2:0, noe3:0, jonas:0, davi:0, daniel:0, quiz:0, ester:0, criacao:0, ovelha:0, zaqueu:0, animals:[], soundOn:true, voiceOn:true, musicOn:true, avatar:null, coins:0, ownedAcc:[], chestLastDate:'', ownedDecor:[], arcaDecor:{} }; // estrelas + coleção + config + avatar do ajudante + moedas + baú do dia + enfeites da arca (item 4.23, Ordem 7) (memória + localStorage)
+const save = { noe1:0, noe2:0, noe3:0, noe4:0, noe5:0, jonas1:0, jonas2:0, jonas3:0, jonas4:0, davi1:0, davi2:0, davi3:0, davi4:0, daniel:0, quiz:0, ester:0, criacao:0, ovelha:0, zaqueu:0, animals:[], soundOn:true, voiceOn:true, musicOn:true, avatar:null, coins:0, ownedAcc:[], chestLastDate:'', ownedDecor:[], arcaDecor:{} }; // estrelas + coleção + config + avatar do ajudante + moedas + baú do dia + enfeites da arca (item 4.23, Ordem 7) (memória + localStorage)
 
 /* ---------- progresso salvo (item 4.4) ---------- */
 const SAVE_KEY = 'bibliaplay_save_v1';
@@ -84,7 +84,23 @@ function loadGame(){
     if(!raw) return;
     const p = JSON.parse(raw);
     if(!p || typeof p!=='object') return;
-    for(const k of ['noe1','noe2','noe3','jonas','davi','daniel','quiz','ester','criacao','ovelha','zaqueu']){ if(typeof p[k]==='number') save[k]=p[k]; }
+    // item Ordem 2B-1: noe4/noe5 acrescentados à lista — sem isso, saves antigos gravados por uma
+    // versão futura com essas fases não recarregariam o progresso delas ao abrir o jogo de novo.
+    for(const k of ['noe1','noe2','noe3','noe4','noe5','jonas1','jonas2','jonas3','jonas4','davi1','davi2','davi3','davi4','daniel','quiz','ester','criacao','ovelha','zaqueu']){ if(typeof p[k]==='number') save[k]=p[k]; }
+    // item Ordem 2B-2 — migração de save antigo: Jonas tinha só 1 fase (o `jonas` de hoje virou a
+    // Fase 2). Quem já tinha jogado antes ganha a Fase 1 completa de bônus (o texto da fuga já era
+    // narrado antes de cair na água, só não era jogável ainda) e mantém as estrelas na Fase 2.
+    if(typeof p.jonas==='number' && p.jonas>0 && save.jonas1===0 && save.jonas2===0){
+      save.jonas1 = 3; save.jonas2 = p.jonas;
+    }
+    // item Ordem 2B-3 — migração de save antigo: Davi tinha só 1 fase (funda + Golias juntos, hoje
+    // viraram Fases 3 e 4). Quem já tinha jogado antes ganha as Fases 1 e 2 (pastor + harpa) de bônus —
+    // são conteúdo novo que não existia — e mantém as estrelas reais nas Fases 3 e 4. Dar bônus também
+    // na Fase 2 é essencial: como a Fase 3 só destrava com save.davi2>0, sem o bônus o jogador ficaria
+    // com a Fase 3 travada mesmo já tendo estrelas guardadas nela (e a Fase 4 destrancada por engano).
+    if(typeof p.davi==='number' && p.davi>0 && save.davi1===0 && save.davi2===0 && save.davi3===0 && save.davi4===0){
+      save.davi1 = 3; save.davi2 = 3; save.davi3 = p.davi; save.davi4 = p.davi;
+    }
     if(Array.isArray(p.animals)){
       save.animals = (typeof ARK_ANIMALS!=='undefined')? p.animals.filter(id=>ARK_ANIMALS.some(a=>a.id===id)) : p.animals;
     }
@@ -413,6 +429,19 @@ function wrapTxt(text,x,y,maxW,lh,size,color,align,bold,italic){
   ctx.fillText(line,x,y);
   return y+lh;
 }
+// item Ordem 2B-0: mesmo algoritmo de quebra de linha do wrapTxt, mas só CONTA quantas linhas o
+// texto vai ocupar (sem desenhar) — usado pra caixas que precisam crescer de altura conforme o
+// texto (diálogo, toast) em vez de ficar com tamanho fixo e deixar linhas extras vazando.
+function wrapLineCount(text,maxW,size,bold,italic){
+  ctx.font = (italic?'italic ':'')+(bold?'bold ':'')+size+'px "Segoe UI"';
+  const words = text.split(' '); let line='', lines=1;
+  for(const w of words){
+    const t = line+w+' ';
+    if(ctx.measureText(t).width > maxW && line){ line=w+' '; lines++; }
+    else line = t;
+  }
+  return lines;
+}
 
 /* ---------- avatares cartoon ---------- */
 function drawAvatar(face,x,y,r){
@@ -542,7 +571,13 @@ function dlgUpdate(){ const l=DLG.lines[DLG.i]; if(DLG.chars<l.text.length) DLG.
 function dlgDraw(){
   const l = DLG.lines[DLG.i];
   ctx.fillStyle='rgba(30,20,10,.35)'; ctx.fillRect(0,0,W,H);
-  const bh = 210, by = H-bh-24, bx = 16, bw = W-32;
+  const bx = 16, bw = W-32;
+  // item Ordem 2B-0: a altura da caixa agora se adapta ao nº de linhas do texto CHEIO da fala
+  // (não só do que já foi revelado pela máquina de escrever, senão a caixa cresceria aos poucos
+  // enquanto o texto aparece) — antes era fixa em 210px e falas de 3+ linhas (ex.: com o nome do
+  // ajudante interpolado, quando é longo) ficavam coladas ou escondidas atrás do "toque p/ continuar".
+  const lineCount = wrapLineCount(l.text, bw-48, 19);
+  const bh = Math.max(210, 196 + (lineCount-1)*27), by = H-bh-24;
   panel(bx,by,bw,bh,22,'#FFF9EC',OUT,6);
   // avatar
   blob(bx+62,by+62,46,46,'#FFE9C4',5);
@@ -590,7 +625,12 @@ function endDraw(dt){
   const bw = W-56, bx = 28, bh = hasStrip? 706 : 620, by = (H-bh)/2 - 20;
   panel(bx,by,bw,bh,26,'#FFF9EC',OUT,6);
   panel(bx+20,by-26,bw-40,64,20,'#FFC93C',OUT,5);
-  txt(END.title, W/2, by+16, 25, '#5A3A10', 'center', true);
+  // item Ordem 2B-0: título encolhe a fonte até caber no painel — antes era um tamanho fixo (25px)
+  // e títulos mais compridos (ex.: "⭐ A OVELHA PERDIDA · CONCLUÍDA!") vazavam pra fora dele.
+  let titleSize = 25;
+  ctx.font = 'bold '+titleSize+'px "Segoe UI"';
+  while(ctx.measureText(END.title).width > bw-80 && titleSize > 15){ titleSize -= 1; ctx.font = 'bold '+titleSize+'px "Segoe UI"'; }
+  txt(END.title, W/2, by+16, titleSize, '#5A3A10', 'center', true);
   // estrelas
   for(let i=0;i<3;i++){
     const on = END.t > 0.4 + i*0.45 && i < END.stars;
@@ -657,12 +697,25 @@ function topBarTap(x,y){
 }
 function toastState(){ return { msg:'', t:0 }; }
 function toast(st,m,long){ st.msg=m; st.t = long? 4.5 : 2.6; }
-function toastDraw(st,dt,y){
+function toastDraw(st,dt,y0){
   if(st.t<=0) return; st.t-=dt;
+  const y = y0||84, fs = 16.5, maxPanelW = W-40;
   ctx.font='bold 17px "Segoe UI"';
-  const tw = Math.min(W-40, ctx.measureText(st.msg).width+44);
-  panel(W/2-tw/2, y||84, tw, 46, 16, 'rgba(30,42,68,.92)', '#FFC93C', 3);
-  txt(st.msg, W/2, (y||84)+30, 16.5, '#fff', 'center', true);
+  const singleW = ctx.measureText(st.msg).width;
+  if(singleW+44 <= maxPanelW){
+    // cabe numa linha só — mesmo comportamento de sempre (painel com largura sob medida)
+    const tw = singleW+44;
+    panel(W/2-tw/2, y, tw, 46, 16, 'rgba(30,42,68,.92)', '#FFC93C', 3);
+    txt(st.msg, W/2, y+30, fs, '#fff', 'center', true);
+  } else {
+    // item Ordem 2B-0: mensagem longa (ex.: "em breve" de histórias com nome grande) não cabe numa
+    // linha só nem no painel máximo — quebra em 2+ linhas em vez de vazar pra fora do painel.
+    const padX = 26, textMaxW = maxPanelW - padX*2, lh = 22;
+    const lineCount = wrapLineCount(st.msg, textMaxW, fs, true);
+    const ph = 30 + lineCount*lh;
+    panel(W/2-maxPanelW/2, y, maxPanelW, ph, 16, 'rgba(30,42,68,.92)', '#FFC93C', 3);
+    wrapTxt(st.msg, W/2, y+28, textMaxW, lh, fs, '#fff', 'center', true);
+  }
 }
 
 /* ---------- gerenciador de cenas ---------- */
@@ -714,7 +767,7 @@ function loop(ts){
 /* =====================================================================
    COLEÇÃO — "Os Animais da Arca" (item 4.2)
    ===================================================================== */
-const PHASE_KEYS = ['noe1','noe2','noe3','jonas','davi','daniel','quiz','ester','criacao','ovelha','zaqueu']; // fases que dão moedas (item 4.15)
+const PHASE_KEYS = ['noe1','noe2','noe3','noe4','noe5','jonas1','jonas2','jonas3','jonas4','davi1','davi2','davi3','davi4','daniel','quiz','ester','criacao','ovelha','zaqueu']; // fases que dão moedas (item 4.15)
 const ARK_ANIMALS = [
   { id:'pomba',     name:'Pomba',     rare:false, cost:10 },
   { id:'ovelha',    name:'Ovelha',    rare:false, cost:10 },
@@ -1265,7 +1318,7 @@ scenes.config = {
   resetRect(){ return { x:W/2-150, y:492, w:300, h:64 }; },
   avatarRect(){ return { x:W/2-150, y:630, w:300, h:70 }; },
   doReset(){
-    save.noe1=0; save.noe2=0; save.noe3=0; save.jonas=0; save.davi=0; save.daniel=0; save.quiz=0; save.ester=0; save.criacao=0; save.ovelha=0; save.zaqueu=0; save.animals=[];
+    save.noe1=0; save.noe2=0; save.noe3=0; save.noe4=0; save.noe5=0; save.jonas1=0; save.jonas2=0; save.jonas3=0; save.jonas4=0; save.davi1=0; save.davi2=0; save.davi3=0; save.davi4=0; save.daniel=0; save.quiz=0; save.ester=0; save.criacao=0; save.ovelha=0; save.zaqueu=0; save.animals=[];
     save.coins=0; save.ownedAcc=[]; // reinício completo também zera a economia (moedas e acessórios comprados)
     save.chestLastDate=''; save.ownedDecor=[]; save.arcaDecor={}; // item 4.23: zera o baú do dia e os enfeites da arca
     saveGame(); this.confirming=false; S.pop();
@@ -1330,7 +1383,7 @@ scenes.config = {
     panel(mt.x+mt.w-68, mt.y+mt.h/2-18, 52, 36, 18, save.musicOn? '#8ED47E':'#D8D0C4', OUT, 3);
     blob(mt.x+mt.w-68 + (save.musicOn? 35:17), mt.y+mt.h/2, 14, 14, '#fff', 3);
     // progresso atual
-    const totStars = save.noe1+save.noe2+save.jonas+save.davi+save.daniel+save.quiz;
+    const totStars = save.noe1+save.noe2+save.jonas1+save.jonas2+save.davi1+save.davi2+save.daniel+save.quiz;
     panel(W/2-150, 410, 300, 58, 16, 'rgba(255,249,236,.9)', OUT, 3.5);
     txt('⭐'+totStars+'  ·  🐾'+save.animals.length+'/12  ·  🪙'+save.coins, W/2, 445, 14.5, '#3A2C22', 'center', true);
     // recomeçar do zero (discreto)
@@ -1369,15 +1422,32 @@ const STORIES = [
     { key:'criacao', name:'No princípio...', icon:'criacao', go:()=>scenes.criacao.start(), locked:false },
   ]},
   { id:'noe', name:'Noé e a Arca', color:'#6BBF59', icon:'arca', testament:'AT', phases:[
-    { key:'noe1', name:'Fase 1 · A Base',       icon:'arca',  go:()=>scenes.noe.start(1), locked:false },
-    { key:'noe2', name:'Fase 2 · A Tempestade', icon:'chuva', go:()=>scenes.noe.start(2), locked:()=>save.noe1===0 },
-    { key:'noe3', name:'Fase 3 · Os Animais',   icon:'pares', go:()=>scenes.noe.start(3), locked:()=>save.noe2===0 },
+    { key:'noe1', name:'Fase 1 · A Base',            icon:'arca',   go:()=>scenes.noe.start(1), locked:false },
+    { key:'noe2', name:'Fase 2 · A Tempestade',      icon:'chuva',  go:()=>scenes.noe.start(2), locked:()=>save.noe1===0 },
+    { key:'noe3', name:'Fase 3 · Os Animais',        icon:'pares',  go:()=>scenes.noe.start(3), locked:()=>save.noe2===0 },
+    // item Ordem 2B-1: Noé ganhou mais 2 fases — a trilogia original virou os 3 primeiros capítulos
+    // de uma jornada de 5. Progresso salvo de quem já tinha noe1/2/3 não é afetado (chaves novas,
+    // sem renumerar as existentes).
+    { key:'noe4', name:'Fase 4 · Cuidando de Todos', icon:'comida', go:()=>scenes.noe.start(4), locked:()=>save.noe3===0 },
+    { key:'noe5', name:'Fase 5 · O Arco-Íris',       icon:'pomba',  go:()=>scenes.noe.start(5), locked:()=>save.noe4===0 },
   ]},
   { id:'jonas', name:'Jonas', color:'#4E9FD8', icon:'peixe', testament:'AT', phases:[
-    { key:'jonas', name:'No Fundo do Mar', icon:'peixe', go:()=>scenes.jonas.start(), locked:false },
+    // item Ordem 2B-2: Jonas ganhou mais 3 fases — a fase única original ("No Fundo do Mar") virou a
+    // Fase 2 de uma jornada de 4. Quem já tinha `save.jonas` de antes desta ordem tem o progresso
+    // migrado automaticamente em loadGame() (Fase 1 é dada como concluída, Fase 2 herda as estrelas).
+    { key:'jonas1', name:'Fase 1 · A Fuga',           icon:'navio',  go:()=>scenes.jonas.start(1), locked:false },
+    { key:'jonas2', name:'Fase 2 · No Fundo do Mar',  icon:'peixe',  go:()=>scenes.jonas.start(2), locked:()=>save.jonas1===0 },
+    { key:'jonas3', name:'Fase 3 · A Oração',         icon:'oracao', go:()=>scenes.jonas.start(3), locked:()=>save.jonas2===0 },
+    { key:'jonas4', name:'Fase 4 · Nínive',           icon:'ninive', go:()=>scenes.jonas.start(4), locked:()=>save.jonas3===0 },
   ]},
   { id:'davi', name:'Davi e Golias', color:'#E8A33C', icon:'funda', testament:'AT', phases:[
-    { key:'davi', name:'A Funda da Coragem', icon:'funda', go:()=>scenes.davi.start(), locked:false },
+    // item Ordem 2B-3: Davi ganhou mais 3 fases — a fase única original (treino + Golias) virou as
+    // Fases 3 e 4 de uma jornada de 4. A Fase 2 (Harpa) foi ideia do Gadej, além do roteiro original
+    // da Fila 2B (que previa só 3 fases). Quem já tinha `save.davi` de antes é migrado em loadGame().
+    { key:'davi1', name:'Fase 1 · O Pastor Corajoso',  icon:'leao',     go:()=>scenes.davi.start(1), locked:false },
+    { key:'davi2', name:'Fase 2 · A Harpa que Acalma', icon:'harpa',    go:()=>scenes.davi.start(2), locked:()=>save.davi1===0 },
+    { key:'davi3', name:'Fase 3 · Treino de Pontaria', icon:'funda',    go:()=>scenes.davi.start(3), locked:()=>save.davi2===0 },
+    { key:'davi4', name:'Fase 4 · Golias',             icon:'capacete', go:()=>scenes.davi.start(4), locked:()=>save.davi3===0 },
   ]},
   { id:'daniel', name:'Daniel', color:'#B07ACC', icon:'leao', testament:'AT', phases:[
     { key:'daniel', name:'A Cova dos Leões', icon:'leao', go:()=>scenes.daniel.start(), locked:false },
@@ -1399,9 +1469,25 @@ const STORIES = [
   { id:'prodigo', name:'O Filho Pródigo', testament:'NT', soon:true, phases:[] },
   { id:'natal', name:'O Nascimento de Jesus', testament:'NT', soon:true, phases:[] },
   { id:'pascoa', name:'Páscoa', testament:'NT', soon:true, phases:[] },
-  { id:'quiz', name:'Quiz da Bíblia', color:'#5EC9B0', icon:'quiz', testament:'NT', phases:[
+  // item Ordem 2B-0: nova aba "🎲 Outros Jogos" no Modo Livre — o Quiz (que antes vivia na aba do
+  // Novo Testamento) virou o primeiro morador dela, e ganhou 3 vizinhos "em breve" que não são
+  // baseados numa história bíblica específica (por isso não fazem sentido dentro de AT/NT).
+  // IMPORTANTE: a trilha do Modo Carreira (CAREER_TRAIL) referencia 'quiz' por id, não por
+  // `testament` — ela não muda com isso, o Quiz continua na mesma posição de sempre na trilha.
+  { id:'quiz', name:'Quiz da Bíblia', color:'#5EC9B0', icon:'quiz', testament:'Outros', phases:[
     { key:'quiz', name:'Teste seus conhecimentos!', icon:'quiz', go:()=>scenes.quiz.start(), locked:false },
   ]},
+  { id:'memoria', name:'Jogo da Memória', testament:'Outros', soon:true, phases:[] },
+  { id:'diferencas', name:'Ache as Diferenças', testament:'Outros', soon:true, phases:[] },
+  { id:'palavrasecreta', name:'Palavra Secreta', testament:'Outros', soon:true, phases:[] },
+];
+// item Ordem 2B-0: definição das 3 abas do Modo Livre num só lugar (ordem, rótulo, cor) — assim
+// tap()/draw() do lobby iteram sobre essa lista em vez de terem ['AT','NT'] hardcoded, o que já
+// causava esquecimento em 2 lugares diferentes quando a 3ª aba foi adicionada.
+const LOBBY_TABS = [
+  { key:'AT', label:'📜 Antigo', activeColor:'#F2DFAE' },
+  { key:'NT', label:'✝️ Novo', activeColor:'#CFE7F8' },
+  { key:'Outros', label:'🎲 Outros Jogos', activeColor:'#E4CFF2' },
 ];
 scenes.lobby = {
   init(){
@@ -1416,8 +1502,11 @@ scenes.lobby = {
     return {got, max};
   },
   tabRects(){
-    const tw = (W-64)/2, th = 46, y = 278;
-    return { AT:{x:24, y, w:tw, h:th}, NT:{x:24+tw+16, y, w:tw, h:th} };
+    // item Ordem 2B-0: virou 3 abas (cabiam 2 lado a lado; agora dividem a mesma faixa em 3)
+    const n = LOBBY_TABS.length, gap = 10, tw = (W-48-gap*(n-1))/n, th = 46, y = 278;
+    const out = {};
+    LOBBY_TABS.forEach((t,i)=>{ out[t.key] = { x: 24+i*(tw+gap), y, w:tw, h:th }; });
+    return out;
   },
   cardRects(){
     // item 4.33: cada aba só mostra as histórias do seu testamento — resolve o Modo Livre não
@@ -1438,10 +1527,10 @@ scenes.lobby = {
     if(Math.hypot(x-30,y-(H-24)) < 26){ S.tap(); setScene('career'); return; } // item 4.16: Modo Carreira
     if(Math.hypot(x-W/2,y-(H-24)) < 30){ S.tap(); setScene('chest'); return; } // item 4.23: Baú do Dia
     const tabs = this.tabRects();
-    for(const key of ['AT','NT']){
-      const r = tabs[key];
+    for(const t of LOBBY_TABS){
+      const r = tabs[t.key];
       if(x>r.x && x<r.x+r.w && y>r.y && y<r.y+r.h){
-        if(this.tab!==key){ this.tab=key; S.tap(); }
+        if(this.tab!==t.key){ this.tab=t.key; S.tap(); }
         return;
       }
     }
@@ -1550,6 +1639,68 @@ scenes.lobby = {
       blob(-17,0,11,10,'#6BBF59',2.5); blob(17,0,11,10,'#6BBF59',2.5);
       blob(0,-17,10,10,'#F2C79B',2.5); eyes(0,-18,4.2,2.1); smile(0,-11,3.5);
       for(let i=0;i<3;i++) blob(-20+i*20,26,7,9,'#A5652F',1.5); // multidão pequenininha na base
+    } else if(icon==='comida'){
+      // item Ordem 2B-1 — potinho de comida (Fase 4 de Noé, "Cuidando de Todos")
+      ctx.fillStyle='#C98A4B'; ctx.strokeStyle=OUT; ctx.lineWidth=3.5;
+      ctx.beginPath(); ctx.moveTo(-26,4); ctx.quadraticCurveTo(0,22,26,4); ctx.lineTo(22,-6); ctx.lineTo(-22,-6); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      blob(-10,-10,7,7,'#7FB86A',2.5); blob(6,-13,6,6,'#F2CE7C',2.5); blob(0,-6,6,6,'#E8748A',2.5);
+    } else if(icon==='pomba'){
+      // item Ordem 2B-1 — pombinha (Fase 5 de Noé, "O Arco-Íris")
+      blob(0,4,18,13,'#FFFFFF',3); blob(-13,-6,11,10,'#FFFFFF',2.5);
+      ctx.fillStyle='#F2A65E'; ctx.strokeStyle=OUT; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-22,-6); ctx.lineTo(-30,-3); ctx.lineTo(-22,0); ctx.closePath(); ctx.fill(); ctx.stroke();
+      eyes(-15,-8,3.5,2);
+      blob(11,6,13,8,'#F0F0F0',2.5);
+    } else if(icon==='navio'){
+      // item Ordem 2B-2 — barquinho de vela (Fase 1 de Jonas, "A Fuga")
+      ctx.fillStyle='#7A4A20'; ctx.strokeStyle=OUT; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(-30,14); ctx.quadraticCurveTo(0,30,30,14); ctx.lineTo(22,2); ctx.lineTo(-22,2); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,2); ctx.lineTo(0,-30); ctx.stroke();
+      ctx.fillStyle='#F4F4F4'; ctx.beginPath(); ctx.moveTo(2,-28); ctx.lineTo(2,0); ctx.lineTo(-22,-6); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle='#5E9FD8'; ctx.lineWidth=3; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(-34,20); ctx.quadraticCurveTo(-24,14,-14,20); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(14,22); ctx.quadraticCurveTo(24,16,34,22); ctx.stroke();
+      ctx.lineCap='butt';
+    } else if(icon==='oracao'){
+      // item Ordem 2B-2 — mãozinhas em oração com brilho suave (Fase 3 de Jonas, "A Oração")
+      blob(0,0,30,30,'rgba(255,215,94,.32)',0);
+      ctx.fillStyle='#F2C79B'; ctx.strokeStyle=OUT; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.moveTo(-4,18); ctx.quadraticCurveTo(-14,10,-10,-16); ctx.quadraticCurveTo(-6,-22,-2,-16); ctx.lineTo(-2,16); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(4,18); ctx.quadraticCurveTo(14,10,10,-16); ctx.quadraticCurveTo(6,-22,2,-16); ctx.lineTo(2,16); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle='#FFD75E'; ctx.lineWidth=2.5; ctx.lineCap='round';
+      for(let i=0;i<5;i++){ const a=-Math.PI/2+(i-2)*.5; ctx.beginPath(); ctx.moveTo(Math.cos(a)*18,-24+Math.sin(a)*10); ctx.lineTo(Math.cos(a)*27,-24+Math.sin(a)*16); ctx.stroke(); }
+      ctx.lineCap='butt';
+    } else if(icon==='ninive'){
+      // item Ordem 2B-2 — cidadezinha de Nínive (Fase 4 de Jonas)
+      const bcols=['#C98A4B','#A5652F','#C98A4B'], bx=[-24,0,24], bh=[24,34,20];
+      for(let i=0;i<3;i++){
+        panel(bx[i]-11, 20-bh[i], 22, bh[i], 4, bcols[i], OUT, 2.5);
+        blob(bx[i]-4, 12-bh[i]*0.55, 3,3,'#FFD75E',1); blob(bx[i]+4, 12-bh[i]*0.55, 3,3,'#FFD75E',1);
+      }
+      ctx.fillStyle='#8a5a3a'; ctx.strokeStyle=OUT; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.moveTo(-8,20-bh[1]); ctx.lineTo(0,8-bh[1]); ctx.lineTo(8,20-bh[1]); ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else if(icon==='harpa'){
+      // item Ordem 2B-3 — harpinha (Fase 2 de Davi, "A Harpa que Acalma", sugestão do Gadej)
+      ctx.strokeStyle='#8a5a3a'; ctx.lineWidth=5; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(-22,24); ctx.quadraticCurveTo(-30,-10,-6,-26); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-22,24); ctx.lineTo(22,24); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(22,24); ctx.quadraticCurveTo(24,-4,-6,-26); ctx.stroke();
+      ctx.lineCap='butt';
+      const cols=['#E85D5D','#F2A65E','#FFD75E','#7FB86A','#5E9FD8'];
+      for(let i=0;i<5;i++){
+        const t=i/4, x0=-22+t*(-6-(-22)), y0=24+t*(-26-24), x1=22-t*24;
+        ctx.strokeStyle=cols[i]; ctx.lineWidth=2.2;
+        ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,24); ctx.stroke();
+      }
+    } else if(icon==='capacete'){
+      // item Ordem 2B-3 — capacete de Golias (Fase 4 de Davi)
+      ctx.fillStyle='#9AA5B1'; ctx.strokeStyle=OUT; ctx.lineWidth=3.5;
+      ctx.beginPath(); ctx.moveTo(-26,6); ctx.quadraticCurveTo(-26,-24,0,-26); ctx.quadraticCurveTo(26,-24,26,6); ctx.lineTo(20,6); ctx.quadraticCurveTo(20,-14,0,-15); ctx.quadraticCurveTo(-20,-14,-20,6); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle='#7E8A97'; ctx.beginPath(); ctx.moveTo(-6,6); ctx.lineTo(6,6); ctx.lineTo(9,24); ctx.lineTo(-9,24); ctx.closePath(); ctx.fill(); ctx.strokeStyle=OUT; ctx.lineWidth=2.5; ctx.stroke();
+      blob(-14,-2,4,4,'#6B7683',1.5); blob(14,-2,4,4,'#6B7683',1.5);
     }
     ctx.restore();
   },
@@ -1581,16 +1732,18 @@ scenes.lobby = {
     panel(60,178,W-120,86,26,'#FFF9EC',OUT,6);
     txt('BÍBLIA PLAY', W/2, 226, 40, '#E8842C', 'center', true);
     txt('✦ Aventuras da Bíblia para crianças ✦', W/2, 252, 15, '#8a6a4a', 'center');
-    // item 4.33: abas Antigo/Novo Testamento — mesma linguagem visual das faixas de capítulo da
-    // trilha do Modo Carreira (item Ordem 9), pra criança reconhecer a mesma ideia nos dois lugares
+    // item 4.33: abas do Modo Livre — mesma linguagem visual das faixas de capítulo da trilha do
+    // Modo Carreira (item Ordem 9), pra criança reconhecer a mesma ideia nos dois lugares.
+    // item Ordem 2B-0: agora são 3 abas (📜 Antigo / ✝️ Novo / 🎲 Outros Jogos) — rótulos mais
+    // curtos que antes ("Antigo"/"Novo" em vez de "Antigo Testamento"/"Novo Testamento") pra caber
+    // nas abas mais estreitas sem precisar encolher tanto a fonte.
     const tabs = this.tabRects();
-    for(const key of ['AT','NT']){
-      const r = tabs[key];
-      const active = this.tab===key;
-      const color = key==='AT'? '#F2DFAE' : '#CFE7F8';
-      panel(r.x, r.y, r.w, r.h, 16, active? color:'rgba(255,255,255,.55)', active? OUT:'rgba(120,100,90,.35)', active?4:2.5);
+    for(const t of LOBBY_TABS){
+      const r = tabs[t.key];
+      const active = this.tab===t.key;
+      panel(r.x, r.y, r.w, r.h, 16, active? t.activeColor:'rgba(255,255,255,.55)', active? OUT:'rgba(120,100,90,.35)', active?4:2.5);
       ctx.save(); if(!active) ctx.globalAlpha=.65;
-      txt((key==='AT'?'📜 Antigo':'✝️ Novo')+' Testamento', r.x+r.w/2, r.y+r.h/2+6, active?14.5:13, '#4A3320', 'center', true);
+      txt(t.label, r.x+r.w/2, r.y+r.h/2+6, active?13.5:12, '#4A3320', 'center', true);
       ctx.restore();
     }
     // cards — um por história (item 4.14), filtrados pela aba atual (item 4.33)
@@ -1650,6 +1803,9 @@ scenes.lobby = {
       blob(0,0,9,9,'#E85D5D',2); txt('!',0,4,12,'#fff','center',true);
       ctx.restore();
     }
+    // item Ordem 2B-0 (bug encontrado na varredura): tocar num card "em breve" já chamava toast(),
+    // mas o draw() nunca desenhava — a mensagem era criada e nunca aparecia na tela pra criança.
+    if(this.ts) toastDraw(this.ts, dt, 800);
   }
 };
 /* item 4.14: telinha de seleção de fases — abre quando a história tocada tem mais de uma fase */
@@ -1746,9 +1902,18 @@ scenes.career = {
   nodes(){
     // item Ordem 9: espaço extra depois de cada faixa de capítulo, senão a próxima parada
     // (e o ajudante marcador) fica espremida colada na faixa "Antigo/Novo Testamento".
+    // item Ordem 2B-0: e agora também um respiro (maior ainda, pra caber o nome da parada anterior)
+    // ANTES do capítulo — sem isso, a última parada de um testamento (ex.: Ester, bem antes do Novo
+    // Testamento) ficava com o círculo e o nome escondidos atrás da própria faixa do capítulo
+    // seguinte (bug encontrado na varredura de textos).
     const n = CAREER_TRAIL.length, topY = 175, botY = 930;
-    const extraPerChapter = 46, chapters = CAREER_TRAIL.filter(t=>t.kind==='chapter').length;
-    const baseGap = (botY-topY-extraPerChapter*chapters)/(n-1);
+    const extraAfterChapter = 46, extraBeforeChapter = 70;
+    let extraBudget = 0;
+    for(let i=0;i<n-1;i++){
+      if(CAREER_TRAIL[i].kind==='chapter') extraBudget += extraAfterChapter;
+      if(CAREER_TRAIL[i+1].kind==='chapter') extraBudget += extraBeforeChapter;
+    }
+    const baseGap = (botY-topY-extraBudget)/(n-1);
     const rects = []; let y = topY;
     for(let i=0;i<n;i++){
       const t = CAREER_TRAIL[i];
@@ -1756,7 +1921,8 @@ scenes.career = {
       // parada no zigue-zague — só as paradas de verdade (story/soon) alternam de lado.
       const x = t.kind==='chapter'? W/2 : (i%2===0? 175 : 365);
       rects.push({ x, y, t, i });
-      y += baseGap + (t.kind==='chapter'? extraPerChapter : 0);
+      const nextIsChapter = i+1<n && CAREER_TRAIL[i+1].kind==='chapter';
+      y += baseGap + (t.kind==='chapter'? extraAfterChapter : 0) + (nextIsChapter? extraBeforeChapter : 0);
     }
     return rects;
   },
@@ -2022,9 +2188,62 @@ function drawHelper(o){
    Fase 3 (os animais aos pares, item Ordem 8)
    ===================================================================== */
 const NOE3_PAIRS = ['leao','elefante','ovelha','cavalo','coelho']; // 5 pares da Fase 3 (reaproveita drawArkAnimal)
+/* item Ordem 2B-1 — Fase 4 "Cuidando de Todos" (Gn 7:17-24 + 6:21): 8 entregas de comida, cada
+   bichinho pede um alimento (reaproveita a arte de drawArkAnimal); ritmo calmo, sem cronômetro. */
+const NOE4_FOODS = ['feno','folhas','frutas','cenoura','graos'];
+const NOE4_DELIVERIES = [
+  { animal:'cavalo',   food:'feno' },
+  { animal:'girafa',   food:'folhas' },
+  { animal:'urso',     food:'frutas' },
+  { animal:'coelho',   food:'cenoura' },
+  { animal:'macaco',   food:'frutas' },
+  { animal:'elefante', food:'folhas' },
+  { animal:'ovelha',   food:'feno' },
+  { animal:'pavao',    food:'graos' },
+];
+function drawFood(id, x, y, s){
+  s = s||1;
+  ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
+  switch(id){
+    case 'feno': // feixe de feno dourado
+      ctx.strokeStyle='#E8C87A'; ctx.lineWidth=2; ctx.lineCap='round';
+      for(let i=0;i<7;i++){ const a=-0.9+i*0.3; ctx.beginPath(); ctx.moveTo(0,10); ctx.lineTo(Math.cos(a)*22,10+Math.sin(a)*22-18); ctx.stroke(); }
+      ctx.lineCap='butt';
+      ctx.fillStyle='#C9973C'; ctx.beginPath(); ctx.ellipse(0,14,16,8,0,0,7); ctx.fill(); ctx.strokeStyle=OUT; ctx.lineWidth=2.5; ctx.stroke();
+      break;
+    case 'folhas': // folhinhas verdes
+      for(const [lx,ly,rot] of [[-10,-4,-0.4],[10,-6,0.5],[0,8,0]]){
+        ctx.save(); ctx.translate(lx,ly); ctx.rotate(rot);
+        ctx.fillStyle='#6BBF59'; ctx.strokeStyle=OUT; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.ellipse(0,0,12,7,0,0,7); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
+      break;
+    case 'frutas': // cachinho de frutinhas vermelhas
+      for(const [fx,fy] of [[-9,-4],[9,-4],[0,8],[-9,14],[9,14]]) blob(fx,fy,8,8,'#E8748A',2.5);
+      ctx.strokeStyle='#6BBF59'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(0,-14); ctx.lineTo(0,-4); ctx.stroke();
+      break;
+    case 'cenoura': // cenourinha laranja com folhas verdes
+      ctx.fillStyle='#F2A65E'; ctx.strokeStyle=OUT; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.moveTo(-11,-8); ctx.lineTo(11,-8); ctx.lineTo(0,20); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle='#6BBF59'; ctx.lineWidth=3; ctx.lineCap='round';
+      for(const dx of [-5,0,5]){ ctx.beginPath(); ctx.moveTo(dx,-8); ctx.lineTo(dx*1.6,-20); ctx.stroke(); } ctx.lineCap='butt';
+      break;
+    case 'graos': // montinho de grãozinhos dourados
+      for(let i=0;i<9;i++){ const a=i*Math.PI*2/9; blob(Math.cos(a)*11,4+Math.sin(a)*7,4,4,'#F2CE7C',1.5); }
+      blob(0,4,5,5,'#E8B85E',1.5);
+      break;
+  }
+  ctx.restore();
+}
 scenes.noe = {
   start(phase){
-    setScene('noe_run', phase); // init de fato
+    // item Ordem 2B-1: fases 4 e 5 têm mecânicas totalmente diferentes das 3 primeiras (arrastar
+    // comida, soltar a pombinha no tempo certo) — viraram cenas próprias em vez de mais um `if` na
+    // já longa noe_run, pra não arriscar quebrar as 3 fases originais.
+    if(phase===4) setScene('noe4_run');
+    else if(phase===5) setScene('noe5_run');
+    else setScene('noe_run', phase); // init de fato
   }
 };
 scenes.noe_run = {
@@ -2128,19 +2347,17 @@ scenes.noe_run = {
         {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'E o Senhor fechou a porta atrás dele. (Gênesis 7:16) A chuva começou a cair forte sobre a terra.', audio:'59_narrador.mp3'},
         {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Um dia, quando a chuva parar, o céu vai mostrar uma promessa linda... (Gênesis 9:13)', audio:'60_narrador.mp3'},
       ], ()=>{
-        if(!(save.ownedDecor||[]).includes('arcoiris')){
-          save.ownedDecor = (save.ownedDecor||[]).concat(['arcoiris']);
-          const i = ARK_DECOR.findIndex(d=>d.id==='arcoiris');
-          save.arcaDecor = save.arcaDecor || {};
-          save.arcaDecor['arcoiris'] = defaultDecorPos(i>=0? i : 3);
-        }
+        // item Ordem 2B-1: esta NÃO é mais a última fase de Noé (agora são 5) — o bônus do enfeite
+        // arco-íris e a fala de "fim da trilogia" foram pra Fase 5, que é onde o arco-íris de verdade
+        // aparece na tela. As 3 falas acima continuam valendo (já tinham narração gravada) porque já
+        // preparavam esse gancho: "quando a chuva parar, o céu vai mostrar uma promessa" = Fase 5.
         showEnd({
           key:'noe3', title:'⭐ NOÉ · FASE 3 CONCLUÍDA!',
           stars: this.time<95?3:(this.time<150?2:1),
           verse:'Então o Senhor fechou a porta da arca.',
           ref:'Gênesis 7:16',
-          lesson:'Deus cuidou de cada bichinho, aos pares, e Noé obedeceu até o fim. Você completou a trilogia de Noé e ganhou um arco-íris de bônus pra decorar a Arca — lembrando da promessa de Deus! 🌈',
-          nextLabel:null,
+          lesson:'Deus cuidou de cada bichinho, aos pares, e Noé obedeceu até o fim. Agora é esperar a chuva passar, cuidando de todos lá dentro da arca!',
+          nextLabel:'▶  Fase 4: Cuidando de Todos', next:()=>scenes.noe.start(4),
           replay:()=>scenes.noe.start(3),
         });
       });
@@ -2475,6 +2692,325 @@ scenes.noe_run = {
     toastDraw(this.ts, dt, this.phase===1? 130 : 170);
   }
 };
+/* =====================================================================
+   item Ordem 2B-1 — FASE 4 DE NOÉ: "Cuidando de Todos" (Gn 7:17-24 + 6:21)
+   Dentro da arca, cada bichinho pede um alimento (balãozinho com dica visual);
+   a criança arrasta o item certo da bandeja até ele. 8 entregas, ritmo calmo,
+   sem cronômetro — a chuva só aparece pela janela, de forma ambiente.
+   ===================================================================== */
+scenes.noe4_run = {
+  init(){
+    playMusic('noe3'); // reaproveita a trilha alegre da família "bichinhos chegando"
+    this.ts = toastState();
+    this.round = 0;
+    this.dragging = null;
+    this.misses = 0;
+    this.fedT = 0;
+    this.midShown = false;
+    // BUGFIX (achado testando esta ordem): draw() já roda como fundo da tela durante o diálogo de
+    // abertura, antes de setupRound() existir — sem isso this.tray/this.animal ficavam undefined e
+    // travavam o jogo no primeiro quadro (a mesma classe de bug já corrigida antes nas fases 1/2 de Noé).
+    this.tray = []; this.animal = null;
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Lá fora a chuva caía sem parar, mas dentro da arca estava quentinho e seguro.'},
+      {who:'Noé', face:'noe', color:'#9FE0A5', text:'Agora é cuidar de cada bichinho, todos os dias. Deus confiou eles a mim, e eu vou cuidar com carinho.'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: cada bichinho está com fome! Arraste o alimento certo da bandeja até ele.'},
+    ], ()=>this.setupRound());
+  },
+  setupRound(){
+    const d = NOE4_DELIVERIES[this.round];
+    if(!d) return;
+    const wrong = shuffleArr(NOE4_FOODS.filter(f=>f!==d.food)).slice(0,2);
+    const foods = shuffleArr([d.food, ...wrong]);
+    const trayY = 800, gap = 130, x0 = W/2 - gap;
+    this.tray = foods.map((id,i)=>({ id, correct:id===d.food, homeX:x0+i*gap, homeY:trayY, x:x0+i*gap, y:trayY, dragging:false }));
+    this.animalPos = { x:W/2, y:430 };
+    this.animal = d.animal;
+    this.fedT = 0;
+    this.dragging = null;
+    toast(this.ts, 'O bichinho está com fome! 🍽️');
+  },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    if(this.fedT>0 || this.dragging) return;
+    for(let i=this.tray.length-1;i>=0;i--){
+      const it = this.tray[i];
+      if(Math.hypot(x-it.x,y-it.y) < 48){
+        this.dragging = it; it.dragging = true; it.offX = x-it.x; it.offY = y-it.y;
+        S.tap(); return;
+      }
+    }
+  },
+  release(){
+    if(!this.dragging) return;
+    const it = this.dragging;
+    it.dragging = false; this.dragging = null;
+    const a = this.animalPos;
+    const onTarget = Math.hypot(it.x-a.x, it.y-a.y) < 90;
+    if(onTarget && it.correct){
+      S.win(); S.pick();
+      this.fedT = 1.2;
+      this.tray = this.tray.filter(t=>t!==it);
+    } else if(onTarget && !it.correct){
+      this.misses++; S.oops();
+      toast(this.ts, 'Hmm, acho que ele não gosta disso... tenta outro alimento! 💛');
+      it.x = it.homeX; it.y = it.homeY;
+    } else {
+      it.x = it.homeX; it.y = it.homeY;
+    }
+  },
+  update(dt){
+    if(this.dragging){ this.dragging.x = P.x - this.dragging.offX; this.dragging.y = P.y - this.dragging.offY; }
+    if(this.fedT>0){
+      this.fedT -= dt;
+      if(this.fedT<=0){
+        this.round++;
+        if(this.round === 4 && !this.midShown){
+          this.midShown = true;
+          say([
+            {who:'Ajudante de Noé', face:'filho', color:'#FFCF9E', text:'Nossa, dá trabalho cuidar de todo mundo, hein?'},
+            {who:'Noé', face:'noe', color:'#9FE0A5', text:'Dá! Mas cada bichinho é importante pra Deus. Cuidar do que Ele confia a nós é responsabilidade... e carinho também.'},
+          ], ()=>this.setupRound());
+        } else if(this.round >= NOE4_DELIVERIES.length){
+          this.finish();
+        } else {
+          this.setupRound();
+        }
+      }
+    }
+  },
+  finish(){
+    // BUGFIX: sem isso, o draw() tentava ler NOE4_DELIVERIES[this.round] (round já em 8, fora do
+    // array de 8 posições) pra desenhar o balãozinho de comida por cima do diálogo final e travava.
+    this.animal = null;
+    say([
+      {who:'Noé', face:'noe', color:'#9FE0A5', text:'Todo mundo alimentado e feliz! Obrigado, Senhor, por confiar essas criaturinhas a mim.'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'"E leva contigo de todo alimento que se come, e ajunta-o para ti; e te será para mantimento, a ti e a eles." (Gênesis 6:21)'},
+    ], ()=>showEnd({
+      key:'noe4', title:'⭐ NOÉ · FASE 4 CONCLUÍDA!',
+      stars: this.misses===0?3:(this.misses<=3?2:1),
+      verse:'E leva contigo de todo alimento que se come, e ajunta-o para ti; e te será para mantimento, a ti e a eles.',
+      ref:'Gênesis 6:21',
+      lesson:'Cuidar do que Deus confia a nós é responsabilidade — e também carinho. Assim como Noé cuidou de cada bichinho, Deus cuida de cada um de nós.',
+      nextLabel:'▶  Fase 5: O Arco-Íris', next:()=>scenes.noe.start(5),
+      replay:()=>scenes.noe.start(4),
+    }));
+  },
+  drawTray(){
+    for(const it of this.tray){
+      if(it===this.dragging) continue;
+      shadowE(it.x, it.y+30, 38);
+      panel(it.x-40, it.y-40, 80, 80, 18, '#FFF9EC', OUT, 3.5);
+      drawFood(it.id, it.x, it.y, 1.1);
+    }
+  },
+  draw(dt){
+    // interior da arca, quentinho e seguro, com a chuva batendo lá fora na janelinha
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#B8763C'); g.addColorStop(1,'#8B5A2B');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,0,0,.12)'; ctx.lineWidth=3;
+    for(let i=1;i<5;i++){ ctx.beginPath(); ctx.moveTo(0,i*190); ctx.lineTo(W,i*190); ctx.stroke(); }
+    // janelinha com chuva lá fora
+    blob(W-80, 130, 52, 52, '#6E7F94', 4);
+    ctx.save(); ctx.beginPath(); ctx.arc(W-80,130,44,0,7); ctx.clip();
+    ctx.fillStyle='#4A5A70'; ctx.fillRect(W-140,80,120,100);
+    ctx.strokeStyle='rgba(180,200,230,.7)'; ctx.lineWidth=2.5; ctx.lineCap='round';
+    for(let i=0;i<6;i++){ const rx=W-135+i*22, ry=80+((T*180+i*29)%110); ctx.beginPath(); ctx.moveTo(rx,ry); ctx.lineTo(rx-4,ry+12); ctx.stroke(); }
+    ctx.lineCap='butt'; ctx.restore();
+    ctx.strokeStyle=OUT; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(W-80,130,44,0,7); ctx.stroke();
+    drawTopBar('NOÉ · FASE 4','rgba(78,142,61,.92)');
+    panel(W/2-130, 78, 260, 40, 14, 'rgba(255,249,236,.94)', OUT, 4);
+    txt('🍽️ Alimentados: '+this.round+' / '+NOE4_DELIVERIES.length, W/2, 104, 15.5, '#5A452A', 'center', true);
+    // bichinho central com balãozinho mostrando o que quer (dica visual, sem precisar ler)
+    if(this.animal){
+      const a = this.animalPos;
+      const bounce = this.fedT>0? Math.sin((1.2-this.fedT)*14)*10 : Math.sin(T*2)*4;
+      shadowE(a.x, a.y+56, 50);
+      drawArkAnimal(this.animal, a.x, a.y-bounce, 1.5, false);
+      if(this.fedT<=0){
+        panel(a.x+56, a.y-96, 76, 66, 16, '#FFF9EC', OUT, 3);
+        drawFood(NOE4_DELIVERIES[this.round].food, a.x+94, a.y-64, 0.85);
+      } else {
+        for(let i=0;i<6;i++){ const ang=i*Math.PI/3+T*2; txt('💛', a.x+Math.cos(ang)*50, a.y-40+Math.sin(ang)*50, 16); }
+      }
+    }
+    this.drawTray();
+    if(this.dragging) drawFood(this.dragging.id, this.dragging.x, this.dragging.y, 1.2);
+    toastDraw(this.ts, dt, 128);
+  }
+};
+/* =====================================================================
+   item Ordem 2B-1 — FASE 5 DE NOÉ: "A Pomba e o Arco-Íris" (Gn 8:8-12 +
+   9:13-16). 3 tentativas narrativas de FINAL FIXO (fiel ao texto): a pomba
+   volta sem nada → volta com o ramo de oliveira → não volta mais (achou
+   terra seca!). O toque no "vento certo" (zigue-zague, mesmo padrão do
+   treino de funda de Davi) só afeta as estrelas, nunca trava a história —
+   é um momento de esperança calma, não de desafio.
+   ===================================================================== */
+scenes.noe5_run = {
+  init(){
+    playMusic('noe1'); // trilha pastoral e esperançosa, mesma família harmônica
+    this.ts = toastState();
+    this.stage = 'dialogue'; // dialogue | ready | flying | finale
+    this.attempt = 0; // 0, 1, 2 — as 3 tentativas
+    this.goodReleases = 0;
+    this.pos = 0; this.dirn = 1;
+    this.zoneSize = 0.34;
+    this.dove = null;
+    this.rainbowT = 0;
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Passaram-se muitos dias. Aos poucos, a chuva parou e as águas começaram a baixar. (Gênesis 8:1-3)'},
+      {who:'Noé', face:'noe', color:'#9FE0A5', text:'Vamos soltar a pomba pela janela. Se ela achar um lugar seco pra pousar, é sinal de que podemos sair em breve!'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: toque quando o ventinho estiver na área verde, pra soltar a pombinha no momento certo!'},
+    ], ()=>{ this.stage = 'ready'; });
+  },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    if(this.stage!=='ready') return;
+    const c=.5, half=this.zoneSize/2;
+    const hit = Math.abs(this.pos-c) <= half;
+    if(hit) this.goodReleases++;
+    S.woosh();
+    this.dove = { phase:'out', t:0, hit };
+    this.stage = 'flying';
+  },
+  narrateOutcome(){
+    const n = this.attempt;
+    this.stage = 'dialogue';
+    if(n===0){
+      say([
+        {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'A pomba voou, voou... mas não achou onde pousar, porque as águas ainda cobriam a terra. Ela voltou para a arca. (Gênesis 8:9)'},
+        {who:'Noé', face:'noe', color:'#9FE0A5', text:'Ainda não, pequenina... vamos esperar mais um pouco.'},
+      ], ()=>{ this.attempt=1; this.dove=null; this.zoneSize=0.28; this.stage='ready'; });
+    } else if(n===1){
+      say([
+        {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Sete dias depois, Noé soltou a pomba de novo. À tardinha, ela voltou — com uma folhinha de oliveira no bico! (Gênesis 8:10-11)'},
+        {who:'Noé', face:'noe', color:'#9FE0A5', text:'Uma folha de oliveira! As águas estão baixando — a terra está quase pronta pra gente.'},
+      ], ()=>{ this.attempt=2; this.dove=null; this.zoneSize=0.22; this.stage='ready'; });
+    } else {
+      say([
+        {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Noé esperou mais sete dias e soltou a pomba pela terceira vez. Dessa vez... ela não voltou mais! (Gênesis 8:12)'},
+        {who:'Noé', face:'noe', color:'#9FE0A5', text:'Ela achou um lugar pra viver! Isso quer dizer que a terra já está seca!'},
+      ], ()=>this.startFinale());
+    }
+  },
+  startFinale(){
+    this.stage = 'finale';
+    this.rainbowT = 0;
+    setTimeout(()=>{
+      say([
+        {who:'Deus', face:'luz', color:'#FFD75E', text:'Noé, saia da arca — você, sua família e todos os animais. Enchei a terra outra vez! (Gênesis 8:15-17)'},
+        {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'E Noé saiu, com sua família e todos os animais, aos pares, para a terra seca e o ar livre.'},
+        {who:'Deus', face:'luz', color:'#FFD75E', text:'Este é o sinal da aliança que estabeleço convosco: o meu arco pus na nuvem, e este será por sinal da aliança entre mim e a terra. (Gênesis 9:13)'},
+        {who:'Noé', face:'noe', color:'#9FE0A5', text:'Obrigado, Senhor! Nunca mais vou esquecer essa promessa, toda vez que eu ver um arco-íris no céu.'},
+      ], ()=>this.finish());
+    }, 1600);
+  },
+  finish(){
+    // item Ordem 2B-1: o bônus do enfeite arco-íris (antes dado no fim da Fase 3) mudou pra cá — é
+    // aqui que o arco-íris de verdade aparece na tela, então faz mais sentido ganhar o enfeite agora.
+    if(!(save.ownedDecor||[]).includes('arcoiris')){
+      save.ownedDecor = (save.ownedDecor||[]).concat(['arcoiris']);
+      const i = ARK_DECOR.findIndex(d=>d.id==='arcoiris');
+      save.arcaDecor = save.arcaDecor || {};
+      save.arcaDecor['arcoiris'] = defaultDecorPos(i>=0? i : 3);
+    }
+    showEnd({
+      key:'noe5', title:'⭐ NOÉ · FASE 5 CONCLUÍDA!',
+      stars: this.goodReleases>=2?3:(this.goodReleases>=1?2:1),
+      verse:'O meu arco pus na nuvem, e este será por sinal da aliança entre mim e a terra.',
+      ref:'Gênesis 9:13',
+      lesson:'Deus cumpre o que promete! Você completou toda a jornada de Noé — da construção da arca até a promessa do arco-íris — e ganhou um arco-íris de bônus pra decorar a Arca. 🌈',
+      nextLabel:null,
+      replay:()=>scenes.noe.start(5),
+    });
+  },
+  update(dt){
+    if(this.stage==='ready'){
+      this.pos += this.dirn*0.55*dt;
+      if(this.pos>1){ this.pos=1; this.dirn=-1; }
+      if(this.pos<0){ this.pos=0; this.dirn=1; }
+    } else if(this.stage==='flying' && this.dove){
+      this.dove.t += dt;
+      if(this.dove.phase==='out' && this.dove.t>1.1){ this.narrateOutcome(); }
+    } else if(this.stage==='finale'){
+      this.rainbowT = Math.min(1, this.rainbowT + dt*0.35);
+    }
+  },
+  draw(dt){
+    if(this.stage==='finale') this.drawFinale(dt);
+    else this.drawArkWindow(dt);
+    toastDraw(this.ts, dt, 128);
+  },
+  drawArkWindow(dt){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#B8763C'); g.addColorStop(1,'#8B5A2B');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,0,0,.12)'; ctx.lineWidth=3;
+    for(let i=1;i<5;i++){ ctx.beginPath(); ctx.moveTo(0,i*190); ctx.lineTo(W,i*190); ctx.stroke(); }
+    // janela grande — o céu lá fora vai clareando a cada tentativa (sinal visual da chuva passando)
+    const skyColors = [ ['#5D6E84','#4A5A70'], ['#7EC8F2','#BDE3FF'], ['#5EB3F2','#BDE3FF'] ];
+    const [skyTop, skyBot] = skyColors[Math.min(this.attempt,2)];
+    blob(W/2, 320, 170, 170, '#6E7F94', 5);
+    ctx.save(); ctx.beginPath(); ctx.arc(W/2,320,158,0,7); ctx.clip();
+    const g2 = ctx.createLinearGradient(0,160,0,480);
+    g2.addColorStop(0, skyTop); g2.addColorStop(1, skyBot);
+    ctx.fillStyle=g2; ctx.fillRect(W/2-160,160,320,320);
+    ctx.restore();
+    ctx.strokeStyle=OUT; ctx.lineWidth=5; ctx.beginPath(); ctx.arc(W/2,320,158,0,7); ctx.stroke();
+    drawTopBar('NOÉ · FASE 5','rgba(78,142,61,.92)');
+    panel(W/2-130, 78, 260, 40, 14, 'rgba(255,249,236,.94)', OUT, 4);
+    txt('🕊️ Tentativa '+(this.attempt+1)+' / 3', W/2, 104, 15.5, '#5A452A', 'center', true);
+    // pomba: parada esperando (idle) ou voando pra fora da janela quando solta
+    if(this.dove && this.dove.phase==='out'){
+      const p = Math.min(1, this.dove.t/1.1);
+      const dy = 440 - p*230;
+      ctx.save(); ctx.globalAlpha = Math.max(0, 1-p*1.1);
+      drawArkAnimal('pomba', W/2, dy, 1.1-p*0.35, false);
+      ctx.restore();
+    } else if(this.stage==='ready' || this.stage==='dialogue'){
+      drawArkAnimal('pomba', W/2, 440 + Math.sin(T*2.4)*4, 1.1, false);
+    }
+    // barra do "vento certo" — só ativa enquanto esperando o toque
+    if(this.stage==='ready'){
+      panel(W/2-140,690,280,54,16,'rgba(255,249,236,.94)',OUT,4);
+      txt('💨 Toque no VENTO CERTO!', W/2, 712, 14, '#5A452A', 'center', true);
+      const bx=W/2-108, bw=216, by=728;
+      ctx.fillStyle='#E8E0D0'; rr(bx,by,bw,15,7.5); ctx.fill();
+      const c=.5, half=this.zoneSize/2;
+      ctx.fillStyle='rgba(139,191,89,.6)'; rr(bx+(c-half)*bw, by, bw*this.zoneSize, 15, 7.5); ctx.fill();
+      ctx.strokeStyle=OUT; ctx.lineWidth=2.5; rr(bx,by,bw,15,7.5); ctx.stroke();
+      blob(bx+this.pos*bw, by+7, 11,11,'#4E9FD8',3);
+    }
+  },
+  drawFinale(dt){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#5EB3F2'); g.addColorStop(.42,'#BDE3FF'); g.addColorStop(.43,'#8FD97A'); g.addColorStop(1,'#5FAE4C');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    blob(W-80,110,44,44,'#FFD84D',4);
+    // arco-íris grande, desenhando as faixas de cor uma a uma conforme rainbowT avança
+    const cols = ['#E85D5D','#F2A65E','#FFD75E','#7FB86A','#5E9FD8','#9B6FCE'];
+    const cx=W/2, cy=430, baseR=250;
+    ctx.lineCap='round';
+    for(let i=0;i<cols.length;i++){
+      const appear = Math.min(1, Math.max(0, this.rainbowT*cols.length - i));
+      if(appear<=0) continue;
+      ctx.strokeStyle=cols[i]; ctx.lineWidth=16;
+      ctx.beginPath(); ctx.arc(cx,cy, baseR-i*15, Math.PI, Math.PI+Math.PI*appear);
+      ctx.stroke();
+    }
+    ctx.lineCap='butt';
+    // arca aberta na base, Noé + ajudante + alguns bichinhos saindo pro ar livre
+    shadowE(270,800,170);
+    panel(140,660,260,170,20,'#A5652F',OUT,5);
+    drawPerson({x:220,y:790,s:1,skin:'#F2C79B',robe:'#4E8FD1',hairC:'#E8E8E8',beard:true,dir:1,walk:Math.sin(T*3)*0.6});
+    if(save.avatar) drawHelper({x:300,y:800,s:.8,dir:-1,walk:Math.sin(T*3)*0.6,showName:false});
+    const animalShow = ['leao','elefante','coelho','ovelha'];
+    animalShow.forEach((id,i)=>{ drawArkAnimal(id, 90+i*110, 880 + Math.sin(T*2+i)*4, 0.8, false); });
+    drawTopBar('NOÉ · FASE 5','rgba(78,142,61,.92)');
+  }
+};
 </script>
 <script>
 'use strict';
@@ -2807,17 +3343,139 @@ scenes.zaqueu_run = {
    JONAS — no fundo do mar (segure para nadar para cima)
    ===================================================================== */
 scenes.jonas = {
-  start(){
-    playMusic('jonas');
+  start(phase){
+    // item Ordem 2B-2: Jonas ganhou mais 3 fases — cada uma virou cena própria (mesmo padrão já
+    // usado nas fases novas de Noé), pra não arriscar quebrar a fase original (agora Fase 2).
+    if(phase===1) setScene('jonas1_run');
+    else if(phase===3) setScene('jonas3_run');
+    else if(phase===4) setScene('jonas4_run');
+    else setScene('jonas2_run');
+  }
+};
+/* =====================================================================
+   item Ordem 2B-2 — FASE 1 DE JONAS: "A Fuga" (Jonas 1:1-15)
+   No navio pra Társis, a criança rema tocando ora no remo da ESQUERDA, ora
+   no da DIREITA, no ritmo certo — mas a tempestade cresce de qualquer
+   jeito, porque não dá pra fugir de Deus (o remo só afeta as estrelas,
+   nunca o resultado, mesma ideia da Fase 5 de Noé com a pombinha). Termina
+   com Jonas se oferecendo pra ser lançado ao mar; transição suave pra
+   Fase 2, sem afogamento gráfico.
+   ===================================================================== */
+scenes.jonas1_run = {
+  init(){
+    playMusic('noe2'); // reaproveita a trilha tensa "tempestade chegando" da família de Noé
+    this.ts = toastState();
+    this.stormT = 0; this.dur = 20;
+    this.side = Math.random()<0.5?'L':'R';
+    this.sideT = 1.4;
+    this.hits = 0; this.misses = 0;
+    this.rowArm = 0;
+    this.finished = false;
     say([
       {who:'Deus', face:'luz', color:'#FFD75E', text:'Jonas! Levante-se e vá à grande cidade de Nínive, e avise o povo para deixar o mal. (Jonas 1:2)', audio:'16_deus.mp3'},
       {who:'Jonas', face:'jonas', color:'#A8D8F8', text:'Nínive?! Ah não... eu não quero ir! Vou fugir de navio para bem longe, para Társis!', audio:'17_jonas.mp3'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: toque ora no remo da ESQUERDA, ora no da DIREITA, no ritmo certo, pra ajudar o navio a fugir!'},
+    ], ()=>{});
+  },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    if(this.finished) return;
+    const isLeft = x < W/2;
+    if((isLeft && this.side==='L') || (!isLeft && this.side==='R')){
+      this.hits++; S.pick();
+      this.side = this.side==='L'?'R':'L';
+      this.sideT = 1.4;
+    } else {
+      this.misses++; S.pop();
+    }
+    this.rowArm = 0.3;
+  },
+  update(dt){
+    if(this.finished) return;
+    this.stormT = Math.min(1, this.stormT + dt/this.dur);
+    this.sideT -= dt;
+    if(this.sideT<=0){ this.side = this.side==='L'?'R':'L'; this.sideT = 1.4; }
+    if(this.rowArm>0) this.rowArm -= dt;
+    if(this.stormT>=1){ this.finished = true; this.finish(); }
+  },
+  finish(){
+    say([
       {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Mas não dá para fugir de Deus... Veio uma tempestade enorme, e Jonas pediu para ser jogado no mar. (Jonas 1:15)', audio:'18_narrador.mp3'},
+      {who:'Marinheiro', face:'marinheiro', color:'#8FB4DC', text:'O mar não para de piorar! Alguém aqui deve ter deixado Deus bravo... quem foi?!'},
+      {who:'Jonas', face:'jonas', color:'#A8D8F8', text:'Fui eu. Eu estava fugindo do Senhor. Joguem-me ao mar, e ele vai se acalmar.'},
       {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: SEGURE o dedo na tela para Jonas nadar para CIMA, solte para descer. Desvie de tudo até o grande peixe chegar!', audio:'19_narrador.mp3'},
-    ], ()=>setScene('jonas_run'));
+    ], ()=>showEnd({
+      key:'jonas1', title:'⭐ JONAS · FASE 1 CONCLUÍDA!',
+      stars: this.misses===0?3:(this.misses<=3?2:1),
+      verse:'Mas o Senhor enviou um grande vento sobre o mar, e fez-se no mar uma tão grande tempestade, que o navio estava a ponto de se despedaçar.',
+      ref:'Jonas 1:4',
+      lesson:'Jonas tentou fugir da missão que Deus deu a ele — mas não dá pra fugir de Deus! Melhor obedecer logo de primeira, mesmo quando a missão parece difícil.',
+      nextLabel:'▶  Fase 2: No Fundo do Mar', next:()=>scenes.jonas.start(2),
+      replay:()=>scenes.jonas.start(1),
+    }));
+  },
+  draw(dt){
+    // mar tempestuoso — cores e balanço do navio ficam mais fortes conforme a tempestade cresce
+    const st = this.stormT;
+    const gCalm = ctx.createLinearGradient(0,0,0,H);
+    gCalm.addColorStop(0,'#7EC8F2'); gCalm.addColorStop(1,'#2E8FD1');
+    ctx.fillStyle=gCalm; ctx.fillRect(0,0,W,H);
+    if(st>0){
+      const gStorm = ctx.createLinearGradient(0,0,0,H);
+      gStorm.addColorStop(0,'#3A4A5E'); gStorm.addColorStop(1,'#152838');
+      ctx.save(); ctx.globalAlpha=st; ctx.fillStyle=gStorm; ctx.fillRect(0,0,W,H); ctx.restore();
+    }
+    // ondas de fundo, amplitude cresce com a tempestade
+    ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=4; ctx.lineCap='round';
+    for(let row=0; row<3; row++){
+      ctx.beginPath();
+      const amp = 6+st*22, ySh=520+row*90;
+      for(let x=0;x<=W;x+=20){ const y=ySh+Math.sin(x*.04+T*(2+st*2)+row)*amp; x? ctx.lineTo(x,y):ctx.moveTo(x,y); }
+      ctx.stroke();
+    }
+    ctx.lineCap='butt';
+    // chuva, intensifica com a tempestade
+    if(st>.15){
+      ctx.strokeStyle='rgba(200,220,255,.55)'; ctx.lineWidth=2.5; ctx.lineCap='round';
+      const n = Math.floor(st*22);
+      for(let i=0;i<n;i++){ const rx=(i*47+T*260)%W, ry=(i*83+T*420)%H; ctx.beginPath(); ctx.moveTo(rx,ry); ctx.lineTo(rx-8,ry+16); ctx.stroke(); }
+      ctx.lineCap='butt';
+    }
+    // navio balançando cada vez mais
+    const rock = Math.sin(T*(1.5+st*2.5)) * (0.05+st*0.16);
+    ctx.save(); ctx.translate(W/2, 560); ctx.rotate(rock);
+    ctx.fillStyle='#7A4A20'; ctx.beginPath(); ctx.moveTo(-140,20); ctx.quadraticCurveTo(0,64,140,20); ctx.lineTo(112,-24); ctx.lineTo(-112,-24); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle=OUT; ctx.lineWidth=5; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,-24); ctx.lineTo(0,-130); ctx.stroke();
+    ctx.fillStyle='#F4F4F4'; ctx.beginPath(); ctx.moveTo(6,-126); ctx.lineTo(6,-30); ctx.lineTo(-86,-50); ctx.closePath(); ctx.fill(); ctx.strokeStyle=OUT; ctx.lineWidth=3; ctx.stroke();
+    // Jonas e o marinheiro nos remos, esquerda e direita
+    const rowKick = this.rowArm>0? Math.sin((0.3-this.rowArm)*20)*14 : 0;
+    ctx.save(); ctx.translate(-80,10);
+    blob(0,0,20,20,'#A8D8F8',3);
+    blob(0,-20,14,13,'#F2C79B',3); blob(-1,-30,11,6,'#4A3320',2.5); eyes(2,-19,5,2.5);
+    ctx.strokeStyle=OUT; ctx.lineWidth=5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(-14,-4); ctx.lineTo(-34,10+(this.side==='L'?rowKick:0)); ctx.stroke(); ctx.lineCap='butt';
+    ctx.restore();
+    ctx.save(); ctx.translate(80,10);
+    blob(0,0,20,20,'#3E6FA8',3);
+    blob(0,-20,14,13,'#D8A468',3); eyes(2,-19,5,2.5);
+    ctx.strokeStyle=OUT; ctx.lineWidth=5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(14,-4); ctx.lineTo(34,10+(this.side==='R'?rowKick:0)); ctx.stroke(); ctx.lineCap='butt';
+    ctx.restore();
+    ctx.restore();
+    drawTopBar('JONAS · FASE 1','rgba(46,110,168,.92)');
+    panel(W/2-130, 78, 260, 50, 14, 'rgba(255,249,236,.94)', OUT, 4);
+    ctx.fillStyle='#E8E0D0'; rr(W/2-104,88,208,18,9); ctx.fill();
+    ctx.fillStyle='#E8748A'; rr(W/2-104,88,208*st,18,9); ctx.fill();
+    ctx.strokeStyle=OUT; ctx.lineWidth=2.5; rr(W/2-104,88,208,18,9); ctx.stroke();
+    txt('🌊 a tempestade cresce...', W/2, 118, 12.5, '#5A452A', 'center', true);
+    // indicador de qual remo tocar
+    panel(W/2-150,780,300,64,18,'rgba(255,249,236,.94)',OUT,4);
+    txt(this.side==='L'? '👈 Toque no remo da ESQUERDA!' : 'Toque no remo da DIREITA! 👉', W/2, 818, 15, '#5A452A', 'center', true);
+    toastDraw(this.ts, dt, 128);
   }
 };
-scenes.jonas_run = {
+scenes.jonas2_run = {
   init(){
     this.j = { x:150, y:420, vy:0, inv:0 };
     this.obs = []; this.spawnT = 1.2;
@@ -2843,15 +3501,21 @@ scenes.jonas_run = {
           {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'GLUB! O Senhor preparou um grande peixe para engolir Jonas. E Jonas ficou 3 dias e 3 noites na barriga dele. (Jonas 1:17)', audio:'20_narrador.mp3'},
           {who:'Jonas', face:'jonas', color:'#A8D8F8', text:'Aqui dentro eu entendi... não dá para fugir de Deus. Vou orar: "Senhor, me perdoa! Eu vou obedecer!"', audio:'21_jonas.mp3'},
           {who:'Deus', face:'luz', color:'#FFD75E', text:'Eu te ouvi, Jonas. Vou te dar uma segunda chance. O peixe vai te levar para a praia. Agora vá a Nínive!', audio:'22_deus.mp3'},
-        ], ()=>showEnd({
-          key:'jonas', title:'⭐ JONAS CONCLUÍDO!',
-          stars: this.bubbles,
-          verse:'Na minha angústia clamei ao Senhor, e ele me respondeu.',
-          ref:'Jonas 2:2',
-          lesson:'Jonas tentou fugir, mas Deus o alcançou com amor e deu uma segunda chance. Quando erramos, podemos orar e recomeçar!',
-          nextLabel:null,
-          replay:()=>scenes.jonas.start(),
-        }));
+        ], ()=>{
+          // item Ordem 2B-2: esta NÃO é mais a última fase de Jonas (agora são 4) — o verso da oração
+          // (Jonas 2:2) foi pra Fase 3, que é onde a oração de verdade é jogada. As 3 falas acima
+          // continuam valendo (já tinham narração gravada) porque já preparavam esse gancho: Jonas
+          // decidindo orar (= Fase 3) e Deus mandando ele ir a Nínive (= Fase 4).
+          showEnd({
+            key:'jonas2', title:'⭐ JONAS · FASE 2 CONCLUÍDA!',
+            stars: this.bubbles,
+            verse:'Ora, o Senhor tinha preparado um grande peixe para que tragasse a Jonas; e Jonas esteve três dias e três noites nas entranhas do peixe.',
+            ref:'Jonas 1:17',
+            lesson:'Mesmo fugindo, Jonas não escapou do cuidado de Deus. No lugar mais escuro, ele decidiu orar — e isso já é o começo de voltar pro caminho certo.',
+            nextLabel:'▶  Fase 3: A Oração', next:()=>scenes.jonas.start(3),
+            replay:()=>scenes.jonas.start(2),
+          });
+        });
       }
       return;
     }
@@ -3034,6 +3698,249 @@ scenes.jonas_run = {
     toastDraw(this.ts, dt, 170);
   }
 };
+/* =====================================================================
+   item Ordem 2B-2 — FASE 3 DE JONAS: "A Oração na Barriga do Peixe" (Jonas 2)
+   Jogo de ritmo calmo, estilo sequência: dentro do peixe, frases da oração
+   de Jonas acendem como luzes suaves uma a uma; a criança repete a
+   sequência tocando na mesma ordem. 3 rodadas (3, 4 e 5 passos). Errou? A
+   sequência é mostrada de novo, com paciência — sem punição.
+   ===================================================================== */
+const JONAS3_PHRASES = [
+  { text:'"Ouve a minha voz, Senhor!"', color:'#FFD75E' },
+  { text:'"Na escuridão, não perdi a esperança"', color:'#7FB86A' },
+  { text:'"Tu me tiraste do fundo do mar"', color:'#5E9FD8' },
+  { text:'"Vou te obedecer, Senhor!"', color:'#E8748A' },
+];
+const JONAS3_ROUNDS = [3,4,5]; // tamanho da sequência em cada rodada
+scenes.jonas3_run = {
+  init(){
+    playMusic('ovelha'); // calma, sem pressa — combina com o clima de oração
+    this.ts = toastState();
+    this.round = 0;
+    this.sequence = [];
+    this.playIdx = 0; this.playT = 0;
+    this.inputIdx = 0;
+    this.stage = 'dialogue'; // dialogue | watch | input
+    this.lit = null; this.litT = 0;
+    this.misses = 0;
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Dentro do peixe, no escuro e sozinho, Jonas se lembrou de Deus e começou a orar. (Jonas 2:1)'},
+      {who:'Jonas', face:'jonas', color:'#A8D8F8', text:'Mesmo aqui, no lugar mais escuro que eu já estive... Deus, eu sei que você me escuta.'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: preste atenção na sequência de luzes da oração e depois toque nelas na mesma ordem!'},
+    ], ()=>this.startRound());
+  },
+  spots(){
+    return [ {x:W/2-100,y:390}, {x:W/2+100,y:390}, {x:W/2-100,y:570}, {x:W/2+100,y:570} ];
+  },
+  startRound(){
+    const len = JONAS3_ROUNDS[this.round];
+    this.sequence = [];
+    for(let i=0;i<len;i++) this.sequence.push(Math.floor(Math.random()*JONAS3_PHRASES.length));
+    this.playIdx = -1; this.playT = 0.5; this.inputIdx = 0;
+    this.stage = 'watch';
+    toast(this.ts, 'Observe a sequência... 👀');
+  },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    if(this.stage!=='input') return;
+    const sp = this.spots();
+    for(let i=0;i<sp.length;i++){
+      if(Math.hypot(x-sp[i].x,y-sp[i].y) < 52){
+        if(i === this.sequence[this.inputIdx]){
+          this.lit = i; this.litT = 0.35; S.tap();
+          this.inputIdx++;
+          if(this.inputIdx >= this.sequence.length){
+            this.round++;
+            this.stage = 'dialogue';
+            if(this.round >= JONAS3_ROUNDS.length){ this.finish(); }
+            else { setTimeout(()=>{ toast(this.ts,'Muito bem! Próxima oração... 🙏'); this.startRound(); }, 900); }
+          }
+        } else {
+          S.oops(); this.misses++;
+          toast(this.ts, 'Vamos com calma, de novo... 💛');
+          this.stage = 'dialogue';
+          setTimeout(()=>this.startRound(), 900);
+        }
+        return;
+      }
+    }
+  },
+  update(dt){
+    if(this.lit!==null){ this.litT -= dt; if(this.litT<=0) this.lit=null; }
+    if(this.stage==='watch'){
+      this.playT -= dt;
+      if(this.playT<=0){
+        this.playIdx++;
+        if(this.playIdx >= this.sequence.length){
+          this.stage = 'input'; this.lit=null;
+          toast(this.ts, 'Agora é sua vez! Toque na mesma ordem 🙏');
+        } else {
+          this.lit = this.sequence[this.playIdx]; this.litT = 0.6; this.playT = 0.85; S.pop();
+        }
+      }
+    }
+  },
+  finish(){
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'"Na minha angústia, clamei ao Senhor, e ele me respondeu; do ventre do abismo gritei, e tu ouviste a minha voz." (Jonas 2:2)'},
+      {who:'Deus', face:'luz', color:'#FFD75E', text:'Eu te ouvi, Jonas. Vou te dar uma segunda chance — agora vá a Nínive, como eu pedi.'},
+    ], ()=>showEnd({
+      key:'jonas3', title:'⭐ JONAS · FASE 3 CONCLUÍDA!',
+      stars: this.misses===0?3:(this.misses<=2?2:1),
+      verse:'Na minha angústia, clamei ao Senhor, e ele me respondeu.',
+      ref:'Jonas 2:2',
+      lesson:'No lugar mais escuro, a oração de Jonas alcançou Deus. Não importa onde estejamos — Deus sempre escuta quem clama por Ele.',
+      nextLabel:'▶  Fase 4: Nínive', next:()=>scenes.jonas.start(4),
+      replay:()=>scenes.jonas.start(3),
+    }));
+  },
+  draw(dt){
+    // interior do peixe: cavidade orgânica, tons quentes de vermelho/roxo escuro, luz suave vindo de cima
+    const g = ctx.createRadialGradient(W/2,300,80,W/2,480,520);
+    g.addColorStop(0,'#5A3550'); g.addColorStop(1,'#2A1420');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,0,0,.22)'; ctx.lineWidth=10; ctx.lineCap='round';
+    for(let i=0;i<5;i++){
+      const ax = 40+i*115;
+      ctx.beginPath(); ctx.moveTo(ax,140); ctx.quadraticCurveTo(ax+(i%2?30:-30), H/2, ax, H-40); ctx.stroke();
+    }
+    ctx.lineCap='butt';
+    drawTopBar('JONAS · FASE 3','rgba(90,53,80,.92)');
+    panel(W/2-130, 78, 260, 40, 14, 'rgba(255,249,236,.94)', OUT, 4);
+    txt('🙏 Rodada '+(this.round+1)+' / '+JONAS3_ROUNDS.length, W/2, 104, 15.5, '#5A452A', 'center', true);
+    // Jonas orando ao centro, pequenininho, iluminado de cima
+    const jy = 250;
+    shadowE(W/2, jy+40, 44);
+    blob(W/2, jy, 30, 30, '#F2C79B', 4);
+    blob(W/2-2,jy-16,20,12,'#4A3320',3.5);
+    eyes(W/2, jy+2, 6, 3);
+    // pontos de luz da oração
+    const sp = this.spots();
+    for(let i=0;i<sp.length;i++){
+      const s = sp[i];
+      const on = this.lit===i;
+      const ph = JONAS3_PHRASES[i];
+      blob(s.x, s.y, on?46:38, on?46:38, on? ph.color : 'rgba(255,255,255,.14)', on?4:2.5);
+      if(on){
+        ctx.save(); ctx.globalAlpha = Math.min(1,this.litT*3);
+        wrapTxt(ph.text, s.x-90, s.y-70, 180, 20, 13.5, '#fff', 'center', true);
+        ctx.restore();
+      }
+    }
+    if(this.stage==='input'){
+      panel(W/2-140,820,280,50,16,'rgba(255,249,236,.94)',OUT,4);
+      txt('👉 Toque na ordem que apareceu', W/2, 850, 13.5, '#5A452A', 'center', true);
+    }
+    toastDraw(this.ts, dt, 128);
+  }
+};
+/* =====================================================================
+   item Ordem 2B-2 — FASE 4 DE JONAS: "Nínive" (Jonas 3)
+   Jonas caminha pela cidade (tocar para andar, mecânica de Noé) avisando
+   grupos de moradores; cada grupo alcançado acende um coraçãozinho. Ao
+   avisar todos, a cidade inteira se arrepende.
+   ===================================================================== */
+const NINIVE_GROUPS = [
+  {x:110,y:340,n:3}, {x:420,y:300,n:2}, {x:270,y:460,n:3},
+  {x:90,y:600,n:2},  {x:440,y:600,n:3},
+];
+scenes.jonas4_run = {
+  init(){
+    playMusic('zaqueu'); // leve e esperançoso, ritmo de caminhada
+    this.ts = toastState();
+    this.jonas = { x:270, y:760, dir:1, walk:0 };
+    this.target = null;
+    this.groups = NINIVE_GROUPS.map(g=>({...g, warned:false}));
+    this.warnedCount = 0;
+    this.fx = [];
+    this.finishing = false;
+    say([
+      {who:'Deus', face:'luz', color:'#FFD75E', text:'Vá agora a Nínive, a grande cidade, e anuncie a mensagem que eu te der. (Jonas 3:2)'},
+      {who:'Jonas', face:'jonas', color:'#A8D8F8', text:'Dessa vez eu vou obedecer, Senhor. Vou avisar a cidade inteira!'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: toque para caminhar até cada grupo de moradores e avisar a mensagem de Deus!'},
+    ], ()=>{});
+  },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    S.tap();
+    this.target = {x:Math.max(40,Math.min(W-40,x)), y:Math.max(260,Math.min(H-40,y))};
+  },
+  update(dt){
+    const j = this.jonas;
+    if(this.target){
+      const dx=this.target.x-j.x, dy=this.target.y-j.y, d=Math.hypot(dx,dy);
+      if(d>8){ const sp=190*dt; j.x+=dx/d*sp; j.y+=dy/d*sp; j.dir=dx>=0?1:-1; j.walk+=dt*9; }
+      else { j.walk=0; this.target=null; }
+    } else j.walk=0;
+    // avisa grupo próximo automaticamente ao chegar perto (mesma ideia da chegada do Noé)
+    for(const g of this.groups){
+      if(!g.warned && Math.hypot(g.x-j.x,g.y-j.y) < 70){
+        g.warned = true; this.warnedCount++; S.pick();
+        this.fx.push({x:g.x,y:g.y-30,t:1,txt:'💛 ouviram!'});
+        toast(this.ts, this.warnedCount<this.groups.length? 'Mais um grupo avisado! 📣' : 'Cidade inteira avisada!');
+        if(this.warnedCount >= this.groups.length && !this.finishing){ this.finishing = true; setTimeout(()=>this.finish(), 900); }
+      }
+    }
+    for(const f of this.fx){ f.t-=dt; f.y-=28*dt; }
+    this.fx = this.fx.filter(f=>f.t>0);
+  },
+  finish(){
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'O rei de Nínive se levantou do trono, tirou o manto real, e ordenou que todos se arrependessem. (Jonas 3:6-8)'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'E Deus viu que o povo deixou o mau caminho — e teve misericórdia, sem destruir a cidade. (Jonas 3:10)'},
+      {who:'Jonas', face:'jonas', color:'#A8D8F8', text:'Deus perdoa mesmo quem errou muito... e ainda usou a mim, que tinha fugido, para avisar!'},
+    ], ()=>showEnd({
+      key:'jonas4', title:'⭐ JONAS · FASE 4 CONCLUÍDA!',
+      stars: 3,
+      verse:'E viu Deus as obras deles, que se converteram do seu mau caminho; e Deus se arrependeu do mal que tinha dito lhes faria, e não o fez.',
+      ref:'Jonas 3:10',
+      lesson:'Deus perdoa quem se arrepende — e usa até quem tinha fugido dEle pra levar essa mensagem. A história de Jonas termina em segunda chance, pra ele e pra Nínive!',
+      nextLabel:null,
+      replay:()=>scenes.jonas.start(4),
+    }));
+  },
+  drawGroup(g){
+    const positions = g.n===2? [[-10,0],[10,0]] : [[-14,4],[0,-6],[14,4]];
+    for(const [dx,dy] of positions){
+      shadowE(g.x+dx, g.y+dy+18, 14);
+      blob(g.x+dx, g.y+dy, 12, 16, g.warned? '#7FB86A':'#C98A4B', 2.5);
+      blob(g.x+dx, g.y+dy-16, 9, 8, '#F2C79B', 2);
+    }
+    if(g.warned) txt('💛', g.x, g.y-38+Math.sin(T*2+g.x)*3, 22, '#fff', 'center');
+  },
+  draw(dt){
+    // cidade de Nínive: chão de terra batida, casinhas ao fundo
+    const sky = ctx.createLinearGradient(0,0,0,300);
+    sky.addColorStop(0,'#F2C879'); sky.addColorStop(1,'#F2A65E');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,300);
+    ctx.fillStyle='#D8A468'; ctx.fillRect(0,300,W,H-300);
+    const houseX = [60,180,300,420];
+    houseX.forEach((hx,i)=>{
+      panel(hx-34, 180+((i%2)*14), 68, 90, 6, i%2? '#C98A4B':'#B8763C', OUT, 3);
+      ctx.fillStyle='#8a5a3a'; ctx.beginPath(); ctx.moveTo(hx-40,180+((i%2)*14)); ctx.lineTo(hx,150+((i%2)*14)); ctx.lineTo(hx+40,180+((i%2)*14)); ctx.closePath(); ctx.fill(); ctx.strokeStyle=OUT; ctx.lineWidth=3; ctx.stroke();
+    });
+    drawTopBar('JONAS · FASE 4','rgba(197,120,50,.92)');
+    panel(W/2-130, 78, 260, 40, 14, 'rgba(255,249,236,.94)', OUT, 4);
+    txt('📣 Avisados: '+this.warnedCount+' / '+this.groups.length, W/2, 104, 15.5, '#5A452A', 'center', true);
+    for(const g of this.groups) this.drawGroup(g);
+    const j = this.jonas;
+    const bob = Math.abs(Math.sin(j.walk))*4;
+    shadowE(j.x, j.y+8, 26);
+    ctx.save(); ctx.translate(j.x, j.y-bob); ctx.scale(j.dir,1);
+    ctx.strokeStyle=OUT; ctx.lineWidth=6; ctx.lineCap='round';
+    const kick = Math.sin(j.walk*2)*6;
+    ctx.beginPath(); ctx.moveTo(-6,10); ctx.lineTo(-6+kick,26); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(6,10); ctx.lineTo(6-kick,26); ctx.stroke();
+    ctx.lineCap='butt';
+    blob(0,-6,18,20,'#A8D8F8',3.5);
+    blob(0,-32,15,14,'#F2C79B',3.5);
+    blob(-1,-42,12,7,'#4A3320',3);
+    eyes(2,-30,5,2.6,{x:1,y:0});
+    ctx.restore();
+    for(const f of this.fx) txt(f.txt, f.x, f.y, 20, 'rgba(90,60,20,'+Math.min(1,f.t*2)+')', 'center', true);
+    toastDraw(this.ts, dt, 128);
+  }
+};
 </script>
 <script>
 'use strict';
@@ -3041,33 +3948,448 @@ scenes.jonas_run = {
    DAVI E GOLIAS — pontaria com a funda (timing), sem violência gráfica
    ===================================================================== */
 scenes.davi = {
-  start(){
-    playMusic('davi');
-    say([
-      {who:'Golias', face:'golias', color:'#C9CDD3', text:'HA HA HA! Quem vai lutar comigo? Vocês todos têm medo de mim, o gigante Golias!', audio:'24_golias.mp3'},
-      {who:'Davi', face:'davi', color:'#FFD79E', text:'Você vem com espada e lança, mas eu vou contra você em nome do SENHOR dos Exércitos! (1 Samuel 17:45)', audio:'25_davi.mp3'},
-      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Davi era só um menino pastor, mas confiava em Deus. Primeiro, treine a pontaria como Davi treinava cuidando das ovelhas!', audio:'26_narrador.mp3'},
-      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: a seta vai e volta. TOQUE quando ela estiver na área VERDE para acertar a pedra no alvo!', audio:'27_narrador.mp3'},
-    ], ()=>setScene('davi_run'));
+  start(phase){
+    // item Ordem 2B-3: Davi ganhou mais 3 fases — cada uma virou cena própria (mesmo padrão já
+    // usado nas fases novas de Noé e Jonas), pra não arriscar quebrar a fase original (agora Fase 4).
+    if(phase===1) setScene('davi1_run');
+    else if(phase===2) setScene('davi2_run');
+    else if(phase===4) setScene('davi4_run');
+    else setScene('davi3_run');
   }
 };
-scenes.davi_run = {
+/* =====================================================================
+   item Ordem 2B-3 — FASE 1 DE DAVI: "O Pastor Corajoso" (1 Samuel 17:34-36)
+   À noite, cuidando do rebanho, a criança toca no predador (leão ou urso)
+   no momento certo pra Davi espantá-lo com um giro da funda e um grito —
+   o bicho foge assustado, nunca é ferido. 3 rondas, predadores cada vez
+   mais rápidos (mesmo "toque no verde" reaproveitado no treino de funda e
+   no duelo com Golias, só que aqui o alvo foge em vez de quebrar).
+   ===================================================================== */
+scenes.davi1_run = {
   init(){
+    playMusic('daniel'); // suspense esparso — clima de vigília noturna
+    this.ts = toastState();
     this.round = 0;
     this.rounds = [
-      { name:'Treino 1: a jarra',      zone:.30, targetY:430, targetX:270, kind:'jarra' },
-      { name:'Treino 2: jarra longe',  zone:.20, targetY:330, targetX:380, kind:'jarra' },
-      { name:'GOLIAS!',                zone:.14, targetY:250, targetX:270, kind:'golias' },
+      { kind:'leao', zone:.34, speed:1.1 },
+      { kind:'urso', zone:.26, speed:1.4 },
+      { kind:'leao', zone:.18, speed:1.75 },
+    ];
+    this.pos = 0; this.dirn = 1;
+    this.misses = 0;
+    this.state = 'approach'; // approach | fleeing
+    this.fleeT = 0;
+    this.lock = false;
+    this.finished = false;
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Antes de enfrentar Golias, Davi já era corajoso — cuidando das ovelhas do pai, sozinho, à noite. (1 Samuel 17:34-35)'},
+      {who:'Davi', face:'davi', color:'#FFD79E', text:'Quando um leão ou um urso vinha pegar uma ovelha do rebanho, eu ia atrás e a livrava — confiando que Deus me dava força!'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: toque quando o predador estiver na área VERDE, pra Davi espantá-lo com a funda!'},
+    ], ()=>{});
+  },
+  cur(){ return this.rounds[Math.min(this.round, this.rounds.length-1)]; },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    if(this.lock || this.state==='fleeing') return;
+    const r = this.cur();
+    const c=.5, half=r.zone/2;
+    const hit = Math.abs(this.pos-c) <= half;
+    if(hit){
+      S.woosh(); this.state='fleeing'; this.fleeT=0;
+    } else {
+      this.misses++; S.pop();
+      toast(this.ts, 'Quase! Espera ele chegar mais perto e tenta de novo.');
+    }
+  },
+  update(dt){
+    if(this.finished) return;
+    if(this.state==='approach'){
+      const r = this.cur();
+      this.pos += this.dirn*r.speed*dt*.4;
+      if(this.pos>1){ this.pos=1; this.dirn=-1; }
+      if(this.pos<0){ this.pos=0; this.dirn=1; }
+    } else if(this.state==='fleeing'){
+      this.fleeT += dt;
+      if(this.fleeT>1){
+        this.round++;
+        if(this.round>=this.rounds.length){ this.lock=true; this.finished=true; this.finish(); }
+        else { this.state='approach'; this.pos=0; this.dirn=1; toast(this.ts, 'Mais um se aproximando... fique de olho!', true); }
+      }
+    }
+  },
+  finish(){
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Foi assim, protegendo o rebanho sozinho, noite após noite, que a coragem e a fé de Davi foram crescendo.'},
+      {who:'Davi', face:'davi', color:'#FFD79E', text:'Guardando as ovelhas do meu pai, quando vinha um leão ou um urso, eu ia atrás dele e a livrava da boca da fera. (1 Samuel 17:34-35)'},
+    ], ()=>showEnd({
+      key:'davi1', title:'⭐ DAVI · FASE 1 CONCLUÍDA!',
+      stars: this.misses===0?3:(this.misses<=3?2:1),
+      verse:'Guardando eu, teu servo, as ovelhas de meu pai, vinha um leão, ou um urso, e tomava uma ovelha do rebanho; eu saía atrás dele, e o feria, e a livrava da sua boca.',
+      ref:'1 Samuel 17:34-35',
+      lesson:'A coragem de Davi não nasceu de repente — ela cresceu nas pequenas batalhas do dia a dia, confiando em Deus desde cedo.',
+      nextLabel:'▶  Fase 2: A Harpa que Acalma', next:()=>scenes.davi.start(2),
+      replay:()=>scenes.davi.start(1),
+    }));
+  },
+  drawPredator(){
+    const r = this.cur();
+    const zoneX = 60 + this.pos*(W-120);
+    const y = 560;
+    if(this.state==='fleeing'){
+      const flee = Math.min(1,this.fleeT/1);
+      const fx = zoneX + (zoneX<W/2? -flee*200 : flee*200);
+      ctx.save(); ctx.globalAlpha = Math.max(0,1-flee);
+      if(r.kind==='leao') this.drawLeao(fx,y);
+      else drawArkAnimal('urso', fx, y, 1.3, false);
+      ctx.restore();
+    } else {
+      if(r.kind==='leao') this.drawLeao(zoneX,y);
+      else drawArkAnimal('urso', zoneX, y, 1.3, false);
+    }
+  },
+  drawLeao(x,y){
+    ctx.save(); ctx.translate(x,y);
+    blob(0,14,40,22,'#E8A33C',4);
+    ctx.strokeStyle=OUT; ctx.lineWidth=5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(34,20); ctx.quadraticCurveTo(54,14,58,-2); ctx.stroke(); ctx.lineCap='butt';
+    blob(60,-4,6,6,'#C77F22',3);
+    drawAvatar('leao', -6, -14, 28);
+    ctx.restore();
+  },
+  draw(dt){
+    // pastagem à noite: céu estrelado, fogueira, ovelhas dormindo
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#1B2A4A'); g.addColorStop(.5,'#2A3A5E'); g.addColorStop(.51,'#3A4A2E'); g.addColorStop(1,'#28381E');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    for(let i=0;i<24;i++){ const sx=(i*137)%W, sy=(i*71)%420; blob(sx,sy,1.6,1.6,'rgba(255,255,255,'+(.4+.4*Math.sin(T*2+i))+')',0); }
+    blob(W-80,90,32,32,'#F2EFC9',3);
+    const fx=90, fy=760;
+    ctx.fillStyle='#8B5A2B'; ctx.beginPath(); ctx.moveTo(fx-24,fy+14); ctx.lineTo(fx+24,fy+14); ctx.lineTo(fx+14,fy-2); ctx.lineTo(fx-14,fy-2); ctx.closePath(); ctx.fill();
+    for(let i=0;i<3;i++){ const fl=Math.sin(T*8+i)*4; blob(fx-8+i*8, fy-10+fl, 8-i, 14-i*2, i%2?'#FFC93C':'#E8748A', 0); }
+    for(const [sx,sy] of [[220,830],[340,850],[420,800]]){
+      blob(sx,sy,24,16,'#DCE0D8',3); blob(sx+18,sy-6,10,9,'#DCE0D8',2.5);
+    }
+    this.drawPredator();
+    const r = this.cur();
+    const my=H-64, mw=W-120, mx=60;
+    panel(mx-14,my-26,mw+28,62,18,'rgba(255,249,236,.95)',OUT,5);
+    ctx.fillStyle='#E8E0D0'; rr(mx,my-10,mw,26,13); ctx.fill();
+    const zw=r.zone*mw, zx=mx+mw/2-zw/2;
+    ctx.fillStyle='#8ED47E'; rr(zx,my-10,zw,26,13); ctx.fill();
+    ctx.strokeStyle=OUT; ctx.lineWidth=3.5; rr(mx,my-10,mw,26,13); ctx.stroke();
+    const ax = mx+this.pos*mw;
+    ctx.fillStyle='#E85D5D'; ctx.strokeStyle=OUT; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(ax,my-18); ctx.lineTo(ax-12,my-36); ctx.lineTo(ax+12,my-36); ctx.closePath(); ctx.fill(); ctx.stroke();
+    txt('TOQUE quando ele estiver perto, no VERDE!', W/2, my+30, 12.5, '#7a5a3a', 'center', true);
+    const dx=270, dy=880;
+    shadowE(dx,dy+6,26);
+    drawPerson({x:dx,y:dy,s:1.0,skin:'#F2C79B',robe:'#C86A4A',hairC:'#C46A2B',beard:false,dir:1,walk:0});
+    drawTopBar('DAVI · FASE 1','rgba(42,58,94,.92)');
+    panel(W/2-130, 78, 260, 38, 12, 'rgba(255,249,236,.94)', OUT, 4);
+    txt('🐑 Ronda '+(this.round+1)+' / '+this.rounds.length, W/2, 103, 15, '#5A452A', 'center', true);
+    toastDraw(this.ts, dt, 128);
+  }
+};
+/* =====================================================================
+   item Ordem 2B-3 — FASE 2 DE DAVI: "A Harpa que Acalma" (1 Samuel
+   16:14-23, sugestão do Gadej). Sem certo ou errado: a criança toca as
+   cordas da harpa livremente pra compor sua melodia e acalmar o Rei Saul,
+   agitado por um espírito mau. Cada toque solta uma notinha e reduz a
+   agitação; ela também vai baixando sozinha, bem devagar, com o tempo.
+   ===================================================================== */
+const DAVI2_NOTES = [
+  { note:'C4', color:'#E85D5D' }, { note:'D4', color:'#F2A65E' }, { note:'E4', color:'#FFD75E' },
+  { note:'G4', color:'#7FB86A' }, { note:'A4', color:'#5E9FD8' }, { note:'C5', color:'#9B6FCE' },
+];
+scenes.davi2_run = {
+  init(){
+    playMusic('ovelha'); // calma e sem pressa — é a própria música que a harpa de Davi está tocando
+    this.ts = toastState();
+    this.agit = 1;
+    this.plucks = 0;
+    this.fx = [];
+    this.stringWiggle = [0,0,0,0,0,0];
+    this.finished = false;
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Um espírito mau atormentava o Rei Saul, e ele ficava angustiado. Alguém lembrou: "Davi sabe tocar harpa!" (1 Samuel 16:14-18)'},
+      {who:'Davi', face:'davi', color:'#FFD79E', text:'Vou tocar uma canção pra você, Majestade. A música pode trazer paz.'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: toque nas cordas da harpa, do jeito que você quiser, e vá acalmando o Rei Saul!'},
+    ], ()=>{});
+  },
+  strings(){
+    const x0 = W/2-125, gap=50;
+    return DAVI2_NOTES.map((n,i)=>({ x:x0+i*gap, y0:500, y1:700, note:n.note, color:n.color }));
+  },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    const sp = this.strings();
+    for(let i=0;i<sp.length;i++){
+      const s = sp[i];
+      if(Math.abs(x-s.x) < 24 && y>s.y0-20 && y<s.y1+20){
+        beep(NOTE_FREQ[s.note], 0.5, 'triangle', 0.09);
+        this.stringWiggle[i] = 1;
+        this.plucks++;
+        this.agit = Math.max(0, this.agit - 0.045);
+        this.fx.push({x:s.x, y:(s.y0+s.y1)/2, t:1, color:s.color});
+        return;
+      }
+    }
+  },
+  update(dt){
+    if(!this.finished){
+      this.agit = Math.max(0, this.agit - dt*0.012);
+      if(this.agit<=0){ this.finished=true; this.finish(); }
+    }
+    for(let i=0;i<this.stringWiggle.length;i++){ if(this.stringWiggle[i]>0) this.stringWiggle[i] = Math.max(0,this.stringWiggle[i]-dt*3); }
+    for(const f of this.fx){ f.t -= dt*0.5; f.y -= 30*dt; }
+    this.fx = this.fx.filter(f=>f.t>0);
+  },
+  finish(){
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'"E sucedia que, quando o espírito mau vinha sobre Saul, Davi tomava a harpa... e Saul sentia alívio, e ficava melhor." (1 Samuel 16:23)'},
+      {who:'Davi', face:'davi', color:'#FFD79E', text:'Que bom te ver em paz, Majestade. Deus nos dá dons diferentes pra cuidar uns dos outros.'},
+    ], ()=>showEnd({
+      key:'davi2', title:'⭐ DAVI · FASE 2 CONCLUÍDA!',
+      stars: this.plucks>=18?3:(this.plucks>=8?2:1),
+      verse:'Davi tomava a harpa, e a tocava; e Saul sentia alívio, e ficava melhor, e o espírito mau se retirava dele.',
+      ref:'1 Samuel 16:23',
+      lesson:'A música de Davi trazia paz pro Rei Saul. Deus dá dons diferentes pra cada um de nós — e podemos usá-los pra cuidar de quem está triste ou agitado.',
+      nextLabel:'▶  Fase 3: Treino de Pontaria', next:()=>scenes.davi.start(3),
+      replay:()=>scenes.davi.start(2),
+    }));
+  },
+  draw(dt){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#6B4E9E'); g.addColorStop(1,'#3A2A5E');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    for(const cx of [50,490]){ ctx.fillStyle='rgba(255,255,255,.08)'; ctx.fillRect(cx-18,80,36,700); }
+    drawTopBar('DAVI · FASE 2','rgba(107,78,158,.92)');
+    panel(W/2-140, 78, 280, 40, 14, 'rgba(255,249,236,.94)', OUT, 4);
+    const calmPct = 1-this.agit;
+    txt('🕊️ Calma do Rei: '+Math.round(calmPct*100)+'%', W/2, 104, 14.5, '#5A452A', 'center', true);
+    // Rei Saul no trono, aura de agitação encolhendo conforme a calma aumenta
+    const sx=W/2, sy=270;
+    shadowE(sx,sy+90,70);
+    panel(sx-56,sy+10,112,110,16,'#7E5A2B',OUT,4);
+    drawPerson({x:sx,y:sy+60,s:1.1,skin:'#E8B98A',robe:'#5A3A7A',hairC:'#3A2A20',beard:true,dir:1,walk:0});
+    ctx.fillStyle='#FFD75E'; ctx.strokeStyle=OUT; ctx.lineWidth=2.5;
+    ctx.beginPath();
+    ctx.moveTo(sx-16,sy-98); ctx.lineTo(sx-16,sy-110); ctx.lineTo(sx-8,sy-100);
+    ctx.lineTo(sx,sy-112); ctx.lineTo(sx+8,sy-100); ctx.lineTo(sx+16,sy-110); ctx.lineTo(sx+16,sy-98);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    if(this.agit>0.02){
+      ctx.save(); ctx.globalAlpha = this.agit;
+      for(let i=0;i<5;i++){
+        const a = i*Math.PI*2/5 + T*1.5;
+        const r = 50*this.agit;
+        blob(sx+Math.cos(a)*r, sy-140+Math.sin(a)*r*0.5, 16*this.agit, 12*this.agit, 'rgba(60,20,70,.55)', 0);
+      }
+      ctx.restore();
+    } else {
+      txt('😌', sx, sy-130, 26, '#fff', 'center');
+    }
+    // Davi sentado com a harpa
+    const dx=W/2;
+    shadowE(dx-70,830,50);
+    drawPerson({x:dx-70,y:800,s:.95,skin:'#F2C79B',robe:'#C86A4A',hairC:'#C46A2B',beard:false,dir:1,walk:0});
+    const sp = this.strings();
+    ctx.strokeStyle='#8a5a3a'; ctx.lineWidth=8; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(sp[0].x-20,sp[0].y1+10); ctx.lineTo(sp[0].x-20,sp[0].y0-30); ctx.lineTo(sp[sp.length-1].x+20,sp[0].y0-10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sp[0].x-20,sp[0].y1+10); ctx.lineTo(sp[sp.length-1].x+20,sp[0].y1+10); ctx.stroke();
+    ctx.lineCap='butt';
+    for(let i=0;i<sp.length;i++){
+      const s = sp[i];
+      const w = this.stringWiggle[i];
+      ctx.strokeStyle = s.color; ctx.lineWidth = 4;
+      ctx.beginPath();
+      for(let t=0;t<=1;t+=0.1){
+        const yy = s.y0 + (s.y1-s.y0)*t;
+        const xx = s.x + Math.sin(t*Math.PI)*w*10;
+        t===0? ctx.moveTo(xx,yy) : ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+    }
+    for(const f of this.fx){
+      ctx.save(); ctx.globalAlpha = Math.max(0,f.t);
+      txt('♪', f.x, f.y, 22, f.color, 'center', true);
+      ctx.restore();
+    }
+    panel(W/2-150,830,300,54,16,'rgba(255,249,236,.94)',OUT,4);
+    txt('👉 Toque nas cordas pra compor sua melodia!', W/2, 862, 13, '#5A452A', 'center', true);
+    toastDraw(this.ts, dt, 128);
+  }
+};
+/* =====================================================================
+   item Ordem 2B-3 — FASE 3 DE DAVI: treino de pontaria com a funda (o
+   mini-jogo original, agora com uma rodada a mais). Mesmo "toque no verde"
+   reaproveitado nas Fases 1 e 4.
+   ===================================================================== */
+scenes.davi3_run = {
+  init(){
+    playMusic('davi');
+    this.round = 0;
+    this.rounds = [
+      { name:'Treino 1: a jarra',       zone:.30, targetY:430, targetX:270 },
+      { name:'Treino 2: jarra longe',   zone:.22, targetY:330, targetX:380 },
+      { name:'Treino 3: jarra rápida',  zone:.15, targetY:380, targetX:160 },
     ];
     this.pos = 0; this.dirn = 1; this.speed = 1.5;
     this.misses = 0;
-    this.stone = null;      // {t, x0,y0, x1,y1, hit}
+    this.stone = null;
+    this.hitFx = 0;
+    this.ts = toastState();
+    this.lock = false;
+    say([
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'Davi era só um menino pastor, mas confiava em Deus. Primeiro, treine a pontaria como Davi treinava cuidando das ovelhas!', audio:'26_narrador.mp3'},
+      {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'MISSÃO: a seta vai e volta. TOQUE quando ela estiver na área VERDE para acertar a pedra no alvo!', audio:'27_narrador.mp3'},
+    ], ()=>toast(this.ts, this.rounds[0].name+' — toque no VERDE!', true));
+  },
+  cur(){ return this.rounds[Math.min(this.round, this.rounds.length-1)]; },
+  tap(x,y){
+    if(topBarTap(x,y)) return;
+    if(this.lock || this.stone) return;
+    const r = this.cur();
+    const c = .5, half = r.zone/2;
+    const hit = Math.abs(this.pos - c) <= half;
+    S.woosh();
+    this.stone = { t:0, x0:270, y0:790, x1:r.targetX + (hit?0:(this.pos<c?-110:110)), y1:r.targetY + (hit?0:-40), hit };
+  },
+  update(dt){
+    if(this.hitFx>0) this.hitFx -= dt;
+    if(!this.stone){
+      this.pos += this.dirn * this.speed * dt;
+      if(this.pos>1){ this.pos=1; this.dirn=-1; }
+      if(this.pos<0){ this.pos=0; this.dirn=1; }
+      return;
+    }
+    const s = this.stone;
+    s.t += dt*1.6;
+    if(s.t>=1){
+      const r = this.cur();
+      if(s.hit){
+        S.pop(); this.hitFx = .9; this.hitAt = {x:r.targetX, y:r.targetY};
+        this.round++;
+        if(this.round>=this.rounds.length){ this.lock=true; setTimeout(()=>this.finish(),900); }
+        else { toast(this.ts, this.rounds[this.round].name+'!', true); this.speed += .35; }
+      } else {
+        this.misses++; S.oops();
+        toast(this.ts,'Quase! Respira, mira no verde e tenta de novo.');
+      }
+      this.stone = null; this.pos = 0; this.dirn = 1;
+    }
+  },
+  finish(){
+    say([
+      {who:'Davi', face:'davi', color:'#FFD79E', text:'Prontinho, a pontaria está afiada! Agora é hora de confiar em Deus pra valer.'},
+    ], ()=>showEnd({
+      key:'davi3', title:'⭐ DAVI · FASE 3 CONCLUÍDA!',
+      stars: this.misses===0?3:(this.misses<=2?2:1),
+      verse:'E Davi tomou o seu cajado na mão, e escolheu cinco seixos lisos do ribeiro, e pô-los no alforje de pastor.',
+      ref:'1 Samuel 17:40',
+      lesson:'Davi se preparava com cuidado, treinando a pontaria — e confiava que Deus faria o resto. Preparo e fé andam juntos!',
+      nextLabel:'▶  Fase 4: Golias', next:()=>scenes.davi.start(4),
+      replay:()=>scenes.davi.start(3),
+    }));
+  },
+  drawJar(x,y,s){
+    ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
+    ctx.beginPath(); ctx.moveTo(-16,-26); ctx.quadraticCurveTo(-26,0,-14,22);
+    ctx.lineTo(14,22); ctx.quadraticCurveTo(26,0,16,-26);
+    ctx.quadraticCurveTo(8,-32,10,-38); ctx.lineTo(-10,-38); ctx.quadraticCurveTo(-8,-32,-16,-26);
+    ctx.closePath(); ctx.fillStyle='#C9793C'; ctx.fill(); ctx.strokeStyle=OUT; ctx.lineWidth=3.5; ctx.stroke();
+    ctx.strokeStyle='rgba(0,0,0,.15)'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(-14,-8); ctx.quadraticCurveTo(0,-2,14,-8); ctx.stroke();
+    ctx.restore();
+  },
+  draw(dt){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#7EC8F2'); g.addColorStop(.35,'#C8E8FF'); g.addColorStop(.36,'#D8C88A'); g.addColorStop(1,'#B8A05E');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    blob(74, 246, 34, 34, '#FFD84D', 4);
+    ctx.fillStyle='#C9B472';
+    ctx.beginPath(); ctx.moveTo(0,345); ctx.quadraticCurveTo(140,275,300,340); ctx.quadraticCurveTo(430,290,540,338); ctx.lineTo(540,370); ctx.lineTo(0,370); ctx.fill();
+    const r = this.cur();
+    panel(r.targetX-60, r.targetY+26, 120, 14, 6, '#8B6A3A', OUT, 3.5);
+    this.drawJar(r.targetX, r.targetY, 1.2);
+    for(const [sx,sy] of [[70,560],[460,540]]){
+      shadowE(sx,sy+18,26);
+      blob(sx,sy,26,18,'#F8F8F4',3.5); blob(sx+20,sy-8,11,10,'#F8F8F4',3);
+      eyes(sx+22,sy-9,4,2.2); blob(sx-24,sy-14,7,7,'#F8F8F4',2.5);
+      ctx.strokeStyle=OUT; ctx.lineWidth=4; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(sx-10,sy+16); ctx.lineTo(sx-10,sy+26); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(sx+10,sy+16); ctx.lineTo(sx+10,sy+26); ctx.stroke(); ctx.lineCap='butt';
+    }
+    const dx=270, dy=830;
+    if(save.avatar){
+      const bounce = Math.abs(Math.sin(T*6));
+      const hx=dx-90, hy=dy+10;
+      shadowE(hx,hy+6,20);
+      drawHelper({x:hx, y:hy, s:.72, dir:1, walk:bounce*3, showName:false});
+      star(hx-13, hy-100-bounce*10, 7, true);
+      star(hx+13, hy-100-bounce*10, 7, true);
+    }
+    shadowE(dx,dy+6,26);
+    drawPerson({x:dx,y:dy,s:1.05,skin:'#F2C79B',robe:'#C86A4A',hairC:'#C46A2B',beard:false,dir:1,walk:0});
+    if(!this.stone && !this.lock){
+      const a = T*9;
+      ctx.strokeStyle='#8a5a3a'; ctx.lineWidth=4; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(dx+20,dy-70); ctx.lineTo(dx+20+Math.cos(a)*36, dy-70+Math.sin(a)*36); ctx.stroke(); ctx.lineCap='butt';
+      blob(dx+20+Math.cos(a)*36, dy-70+Math.sin(a)*36, 8, 8, '#9AA5B1', 3);
+    }
+    if(this.stone){
+      const s=this.stone, t=s.t;
+      const x = s.x0+(s.x1-s.x0)*t, y = s.y0+(s.y1-s.y0)*t - Math.sin(t*Math.PI)*180;
+      blob(x,y,9,9,'#9AA5B1',3);
+      ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(x-14,y+8); ctx.lineTo(x-30,y+16); ctx.stroke();
+    }
+    if(this.hitFx>0 && this.hitAt){
+      const scale=1+ (0.9-this.hitFx)*.6;
+      txt('POC!', this.hitAt.x, this.hitAt.y-60, Math.round(40*scale), '#FFC93C', 'center', true);
+      for(let i=0;i<6;i++){ const a=i*1.05+this.hitFx*3; star(this.hitAt.x+Math.cos(a)*50, this.hitAt.y-30+Math.sin(a)*30, 8, true); }
+    }
+    const my = H-64, mw = W-120, mx = 60;
+    panel(mx-14, my-26, mw+28, 62, 18, 'rgba(255,249,236,.95)', OUT, 5);
+    ctx.fillStyle='#E8E0D0'; rr(mx, my-10, mw, 26, 13); ctx.fill();
+    const zw = r.zone*mw, zx = mx+mw/2-zw/2;
+    ctx.fillStyle='#8ED47E'; rr(zx, my-10, zw, 26, 13); ctx.fill();
+    ctx.fillStyle='#5CB44C'; rr(mx+mw/2-4, my-10, 8, 26, 4); ctx.fill();
+    ctx.strokeStyle=OUT; ctx.lineWidth=3.5; rr(mx, my-10, mw, 26, 13); ctx.stroke();
+    const ax = mx + this.pos*mw;
+    ctx.fillStyle='#E85D5D'; ctx.strokeStyle=OUT; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(ax,my-18); ctx.lineTo(ax-12,my-36); ctx.lineTo(ax+12,my-36); ctx.closePath(); ctx.fill(); ctx.stroke();
+    txt('TOQUE quando a seta estiver no verde!', W/2, my+30, 12.5, '#7a5a3a', 'center', true);
+    drawTopBar('DAVI · FASE 3','rgba(200,106,42,.92)');
+    panel(W/2-120, 78, 240, 38, 12, 'rgba(255,249,236,.94)', OUT, 4);
+    txt(this.cur().name, W/2, 103, 15, '#5A452A', 'center', true);
+    toastDraw(this.ts, dt, 128);
+  }
+};
+/* =====================================================================
+   item Ordem 2B-3 — FASE 4 DE DAVI: o duelo com Golias (mecânica
+   original), agora com um diálogo novo de abertura conectando com a
+   Fase 1 (o leão e o urso) — fala real de Davi em 1 Samuel 17:37.
+   ===================================================================== */
+scenes.davi4_run = {
+  init(){
+    playMusic('davi');
+    this.round = 0;
+    this.rounds = [
+      { name:'GOLIAS!', zone:.14, targetY:250, targetX:270, kind:'golias' },
+    ];
+    this.pos = 0; this.dirn = 1; this.speed = 1.85;
+    this.misses = 0;
+    this.stone = null;
     this.hitFx = 0; this.goliasDown = 0;
     this.ts = toastState();
     this.lock = false;
-    toast(this.ts, this.rounds[0].name+' — toque no VERDE!', true);
+    say([
+      {who:'Davi', face:'davi', color:'#FFD79E', text:'O mesmo Deus que me livrou das garras do leão e do urso vai me livrar desse gigante! (1 Samuel 17:37)'},
+      {who:'Golias', face:'golias', color:'#C9CDD3', text:'HA HA HA! Quem vai lutar comigo? Vocês todos têm medo de mim, o gigante Golias!', audio:'24_golias.mp3'},
+      {who:'Davi', face:'davi', color:'#FFD79E', text:'Você vem com espada e lança, mas eu vou contra você em nome do SENHOR dos Exércitos! (1 Samuel 17:45)', audio:'25_davi.mp3'},
+    ], ()=>toast(this.ts, 'GOLIAS! — toque no VERDE!', true));
   },
-  cur(){ return this.rounds[this.round]; },
+  cur(){ return this.rounds[Math.min(this.round, this.rounds.length-1)]; },
   tap(x,y){
     if(topBarTap(x,y)) return;
     if(this.lock || this.stone) return;
@@ -3081,7 +4403,7 @@ scenes.davi_run = {
     if(this.goliasDown>0 && this.goliasDown<1) this.goliasDown = Math.min(1, this.goliasDown+dt*1.2);
     if(this.hitFx>0) this.hitFx -= dt;
     if(!this.stone){
-      this.pos += this.dirn * this.speed * dt * (this.round===2? 1.25:1);
+      this.pos += this.dirn * this.speed * dt;
       if(this.pos>1){ this.pos=1; this.dirn=-1; }
       if(this.pos<0){ this.pos=0; this.dirn=1; }
       return;
@@ -3092,27 +4414,21 @@ scenes.davi_run = {
       const r = this.cur();
       if(s.hit){
         S.pop(); this.hitFx = .9; this.hitAt = {x:r.targetX, y:r.targetY};
-        if(r.kind==='golias'){
-          this.lock = true; this.goliasDown = 0.01; S.win();
-          setTimeout(()=>{
-            say([
-              {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'A pedra acertou bem na testa do gigante — POC! — e Golias caiu sentado, zonzo. Deus deu a vitória a Davi!', audio:'28_narrador.mp3'},
-              {who:'Davi', face:'davi', color:'#FFD79E', text:'Viram? A batalha é do Senhor! Não foi minha força, foi a minha confiança em Deus. (1 Samuel 17:47)', audio:'29_davi.mp3'},
-            ], ()=>showEnd({
-              key:'davi', title:'⭐ DAVI CONCLUÍDO!',
-              stars: this.misses===0?3:(this.misses<=2?2:1),
-              verse:'A batalha é do Senhor.',
-              ref:'1 Samuel 17:47',
-              lesson:'Davi era pequeno, mas sua coragem vinha de confiar em Deus, não do tamanho dos músculos. Coragem de verdade é fé!',
-              nextLabel:null,
-              replay:()=>scenes.davi.start(),
-            }));
-          }, 1400);
-        } else {
-          this.round++;
-          toast(this.ts, this.round===2? 'Agora é o GOLIAS! A área verde ficou menor!' : this.rounds[this.round].name+'!', true);
-          this.speed += .35;
-        }
+        this.lock = true; this.goliasDown = 0.01; S.win();
+        setTimeout(()=>{
+          say([
+            {who:'Narrador', face:'narrador', color:'#BBD8FF', text:'A pedra acertou bem na testa do gigante — POC! — e Golias caiu sentado, zonzo. Deus deu a vitória a Davi!', audio:'28_narrador.mp3'},
+            {who:'Davi', face:'davi', color:'#FFD79E', text:'Viram? A batalha é do Senhor! Não foi minha força, foi a minha confiança em Deus. (1 Samuel 17:47)', audio:'29_davi.mp3'},
+          ], ()=>showEnd({
+            key:'davi4', title:'⭐ DAVI · FASE 4 CONCLUÍDA!',
+            stars: this.misses===0?3:(this.misses<=2?2:1),
+            verse:'A batalha é do Senhor.',
+            ref:'1 Samuel 17:47',
+            lesson:'Davi era pequeno, mas sua coragem vinha de confiar em Deus, não do tamanho dos músculos. Coragem de verdade é fé!',
+            nextLabel:null,
+            replay:()=>scenes.davi.start(4),
+          }));
+        }, 1400);
       } else {
         this.misses++; S.oops();
         toast(this.ts,'Quase! Respira, mira no verde e tenta de novo.');
@@ -3120,37 +4436,23 @@ scenes.davi_run = {
       this.stone = null; this.pos = 0; this.dirn = 1;
     }
   },
-  drawJar(x,y,s){
-    ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
-    ctx.beginPath(); ctx.moveTo(-16,-26); ctx.quadraticCurveTo(-26,0,-14,22);
-    ctx.lineTo(14,22); ctx.quadraticCurveTo(26,0,16,-26);
-    ctx.quadraticCurveTo(8,-32,10,-38); ctx.lineTo(-10,-38); ctx.quadraticCurveTo(-8,-32,-16,-26);
-    ctx.closePath(); ctx.fillStyle='#C9793C'; ctx.fill(); ctx.strokeStyle=OUT; ctx.lineWidth=3.5; ctx.stroke();
-    ctx.strokeStyle='rgba(0,0,0,.15)'; ctx.lineWidth=3;
-    ctx.beginPath(); ctx.moveTo(-14,-8); ctx.quadraticCurveTo(0,-2,14,-8); ctx.stroke();
-    ctx.restore();
-  },
   drawGolias(x,y){
     const fall = this.goliasDown;
     ctx.save(); ctx.translate(x, y + fall*70); ctx.rotate(fall*.35);
     const s = 1.6;
-    // pernas
     ctx.strokeStyle=OUT; ctx.lineWidth=10*s*.6; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(-12*s,20*s); ctx.lineTo(-14*s,44*s); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(12*s,20*s); ctx.lineTo(14*s,44*s); ctx.stroke(); ctx.lineCap='butt';
-    // corpo armadura
     panel(-26*s,-24*s,52*s,48*s,10,'#7E8A97',OUT,4.5);
     ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=3;
     for(let i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(-24*s,-12*s+i*12*s); ctx.lineTo(24*s,-12*s+i*12*s); ctx.stroke(); }
-    // braços
     ctx.strokeStyle=OUT; ctx.lineWidth=9*s*.6; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(-24*s,-14*s); ctx.lineTo(-38*s,6*s); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(24*s,-14*s); ctx.lineTo(38*s,6*s); ctx.stroke(); ctx.lineCap='butt';
-    // cabeça + elmo
     blob(0,-40*s,17*s,15*s,'#F6C9A0',4);
     panel(-19*s,-58*s,38*s,20*s,8,'#9AA5B1',OUT,4);
     panel(-4*s,-50*s,8*s,18*s,3,'#7E8A97',OUT,3);
-    if(fall>0){ eyes(0,-42*s,7*s,3.5*s,{x:0,y:1}); // zonzo
+    if(fall>0){ eyes(0,-42*s,7*s,3.5*s,{x:0,y:1});
       for(let i=0;i<3;i++){ const a=T*4+i*2.1; star(Math.cos(a)*26*s, -62*s+Math.sin(a)*8, 7, true); }
       smile(0,-32*s,4*s);
     } else {
@@ -3160,23 +4462,14 @@ scenes.davi_run = {
     ctx.restore();
   },
   draw(dt){
-    // vale de Elá
     const g = ctx.createLinearGradient(0,0,0,H);
     g.addColorStop(0,'#7EC8F2'); g.addColorStop(.35,'#C8E8FF'); g.addColorStop(.36,'#D8C88A'); g.addColorStop(1,'#B8A05E');
     ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
     blob(74, 246, 34, 34, '#FFD84D', 4);
-    // montes
     ctx.fillStyle='#C9B472';
     ctx.beginPath(); ctx.moveTo(0,345); ctx.quadraticCurveTo(140,275,300,340); ctx.quadraticCurveTo(430,290,540,338); ctx.lineTo(540,370); ctx.lineTo(0,370); ctx.fill();
     const r = this.cur();
-    // alvo
-    if(r.kind==='golias' || this.goliasDown>0) this.drawGolias(270, 260);
-    if(r.kind==='jarra'){
-      panel(r.targetX-60, r.targetY+26, 120, 14, 6, '#8B6A3A', OUT, 3.5); // mureta
-      this.drawJar(r.targetX, r.targetY, 1.2);
-      if(this.round>=1){} // jarra 1 já quebrou: some
-    }
-    // ovelhas fofas assistindo
+    this.drawGolias(270, 260);
     for(const [sx,sy] of [[70,560],[460,540]]){
       shadowE(sx,sy+18,26);
       blob(sx,sy,26,18,'#F8F8F4',3.5); blob(sx+20,sy-8,11,10,'#F8F8F4',3);
@@ -3185,9 +4478,7 @@ scenes.davi_run = {
       ctx.beginPath(); ctx.moveTo(sx-10,sy+16); ctx.lineTo(sx-10,sy+26); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(sx+10,sy+16); ctx.lineTo(sx+10,sy+26); ctx.stroke(); ctx.lineCap='butt';
     }
-    // Davi
     const dx=270, dy=830;
-    // ajudante torcendo por Davi (item 4.5)
     if(save.avatar){
       const bounce = Math.abs(Math.sin(T*6));
       const hx=dx-90, hy=dy+10;
@@ -3198,14 +4489,12 @@ scenes.davi_run = {
     }
     shadowE(dx,dy+6,26);
     drawPerson({x:dx,y:dy,s:1.05,skin:'#F2C79B',robe:'#C86A4A',hairC:'#C46A2B',beard:false,dir:1,walk:0});
-    // funda girando
     if(!this.stone && !this.lock){
       const a = T*9;
       ctx.strokeStyle='#8a5a3a'; ctx.lineWidth=4; ctx.lineCap='round';
       ctx.beginPath(); ctx.moveTo(dx+20,dy-70); ctx.lineTo(dx+20+Math.cos(a)*36, dy-70+Math.sin(a)*36); ctx.stroke(); ctx.lineCap='butt';
       blob(dx+20+Math.cos(a)*36, dy-70+Math.sin(a)*36, 8, 8, '#9AA5B1', 3);
     }
-    // pedra voando
     if(this.stone){
       const s=this.stone, t=s.t;
       const x = s.x0+(s.x1-s.x0)*t, y = s.y0+(s.y1-s.y0)*t - Math.sin(t*Math.PI)*180;
@@ -3213,13 +4502,11 @@ scenes.davi_run = {
       ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=3;
       ctx.beginPath(); ctx.moveTo(x-14,y+8); ctx.lineTo(x-30,y+16); ctx.stroke();
     }
-    // POC!
     if(this.hitFx>0 && this.hitAt){
       const scale=1+ (0.9-this.hitFx)*.6;
       txt('POC!', this.hitAt.x, this.hitAt.y-60, Math.round(40*scale), '#FFC93C', 'center', true);
       for(let i=0;i<6;i++){ const a=i*1.05+this.hitFx*3; star(this.hitAt.x+Math.cos(a)*50, this.hitAt.y-30+Math.sin(a)*30, 8, true); }
     }
-    // medidor de timing
     const my = H-64, mw = W-120, mx = 60;
     panel(mx-14, my-26, mw+28, 62, 18, 'rgba(255,249,236,.95)', OUT, 5);
     ctx.fillStyle='#E8E0D0'; rr(mx, my-10, mw, 26, 13); ctx.fill();
@@ -3227,13 +4514,11 @@ scenes.davi_run = {
     ctx.fillStyle='#8ED47E'; rr(zx, my-10, zw, 26, 13); ctx.fill();
     ctx.fillStyle='#5CB44C'; rr(mx+mw/2-4, my-10, 8, 26, 4); ctx.fill();
     ctx.strokeStyle=OUT; ctx.lineWidth=3.5; rr(mx, my-10, mw, 26, 13); ctx.stroke();
-    // seta
     const ax = mx + this.pos*mw;
     ctx.fillStyle='#E85D5D'; ctx.strokeStyle=OUT; ctx.lineWidth=3;
     ctx.beginPath(); ctx.moveTo(ax,my-18); ctx.lineTo(ax-12,my-36); ctx.lineTo(ax+12,my-36); ctx.closePath(); ctx.fill(); ctx.stroke();
     txt('TOQUE quando a seta estiver no verde!', W/2, my+30, 12.5, '#7a5a3a', 'center', true);
-    drawTopBar('DAVI · '+(this.round+1)+'/3','rgba(200,106,42,.92)');
-    // contagem de erros vira "tentativas"
+    drawTopBar('DAVI · '+this.rounds[0].name,'rgba(200,106,42,.92)');
     panel(W/2-120, 78, 240, 38, 12, 'rgba(255,249,236,.94)', OUT, 4);
     txt(this.cur().name, W/2, 103, 15, '#5A452A', 'center', true);
     toastDraw(this.ts, dt, 128);
