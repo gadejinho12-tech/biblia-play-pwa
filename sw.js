@@ -1,7 +1,7 @@
 // Service Worker do Bíblia Play — cache simples pra funcionar offline depois do primeiro carregamento.
 // IMPORTANTE: sempre que publicar uma nova versão do jogo, mude CACHE_VERSION (ex: 'v2', 'v3'...)
 // pra forçar os celulares já instalados a baixarem os arquivos novos.
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = 'biblia-play-' + CACHE_VERSION;
 
 const PRECACHE_URLS = [
