@@ -77,7 +77,7 @@ R('<div id="ghud" hidden><span class="chip" id="gAn">🐾 0 / 8</span><span clas
 R('<div class="eyebrow">Corrida para a Arca</div>\n    <h1>Todos a salvo! 🌈</h1>','<div class="eyebrow">A Funda de Davi</div>\n    <h1>Vitória! 🎉</h1>')
 R('<div class="verse"><q>Fez Noé tudo o que Deus lhe ordenara.</q><span>Gênesis 6:22</span></div>','<div class="verse"><q>A batalha é do Senhor.</q><span>1 Samuel 17:47</span></div>')
 R("try{ localStorage.setItem('bp_noe_visto','1'); }","try{ localStorage.setItem('bp_davi_visto','1'); }")
-R("  if(MODE==='game'){ music(dt, GS.rain>.6?'nuvens':'animais'); rainSound(GS.rain>.3?GS.rain*.6:0); }","  if(MODE==='game'){ music(dt, GS.stage==='stones'?'riacho':(GS.hit?'vitoria':'duelo')); }")
+R("  if(MODE==='game'){ music(dt, GS.rain>.6?'nuvens':'animais'); rainSound(GS.rain>.3?GS.rain*.6:0); }","  if(MODE==='game'){ music(dt, GS.stage==='stones'||GS.phase<3?'pasto':(GS.hit?'vitoria':'duelo')); }")
 R("const scName=P.started? l.sc : 'arcoiris';","const scName=P.started? l.sc : 'vitoria';")
 R("(SC[scName]||SC.arcoiris)(P.started? P.scT : 6+G*.2)","(SC[scName]||SC.vitoria)(P.started? P.scT : 6+G*.2)")
 R("rainSound(sc==='diluvio'?1:(sc==='porta'?.7:0)); }","}")
@@ -88,10 +88,10 @@ R("window.__P=P; window.__GS=GS;","window.__P=P; window.__GS=GS; window.__cam=ca
 # falantes: Davi/Golias/Saul mexem a boca
 R("if(P.started && l.card==null && (l.who==='Deus'||l.who==='Narrador')) TALK=null;","if(P.started && l.card==null && l.who==='Narrador') TALK=null;")
 pathlib.Path('davi_film_src.html').write_text(s)
-keys=[f'v{i:02d}' for i in range(1,19)]+['c1','c2','c3','c4']+[f'g{i}' for i in range(1,9)]
+keys=[f'v{i:02d}' for i in range(1,19)]+['c1','c2','c3','c4']+[f'g{i}' for i in range(1,9)]+['d1','d2','d3','d4']
 rec,dur={},{}
 for k in keys:
-    f='kokoro/davi/'+k+'.mp3'; rec[k]='data:audio/mpeg;base64,'+base64.b64encode(open(f,'rb').read()).decode()
+    f=('kokoro/fases/' if k[0]=='d' else 'kokoro/davi/')+k+'.mp3'; rec[k]='data:audio/mpeg;base64,'+base64.b64encode(open(f,'rb').read()).decode()
     dur[k]=round(float(subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',f],capture_output=True,text=True).stdout),2)
 pathlib.Path('davi-filme.html').write_text(s.replace('%%REC%%',json.dumps(rec)).replace('%%RECDUR%%',json.dumps(dur)))
 print('ok', os.path.getsize('davi-filme.html'))

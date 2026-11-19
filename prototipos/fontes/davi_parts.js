@@ -166,14 +166,22 @@ const MOOD={ pasto:[[60,64,67],[65,69,72],[62,65,69],[67,71,74]], vale:[[57,60,6
   acampamento:[[57,60,64],[55,59,62],[53,57,60],[52,56,59]], saul:[[57,60,64],[60,64,67],[53,57,60],[55,59,62]], riacho:[[60,64,67],[57,60,64],[65,69,72],[67,71,74]],
   duelo:[[45,52,57,60],[44,51,56,60],[41,48,53,57],[43,50,55,59]], funda:[[45,52,57,60],[47,54,59,62],[48,55,60,64],[50,57,62,66]], vitoria:[[62,66,69,74],[67,71,74,79],[64,67,71,76],[62,66,69,74]], obra:[[60,64,67],[65,69,72],[67,71,74],[60,64,67]] };
 //@@GAME
-/* ================= JOGO DE RECOMPENSA: A Funda de Davi =================
-   Mesmo cenário, mesmos personagens e mesma narradora do filme.
-   1) Toque nas 5 pedras LISINHAS do riacho.  2) Segure para girar a funda e solte no verde.
-   Ninguém perde: na última pedra, a área verde fica bem grande. */
+/* ================= JOGO DE RECOMPENSA: A Funda de Davi (3 fases) =================
+   Antes: toque nas 5 pedras LISINHAS do riacho.
+   Fase 1 · Treino de pontaria: acerte 3 potes (área verde grande, seta devagar).
+   Fase 2 · Proteja as ovelhas: acerte perto do leão para espantá-lo (sem violência).
+   Fase 3 · O gigante Golias: área verde menor e seta mais rápida.
+   Ninguém perde: depois de alguns erros, a área verde cresce. */
 let MODE='film';
 const GS={};
+const DPH=[
+  { name:'Fase 1 · Treino de pontaria', zone:[.42,.92], period:2.1, need:3, voice:['d1','Fase um: treino de pontaria. Segure para girar a funda, e acerte os três potes!'] },
+  { name:'Fase 2 · Proteja as ovelhas', zone:[.52,.88], period:1.75, need:1, voice:['d2','Muito bem! Fase dois: um leão quer pegar as ovelhas! Acerte perto dele para espantá-lo.'] },
+  { name:'Fase 3 · O gigante Golias', zone:[.6,.84], period:1.4, need:1, voice:['d3','O leão fugiu! As ovelhas estão seguras. Fase três: agora, o gigante Golias!'] },
+];
 function gameReset(){
-  Object.assign(GS,{ stage:'stones', picked:{}, nPicked:0, wrong:0, wob:{}, throws:0, golX:640, hold:false, holdT:0, ph:0, power:0, stone:null, hit:false, hitT:0, ended:false, cool:0, endT:0, stepT:0 });
+  Object.assign(GS,{ stage:'stones', picked:{}, nPicked:0, wrong:0, wob:{}, phase:0, throws:0, throwsBy:[0,0,0], misses:0, hits:0, golX:640, lionX:560, lionRun:0, pots:[{x:240,on:true},{x:380,on:true},{x:520,on:true}], shards:[],
+    hold:false, holdT:0, ph:0, power:0, stone:null, hit:false, hitT:0, ended:false, cool:0, banner:0, busy:0 });
   cam.x=0; cam.y=-70; cam.z=W<700? .78 : 1.6;
 }
 let gsubT=0;
@@ -181,10 +189,13 @@ function gsay(key,text,force,who){ if(!force && GS.cool>0) return; GS.cool=1.2; 
 function startGame(){
   MODE='game'; document.body.classList.add('game'); stopVoice(); P.playing=false; gameReset();
   ['summary','gwin','cover'].forEach(id=>$(id).hidden=true); $('ctrl').hidden=true; $('top').hidden=true; $('chapter').classList.remove('on');
-  $('ghud').hidden=false; $('gAn').textContent='🪨 0 / 5'; $('gGol').textContent='Golias: de pé';
+  $('ghud').hidden=false; $('gAn').textContent='🪨 0 / 5'; $('gGol').textContent='Antes de tudo: as pedras';
   if(!AC) audioInit(); if(AC) AC.resume();
   setTimeout(()=>gsay('g1','Agora é a sua vez! Toque nas cinco pedras lisinhas do riacho.',true),400);
 }
+function startPhase(n){ GS.stage='sling'; GS.phase=n; GS.misses=0; GS.hits=0; GS.hit=false; GS.hitT=0; GS.stone=null; GS.hold=false; GS.banner=2.8; GS.busy=1.2;
+  const D=DPH[n-1]; gsay(D.voice[0],D.voice[1],true); $('gAn').textContent=D.name.split(' · ')[0]; hudPhase(); }
+function hudPhase(){ const n=GS.phase; $('gGol').textContent = n===1? ('🏺 Potes: '+GS.hits+' / 3') : (n===2? '🦁 Espante o leão' : (GS.hit? 'Golias: zonzo 💫' : 'Golias: de pé')); }
 function leaveGame(){ MODE='film'; document.body.classList.remove('game'); stopVoice(); $('ghud').hidden=true; $('gwin').hidden=true; subEl.classList.remove('on'); $('ctrl').hidden=false; $('top').hidden=false; }
 function toWorld(e){ const dpr=cv.width/innerWidth, offX=(cv.width-W*K)/2; const lx=(e.clientX*dpr-offX)/K, ly=e.clientY*dpr/K; const z=ZOOM*cam.z*PZ(); return { x:(lx-W/2)/z+cam.x, y:(ly-H*CY)/z+cam.y }; }
 function gameTap(e){
@@ -193,38 +204,57 @@ function gameTap(e){
     BROOK_STONES.forEach(([sx,sy],i)=>{ if(GS.picked[i]) return; const d=Math.hypot(sx-w.x,sy-w.y); if(d<bd){ bd=d; best=i; } });
     if(best<0 || bd>55) return; const s=BROOK_STONES[best];
     if(s[2]){ GS.picked[best]=true; GS.nPicked++; pluck(72+GS.nPicked*2,.08); $('gAn').textContent='🪨 '+GS.nPicked+' / 5';
-      if(GS.nPicked>=5){ gsay('g8','Muito bem! Cinco pedras na bolsa!',true); setTimeout(()=>{ if(MODE!=='game') return; GS.stage='sling'; $('gAn').textContent='🪨 5 pedras na bolsa'; gsay('g3','Agora, segure o dedo para girar a funda... e solte no verde!',true); },2600); } }
+      if(GS.nPicked>=5){ gsay('g8','Muito bem! Cinco pedras na bolsa!',true); GS.stage='wait'; setTimeout(()=>{ if(MODE==='game') startPhase(1); },2600); } }
     else { GS.wrong++; GS.wob[best]=.5; gsay('g2','Essa tem pontas! Escolha as lisinhas.'); }
     return; }
-  if(GS.stage==='sling' && !GS.stone && !GS.hit){ GS.hold=true; GS.holdT=0; }
+  if(GS.stage==='sling' && !GS.stone && !GS.hit && GS.busy<=0){ GS.hold=true; GS.holdT=0; }
 }
-function zone(){ return GS.throws>=4? [.3,.97] : [.58,.86]; }
+function zone(){ const D=DPH[GS.phase-1]; return GS.misses>=3? [.25,.97] : D.zone; }
+function target(){ const n=GS.phase;
+  if(n===1){ const pot=GS.pots.find(q=>q.on); return {x:pot.x, y:-52}; }
+  if(n===2) return {x:GS.lionX-50, y:-6};
+  return {x:GS.golX-22, y:-200}; }
 function gameRelease(){
   if(GS.stage!=='sling' || !GS.hold) return; GS.hold=false;
   if(GS.holdT<.45) return;
-  const [lo,hi]=zone(), p=GS.power; GS.throws++;
-  const res = p<lo? 'short' : (p>hi? 'over' : 'hit');
-  const to = res==='hit'? {x:GS.golX-22, y:-200} : (res==='short'? {x:GS.golX-160, y:0} : {x:GS.golX+120, y:-460});
+  const [lo,hi]=zone(), p=GS.power; GS.throws++; GS.throwsBy[GS.phase-1]++;
+  const res = p<lo? 'short' : (p>hi? 'over' : 'hit'); const T=target();
+  const to = res==='hit'? T : (res==='short'? {x:lerp(-180,T.x,.55), y:0} : {x:T.x+140, y:-460});
   GS.stone={ fx:-182, fy:-84, tx:to.x, ty:to.y, t:0, res };
-  $('gAn').textContent='🪨 '+Math.max(0,5-GS.throws)+' pedras na bolsa';
   if(AC){ const t0=AC.currentTime, s=AC.createBufferSource(); s.buffer=noiseBuf; const f=AC.createBiquadFilter(); f.type='bandpass'; f.frequency.setValueAtTime(1800,t0); f.frequency.exponentialRampToValueAtTime(400,t0+.4); const g=AC.createGain(); g.gain.setValueAtTime(.25,t0); g.gain.exponentialRampToValueAtTime(.001,t0+.4); s.connect(f); f.connect(g); g.connect(musicGain); s.start(t0); s.stop(t0+.45); }
 }
 addEventListener('pointerup',()=>{ if(MODE==='game') gameRelease(); });
-addEventListener('keydown',e=>{ if(MODE==='game' && e.key===' ' && GS.stage==='sling' && !GS.hold && !GS.stone && !GS.hit){ e.preventDefault(); GS.hold=true; GS.holdT=0; } });
+addEventListener('keydown',e=>{ if(MODE==='game' && e.key===' ' && GS.stage==='sling' && !GS.hold && !GS.stone && !GS.hit && GS.busy<=0){ e.preventDefault(); GS.hold=true; GS.holdT=0; } });
 addEventListener('keyup',e=>{ if(MODE==='game' && e.key===' ') gameRelease(); });
+function onHit(){ const n=GS.phase; GS.hits++;
+  if(n===1){ const pot=GS.pots.find(q=>q.on); pot.on=false; for(let i=0;i<9;i++) GS.shards.push({x:pot.x,y:-52,vx:(Math.random()-.5)*260,vy:-180-Math.random()*200,t:0,r:Math.random()*6}); pluck(84,.08); pluck(88,.06,.08);
+    hudPhase(); if(GS.hits>=3){ GS.busy=9; setTimeout(()=>{ if(MODE==='game') startPhase(2); },1400); } else { gsay('d4','Acertou o pote!',true); GS.busy=.6; } }
+  else if(n===2){ GS.lionRun=.01; GS.busy=9; dustAt=[GS.lionX-50,0,0]; [72,76,79].forEach((m,i)=>pluck(m,.08,i*.12)); setTimeout(()=>{ if(MODE==='game') startPhase(3); },3200); }
+  else { GS.hit=true; GS.hitT=0; hudPhase(); [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12)); gsay('g6','Acertou! A batalha é do Senhor!',true); }
+}
+let dustAt=null;
 function gameUpdate(dt){
   const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); }
+  if(g.banner>0) g.banner-=dt; if(g.busy>0 && g.busy<5) g.busy-=dt;
   for(const k in g.wob) g.wob[k]-=dt;
-  if(g.stage==='stones'){ cam.x=lerp(cam.x,20,.05); cam.y=lerp(cam.y,-70,.05); cam.z=lerp(cam.z,W<700?.78:1.6,.05); return; }
-  const narrow=W<700; cam.x=lerp(cam.x, g.stone&&g.stone.res==='hit'? lerp(-182,g.golX,g.stone.t) : (narrow? (g.golX-240)/2 : 0), .06); cam.y=lerp(cam.y,narrow?-300:-200,.05); cam.z=lerp(cam.z, g.stone&&g.stone.res==='hit'? (narrow? .9 : 1.2) : (narrow? .44 : .82), .05);
-  if(!g.hit){ g.stepT+=dt; if(g.golX>360) g.golX-=dt*14; }
-  if(g.hold){ g.holdT+=dt; g.ph+=dt*(6+Math.min(1,g.holdT/.45)*10); g.power=.5-.5*Math.cos(Math.max(0,g.holdT-.3)*2*Math.PI/1.6); }
-  if(g.stone){ const s=g.stone; s.t+=dt/(s.res==='hit'? 1.3 : .8); if(s.t>=1){ g.stone=null;
-      if(s.res==='hit'){ g.hit=true; g.hitT=0; $('gGol').textContent='Golias: zonzo 💫'; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12)); gsay('g6','Acertou! A batalha é do Senhor!',true); }
-      else { gsay('g7','Ha ha! Errou!',true,'Golias'); setTimeout(()=>{ if(MODE==='game' && !GS.hit) gsay(s.res==='short'?'g4':'g5', s.res==='short'?'Fraquinho! Solte quando a seta chegar no verde.':'Forte demais! Solte um pouquinho antes.',true); },1500);
-        if(g.throws>=5) g.throws=4; } } }
-  if(g.hit){ g.hitT+=dt; if(g.hitT>4.5 && !g.ended){ g.ended=true; const st=g.throws<=1?3:(g.throws<=3?2:1);
-    $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent='Pedras usadas: '+g.throws+' · Escolhas certas no riacho: 5 de '+(5+g.wrong)+' toques'; $('gwin').hidden=false; } }
+  for(const sh of g.shards){ sh.t+=dt; sh.x+=sh.vx*dt; sh.y+=sh.vy*dt; sh.vy+=700*dt; } g.shards=g.shards.filter(q=>q.t<1.4);
+  if(dustAt){ dustAt[2]+=dt; if(dustAt[2]>1.2) dustAt=null; }
+  const narrow=W<700;
+  if(g.stage==='stones'||g.stage==='wait'){ cam.x=lerp(cam.x,20,.05); cam.y=lerp(cam.y,-70,.05); cam.z=lerp(cam.z,narrow?.78:1.6,.05); return; }
+  const n=g.phase, flyHit=g.stone&&g.stone.res==='hit';
+  const right = n===3? g.golX : (n===2? g.lionX : 520);
+  cam.x=lerp(cam.x, flyHit&&n===3? lerp(-182,g.golX,g.stone.t) : (narrow? (right-240)/2 : (n===3? 0 : 150)), .06);
+  cam.y=lerp(cam.y, narrow? (n===3?-300:-200) : (n===3?-200:-150), .05);
+  cam.z=lerp(cam.z, flyHit&&n===3? (narrow? .9 : 1.2) : (narrow? (n===3? .44 : .45) : (n===3? .82 : 1.05)), .05);
+  if(n===3 && !g.hit && !flyHit){ if(g.golX>360) g.golX-=dt*14; }
+  if(n===2){ if(g.lionRun>0){ g.lionRun+=dt; g.lionX+=dt*320; } else if(g.lionX>240) g.lionX-=dt*12; }
+  if(g.hold){ g.holdT+=dt; g.ph+=dt*(6+Math.min(1,g.holdT/.45)*10); g.power=.5-.5*Math.cos(Math.max(0,g.holdT-.3)*2*Math.PI/DPH[n-1].period); }
+  if(g.stone){ const s=g.stone; s.t+=dt/(s.res==='hit'&&n===3? 1.3 : .8); if(s.t>=1){ g.stone=null;
+      if(s.res==='hit') onHit();
+      else { g.misses++; if(n===3) gsay('g7','Ha ha! Errou!',true,'Golias'); else gsay(s.res==='short'?'g4':'g5', s.res==='short'?'Fraquinho! Solte quando a seta chegar no verde.':'Forte demais! Solte um pouquinho antes.',true);
+        if(n===3) setTimeout(()=>{ if(MODE==='game' && !GS.hit) gsay(s.res==='short'?'g4':'g5', s.res==='short'?'Fraquinho! Solte quando a seta chegar no verde.':'Forte demais! Solte um pouquinho antes.',true); },1500); } } }
+  if(g.hit){ g.hitT+=dt; if(g.hitT>4.5 && !g.ended){ g.ended=true; const per=DPH.map((D,i)=>{ const extra=g.throwsBy[i]-D.need; return extra<=0?3:(extra<=2?2:1); }); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
+    $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=DPH.map((D,i)=>D.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  ')+' · Pedras certas no riacho: 5 de '+(5+g.wrong)+' toques'; $('gwin').hidden=false; } }
 }
 function gaugeDraw(){ const [lo,hi]=zone(); const cx=W/2, cy=H*.9, R=72;
   ctx.save(); ctx.lineCap='round';
@@ -233,24 +263,36 @@ function gaugeDraw(){ const [lo,hi]=zone(); const cx=W/2, cy=H*.9, R=72;
   ctx.strokeStyle='#7fc46a'; ctx.beginPath(); ctx.arc(cx,cy,R,Math.PI*(1+lo),Math.PI*(1+hi)); ctx.stroke();
   const a=Math.PI*(1+GS.power); ctx.strokeStyle=GS.power>=lo&&GS.power<=hi? '#3f8a2e':'#3a2c24'; ctx.lineWidth=6; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(a)*(R-6),cy+Math.sin(a)*(R-6)); ctx.stroke();
   ell(cx,cy,9,9,'#3a2c24'); ctx.restore(); }
+function pot(x,y){ shade(x,y-18,16,20,'#d98a5a','#9a5530'); ell(x,y-38,9,4,'#7a3f22'); ctx.strokeStyle='rgba(255,230,190,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y-18,12,-2.4,-1.4); ctx.stroke(); }
+function pastureBack(){
+  layer(0,()=>{ meadowSky(1); glow(380,-250,220,'#fff4cc',.55); ell(380,-250,36,36,'#fff4d0'); for(let i=0;i<5;i++) cloud(((i*300+G*8)%1600)-800,-250+(i%2)*50,.8+(i%3)*.2,'#ffffff','#dfe6ee',.9); });
+  layer(.2,()=>ridge(-30,110,.004,2,'#b9cfe0','#d7e4ea'));
+  layer(.5,()=>{ ridge(0,60,.008,4,'#9fcf8c','#bfe0a4'); for(let i=0;i<9;i++) tree(-900+i*230,10,.7+(i%3)*.12,'#6fb35c','#3f7d3a'); }); }
 function gameDraw(){
   const g=GS;
-  if(g.stage==='stones'){ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6;
+  if(g.stage==='stones'||g.stage==='wait'){ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6;
     layer(0,()=>{ meadowSky(1); for(let i=0;i<4;i++) cloud(((i*340+G*8)%1600)-800,-260+(i%2)*40,.9,'#ffffff','#dfe6ee',.9); });
     layer(.5,()=>{ ridge(0,60,.008,4,'#9fcf8c','#bfe0a4'); for(let i=0;i<9;i++) tree(-900+i*230,10,.7+(i%3)*.12,'#6fb35c','#3f7d3a'); });
     layer(1,()=>{ brook(g.picked,true); davi(-330,6,{pose:'kneel',dir:1}); shade(-360,-14,10,12,'#8a5a2e','#5a3a1e'); });
     return; }
-  LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.65;
-  valleyBack(.6, g.hit? 'cheer' : 'fear');
+  const n=g.phase;
   let sx=0, sy=0; if(g.stone){ const s=g.stone, q=Math.min(1,s.t); sx=lerp(s.fx,s.tx,q); sy=lerp(s.fy,s.ty,q)-Math.sin(q*Math.PI)*(s.res==='short'?40:70); }
-  layer(1,()=>{ valleyFloor();
-    goliath(g.golX, g.hit? g.hitT/1.3 : 0, {pose: (g.stone && g.stone.res!=='hit')||(!g.hit && Math.sin(G*.7)>.6)? 'laugh':'spear'});
-    davi(-200,0,{pose: g.hold? 'sling' : (g.hit? 'armsup' : 'stand'), dir:1, fast:g.hold});
+  if(n<3){ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6; pastureBack(); }
+  else { LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.65; valleyBack(.6, g.hit? 'cheer' : 'fear'); }
+  layer(1,()=>{
+    if(n<3){ ground('#8fcc6e','#5a8a46');
+      if(n===1){ for(const q of g.pots){ shade(q.x,-8,30,14,'#a8a49a','#7a766e'); if(q.on) pot(q.x,-20); } for(const sh of g.shards){ ctx.save(); ctx.translate(sh.x,sh.y); ctx.rotate(sh.r+sh.t*8); ctx.fillStyle='#c97a4a'; ctx.fillRect(-5,-3,10,6); ctx.restore(); } }
+      else { [[40,10],[110,18],[170,6],[-20,16]].forEach(([x,y],i)=>animal('ovelha',x,y,.9,i%2?1:-1,i*.4)); bush(520,0,1.1); if(g.lionX<900) animal('leao',g.lionX,0,1.15,g.lionRun>0?1:-1,0);
+        if(dustAt){ const q=dustAt[2]/1.2; for(let i=0;i<7;i++){ const a=i/7*Math.PI; ell(dustAt[0]+Math.cos(a)*(20+q*70),-Math.sin(a)*q*40,14+q*14,8+q*6,`rgba(200,170,120,${.6*(1-q)})`); } } } }
+    else { valleyFloor(); goliath(g.golX, g.hit? g.hitT/1.3 : 0, {pose: (g.stone && g.stone.res!=='hit')||(!g.hit && Math.sin(G*.7)>.6)? 'laugh':'spear'}); }
+    davi(-200,0,{pose: g.hold? 'sling' : ((g.hit||g.lionRun>0)? 'armsup' : 'stand'), dir:1, fast:g.hold});
     if(g.stone){ glow(sx,sy,24,'#fff2c0',.6); shade(sx,sy,6,5,'#e8e4dc','#9a958c'); } });
-  if(g.hit && g.hitT<.25){ ctx.fillStyle=`rgba(255,250,235,${.7*(1-g.hitT/.25)})`; ctx.fillRect(-W,-H,W*3,H*3); }
-  if(g.hit && g.hitT<1.4){ const q=g.hitT/1.4; ctx.save(); ctx.globalAlpha=1-q; ctx.font='800 '+(70+q*30)+'px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(58,44,36,.6)'; ctx.lineWidth=6; ctx.strokeText('POC!',W/2,H*.3); ctx.fillText('POC!',W/2,H*.3); ctx.restore(); }
+  if(n===3 && g.hit && g.hitT<.25){ ctx.fillStyle=`rgba(255,250,235,${.7*(1-g.hitT/.25)})`; ctx.fillRect(-W,-H,W*3,H*3); }
+  if(n===3 && g.hit && g.hitT<1.4){ const q=g.hitT/1.4; ctx.save(); ctx.globalAlpha=1-q; ctx.font='800 '+(70+q*30)+'px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(58,44,36,.6)'; ctx.lineWidth=6; ctx.strokeText('POC!',W/2,H*.3); ctx.fillText('POC!',W/2,H*.3); ctx.restore(); }
   if(g.hold && g.holdT>.3) gaugeDraw();
-  if(!g.hold && !g.stone && !g.hit){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 20px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(58,44,36,.55)'; ctx.lineWidth=5; ctx.strokeText('👆 Segure e solte no verde',W/2,H*.92); ctx.fillText('👆 Segure e solte no verde',W/2,H*.92); ctx.restore(); }
+  if(!g.hold && !g.stone && !g.hit && g.lionRun===0 && g.busy<=0){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 20px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(58,44,36,.55)'; ctx.lineWidth=5; ctx.strokeText('👆 Segure e solte no verde',W/2,H*.92); ctx.fillText('👆 Segure e solte no verde',W/2,H*.92); ctx.restore(); }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,H*.2-36,bw,64,14); ctx.fill();
+    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(DPH[n-1].name,W/2,H*.2+6); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };

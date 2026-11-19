@@ -584,30 +584,43 @@ $('again').onclick=()=>{ $('summary').hidden=true; seekChapter(0); };
    e pula; cada animal tocado passa a seguir Noé em fila até a arca. Ninguém perde:
    quem cai no riacho volta um pouquinho e tenta de novo. */
 let MODE='film';
-const GW={ GAPS:[[900,1010],[1820,1950],[2900,3040]], END:4300,
-  PLATS:[{x:620,y:-100,w:150},{x:1150,y:-130,w:140},{x:1340,y:-200,w:130},{x:2080,y:-120,w:170},{x:2440,y:-180,w:150},{x:3180,y:-130,w:150},{x:3400,y:-210,w:130}] };
+// 3 fases: cada uma com seu caminho, seus riachos e seus animais
+const LEVELS=[
+  { name:'Fase 1 · Os primeiros animais', rainT:140, END:2300, GAPS:[[900,990]], PLATS:[{x:600,y:-100,w:160},{x:1250,y:-120,w:170}],
+    animals:[['ovelha',470,0],['ovelha',680,-100],['coelho',1320,-120],['coelho',1650,0]], voice:['n1','Fase um: os primeiros animais. Leve os quatro até a arca!'] },
+  { name:'Fase 2 · A chuva vem chegando', rainT:90, END:4300, GAPS:[[900,1010],[1820,1950],[2900,3040]],
+    PLATS:[{x:620,y:-100,w:150},{x:1150,y:-130,w:140},{x:1340,y:-200,w:130},{x:2080,y:-120,w:170},{x:2440,y:-180,w:150},{x:3180,y:-130,w:150},{x:3400,y:-210,w:130}],
+    animals:[['ovelha',470,0],['ovelha',690,-100],['coelho',1210,-130],['coelho',1400,-200],['leao',1640,0],['leao',2150,-120],['elefante',2520,-180],['elefante',3460,-210]], voice:['n2','Muito bem! Fase dois: a chuva vem chegando. Agora são oito animais!'] },
+  { name:'Fase 3 · Corrida contra a chuva', rainT:55, END:5600, GAPS:[[800,920],[1500,1640],[2300,2450],[3100,3250],[3900,4060],[4700,4840]],
+    PLATS:[{x:600,y:-110,w:150},{x:1050,y:-140,w:140},{x:1260,y:-210,w:120},{x:1750,y:-120,w:160},{x:2050,y:-190,w:140},{x:2600,y:-130,w:150},{x:2850,y:-200,w:130},{x:3400,y:-120,w:160},{x:3650,y:-200,w:140},{x:4300,y:-140,w:150},{x:4500,y:-220,w:120},{x:5000,y:-130,w:150}],
+    animals:[['ovelha',480,0],['ovelha',650,-110],['coelho',1300,-210],['coelho',1900,0],['leao',2100,-190],['leao',2700,-130],['girafa',3000,0],['girafa',3700,-200],['elefante',4350,-140],['elefante',5050,-130]], voice:['n3','Fase três: corrida contra a chuva! Dez animais, e mais riachos. Pule com cuidado!'] },
+];
+let GW=LEVELS[0];
 const GS={}; const keys={L:false,R:false,J:false};
-function gameReset(){
-  Object.assign(GS,{ t:0, rain:0, won:false, wonT:0, falls:0, cool:0, endShown:false,
+function gameReset(){ GS.fallsBy=[0,0,0]; loadLevel(1); }
+function loadLevel(n){
+  GW=LEVELS[n-1];
+  Object.assign(GS,{ phase:n, t:0, rain:0, won:false, wonT:0, falls:0, cool:0, endShown:false, banner:2.8, nextT:0,
     p:{x:140,y:0,vx:0,vy:0,ground:true,face:1,coyote:0,buf:0,safeX:140}, trail:[],
-    animals:[['ovelha',470,0],['ovelha',690,-100],['coelho',1210,-130],['coelho',1400,-200],['leao',1640,0],['leao',2150,-120],['elefante',2520,-180],['elefante',3460,-210]]
-      .map(([type,x,y],i)=>({type,x,y,id:i,follow:false,ph:i*.7})) });
+    animals:GW.animals.map(([type,x,y],i)=>({type,x,y,id:i,follow:false,ph:i*.7})) });
   cam.x=140; cam.y=-170; cam.z=W<700? .56 : 1;
+  $('gAn').textContent='🐾 0 / '+GW.animals.length;
 }
 let gsubT=0;
 function gsay(key,text,force){ if(!force && GS.cool>0) return; GS.cool=1.2; speak({rec:key,text}); whoEl.textContent='Narradora'; txtEl.textContent=text; subEl.classList.add('on'); gsubT=Math.max(2.2,(REC_DUR[key]||2)+.6); }
 function startGame(){
   MODE='game'; document.body.classList.add('game'); stopVoice(); P.playing=false; gameReset();
   ['summary','gwin','cover'].forEach(id=>$(id).hidden=true); $('ctrl').hidden=true; $('top').hidden=true; $('chapter').classList.remove('on');
-  $('ghud').hidden=false; $('gpad').hidden=false; $('gAn').textContent='🐾 0 / 8';
+  $('ghud').hidden=false; $('gpad').hidden=false;
   if(!AC) audioInit(); if(AC) AC.resume();
-  setTimeout(()=>gsay('g1','Agora é a sua vez! Ajude Noé a levar os animais até a arca, antes da chuva. Toque nos animais para chamá-los!',true),500);
+  setTimeout(()=>gsay('g1','Agora é a sua vez! Ajude Noé a levar os animais até a arca, antes da chuva. Toque nos animais para chamá-los!',true),400);
+  setTimeout(()=>{ if(MODE==='game' && GS.phase===1) gsay(LEVELS[0].voice[0],LEVELS[0].voice[1],true); },7600);
 }
 function leaveGame(){ MODE='film'; document.body.classList.remove('game'); stopVoice(); $('ghud').hidden=true; $('gpad').hidden=true; $('gwin').hidden=true; subEl.classList.remove('on'); $('ctrl').hidden=false; $('top').hidden=false; }
 function groundAt(x){ for(const [a,b] of GW.GAPS) if(x>a&&x<b) return null; return 0; }
 function callAnimal(a){ a.follow=true; pluck(76,.07); pluck(81,.06,.1);
-  const n=GS.animals.filter(q=>q.follow).length; $('gAn').textContent='🐾 '+n+' / 8';
-  if(n===8) gsay('g7','Todos os animais! Agora, corra para a arca!',true); else if(n%2===0) gsay('g2','Um par completo!',true); else gsay('g6','Venha comigo!'); }
+  const n=GS.animals.filter(q=>q.follow).length, N=GS.animals.length; $('gAn').textContent='🐾 '+n+' / '+N;
+  if(n===N) gsay('g7','Todos os animais! Agora, corra para a arca!',true); else if(n%2===0) gsay('g2','Um par completo!',true); else gsay('g6','Venha comigo!'); }
 function gameTap(e){ // tocar num animal perto também chama ele
   const dpr=cv.width/innerWidth, offX=(cv.width-W*K)/2; const lx=(e.clientX*dpr-offX)/K, ly=e.clientY*dpr/K;
   const z=ZOOM*cam.z, wx=(lx-W/2)/z+cam.x, wy=(ly-H*CY)/z+cam.y;
@@ -620,7 +633,7 @@ bindPad('gL','L'); bindPad('gR','R'); bindPad('gJ','J');
 addEventListener('keydown',e=>{ if(MODE!=='game') return; if(e.key==='ArrowLeft'){keys.L=true;e.preventDefault();} if(e.key==='ArrowRight'){keys.R=true;e.preventDefault();} if(e.key===' '||e.key==='ArrowUp'){ if(!keys.J) GS.p.buf=.15; keys.J=true; e.preventDefault(); } });
 addEventListener('keyup',e=>{ if(e.key==='ArrowLeft')keys.L=false; if(e.key==='ArrowRight')keys.R=false; if(e.key===' '||e.key==='ArrowUp')keys.J=false; });
 function gameUpdate(dt){
-  const g=GS, p=g.p; g.t+=dt; g.rain=Math.min(1,g.t/90); if(g.cool>0) g.cool-=dt;
+  const g=GS, p=g.p; g.t+=dt; g.rain=Math.min(1,g.t/GW.rainT); if(g.banner>0) g.banner-=dt; if(g.cool>0) g.cool-=dt;
   if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); }
   $('gRain').style.width=(g.rain*100)+'%';
   const dir=(keys.R?1:0)-(keys.L?1:0);
@@ -634,17 +647,20 @@ function gameUpdate(dt){
   if(p.vy>=0){ for(const pl of GW.PLATS) if(p.x>pl.x-8&&p.x<pl.x+pl.w+8&&py<=pl.y+2&&p.y>=pl.y){ p.y=pl.y; landed=true; }
     if(!landed && groundAt(p.x)!==null && py<=2 && p.y>=0){ p.y=0; landed=true; } }
   if(landed){ p.ground=true; p.vy=0; if(p.y===0) p.safeX=p.x; } else { if(p.ground) p.coyote=.1; p.ground=false; }
-  if(p.y>320){ g.falls++; p.x=p.safeX-40; p.y=-200; p.vy=0; p.vx=0; gsay('g3','Splash! Tente pular um pouquinho antes.',true); }
+  if(p.y>320){ g.falls++; g.fallsBy[g.phase-1]++; p.x=p.safeX-40; p.y=-200; p.vy=0; p.vx=0; gsay('g3','Splash! Tente pular um pouquinho antes.',true); }
   g.trail.unshift({x:p.x,y:p.y}); if(g.trail.length>400) g.trail.length=400;
   let k=0;
   for(const a of g.animals){
     if(!a.follow){ if(Math.abs(a.x-p.x)<50 && Math.abs(a.y-p.y)<80) callAnimal(a); continue; }
     k++; const tp=g.trail[Math.min(g.trail.length-1,k*13)]; a.x+=(tp.x-a.x)*Math.min(1,dt*8); a.y+=(tp.y-a.y)*Math.min(1,dt*8); }
   const n=g.animals.filter(a=>a.follow).length;
-  if(!g.won && p.x>GW.END-430){ if(n===8){ g.won=true; g.wonT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.15)); gsay('g5','Todos a salvo! Muito bem! Você obedeceu e não desistiu, igualzinho ao Noé.',true); }
+  if(!g.won && p.x>GW.END-430){ if(n===g.animals.length){ g.won=true; g.wonT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.15));
+      if(g.phase<3){ const nx=LEVELS[g.phase]; gsay(nx.voice[0],nx.voice[1],true); } else gsay('g5','Todos a salvo! Muito bem! Você obedeceu e não desistiu, igualzinho ao Noé.',true); }
     else if(g.cool<=0){ gsay('g4','Ainda faltam animais. Volte e procure!',true); g.cool=5; } }
-  if(g.won){ g.wonT+=dt; if(g.wonT>5 && !g.endShown){ g.endShown=true; const st = g.falls===0 && g.t<80? 3 : (g.falls<=2? 2 : 1);
-    $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent='Tempo: '+Math.round(g.t)+' s · Quedas no riacho: '+g.falls; $('gwin').hidden=false; $('gpad').hidden=true; } }
+  if(g.won){ g.wonT+=dt;
+    if(g.phase<3 && g.wonT>4.2){ loadLevel(g.phase+1); return; }
+    if(g.phase===3 && g.wonT>5 && !g.endShown){ g.endShown=true; const per=g.fallsBy.map(f=>f===0?3:(f<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
+    $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=LEVELS.map((L,i)=>L.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  '); $('gwin').hidden=false; $('gpad').hidden=true; } }
   const narrow = W<700, lead = narrow? 90 : 140; const cz = narrow? .56 : 1;
   cam.x += ((p.x+lead*p.face*.6+lead*.4) - cam.x)*Math.min(1,dt*4); cam.x=clamp(cam.x, W/2/(ZOOM*cz), GW.END-W/2/(ZOOM*cz)+60); cam.y = narrow? -300 : -170; cam.z=cz;
 }
@@ -670,6 +686,8 @@ function gameDraw(){
     const p=GS.p; person('noe',p.x,p.y,{pose: !p.ground? 'armsup' : (Math.abs(p.vx)>25? 'walk' : (GS.won?'armsup':'stand')), dir:p.face, staff:true});
   });
   rain(r>.15? r : 0, 1.2);
+  if(GS.banner>0){ const a=Math.min(1,GS.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,H*.2-36,bw,64,14); ctx.fill();
+    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(GW.name,W/2,H*.2+6); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };
