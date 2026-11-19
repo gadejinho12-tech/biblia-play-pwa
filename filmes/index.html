@@ -45,6 +45,14 @@ h2{font:800 clamp(22px,4.6vw,28px)/1.1 var(--display);margin:0 0 14px;text-wrap:
 .soon div{background:rgba(255,250,240,.6);border:2px dashed rgba(120,90,50,.25);border-radius:12px;padding:16px 14px;text-align:center;display:grid;gap:4px}
 .soon b{font:800 16px/1.2 var(--display)}
 .soon small{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding:8px 0;background:var(--paper)}
+.tabs a{text-decoration:none;color:var(--ink);font:800 14px var(--body);border-radius:999px;padding:9px 14px;background:var(--card);box-shadow:0 0 0 1px rgba(120,90,50,.15)}
+.tabs a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+section{scroll-margin-top:70px}
+.soon{margin-top:16px}
+.soon.games div{gap:6px}
+.gi{font-size:30px}
+.lead{margin:-6px 0 6px;color:var(--muted)}
 .parents{background:var(--card);border-radius:14px;padding:20px 22px;display:grid;gap:12px;box-shadow:0 0 0 1px rgba(120,90,50,.1)}
 .parents ul{margin:0;padding-left:18px;display:grid;gap:6px;line-height:1.5;max-width:70ch}
 footer{text-align:center;color:var(--muted);font-size:13px}
@@ -57,18 +65,41 @@ footer{text-align:center;color:var(--muted);font-size:13px}
     <p>Histórias da Bíblia em filmes ilustrados, com narração, um resumo do que aprendemos e um jogo de recompensa no final.</p>
   </header>
 
-  <section>
-    <h2>📚 Sua estante</h2>
-    <div class="shelf" id="shelf"></div>
-  </section>
+  <nav class="tabs" aria-label="Seções">
+    <a href="#at">📜 Antigo Testamento</a><a href="#nt">✝️ Novo Testamento</a><a href="#jogos">🎲 Jogos clássicos</a>
+  </nav>
 
-  <section>
-    <h2>⏳ Chegando em breve</h2>
+  <section id="at">
+    <h2>📜 Antigo Testamento</h2>
+    <div class="shelf" data-t="AT"></div>
     <div class="soon">
       <div><b>Daniel na cova dos leões</b><small>Daniel 6</small></div>
       <div><b>Ester, a rainha corajosa</b><small>Ester 4–7</small></div>
-      <div><b>Jesus acalma a tempestade</b><small>Marcos 4</small></div>
+      <div><b>Moisés e o mar aberto</b><small>Êxodo 14</small></div>
+    </div>
+  </section>
+
+  <section id="nt">
+    <h2>✝️ Novo Testamento</h2>
+    <div class="shelf" data-t="NT"></div>
+    <div class="soon">
       <div><b>Pães e peixes</b><small>João 6</small></div>
+      <div><b>O nascimento de Jesus</b><small>Lucas 2</small></div>
+      <div><b>A ovelha perdida</b><small>Lucas 15</small></div>
+      <div><b>Zaqueu</b><small>Lucas 19</small></div>
+    </div>
+  </section>
+
+  <section id="jogos">
+    <h2>🎲 Jogos clássicos</h2>
+    <p class="lead">Jogos de sempre, com temas da Bíblia — para brincar a qualquer hora.</p>
+    <div class="soon games">
+      <div><span class="gi">🔤</span><b>Caça-palavras</b><small>em breve</small></div>
+      <div><span class="gi">🃏</span><b>Jogo da memória</b><small>em breve</small></div>
+      <div><span class="gi">❓</span><b>Quiz bíblico</b><small>em breve</small></div>
+      <div><span class="gi">🧩</span><b>Quebra-cabeça</b><small>em breve</small></div>
+      <div><span class="gi">📜</span><b>Monte o versículo</b><small>em breve</small></div>
+      <div><span class="gi">🔍</span><b>Ache as diferenças</b><small>em breve</small></div>
     </div>
   </section>
 
@@ -85,14 +116,15 @@ footer{text-align:center;color:var(--muted);font-size:13px}
 
 <script>
 const FILMS=[
-  { id:'noe', title:'Noé e a Arca', ref:'Gênesis 6–9', min:2, img:'capa-noe.jpg', lesson:'Obedecer, não desistir e confiar nas promessas de Deus.', game:'Corrida para a Arca (3 fases)' },
-  { id:'criacao', title:'A Criação', ref:'Gênesis 1–2', min:2, img:'capa-criacao.jpg', lesson:'Deus criou tudo com amor, e você é uma obra especial das mãos dele.', game:'Encha o Mundo de Vida (3 fases)' },
-  { id:'jonas', title:'Jonas e o Grande Peixe', ref:'Jonas 1–4', min:2, img:'capa-jonas.jpg', lesson:'Deus dá uma segunda chance, e ama todas as pessoas.', game:'Nade, Jonas! (3 fases)' },
-  { id:'davi', title:'Davi e Golias', ref:'1 Samuel 17', min:2, img:'capa-davi.jpg', lesson:'Deus é maior que qualquer gigante: quem confia nele tem coragem.', game:'A Funda de Davi (3 fases)' },
+  { id:'tempestade', t:'NT', title:'Jesus Acalma a Tempestade', ref:'Marcos 4', min:2, img:'capa-tempestade.jpg', lesson:'Jesus tem poder sobre tudo: quando temos medo, podemos chamar por Ele.', game:'Silêncio, Mar! (3 fases)' },
+  { id:'noe', t:'AT', title:'Noé e a Arca', ref:'Gênesis 6–9', min:2, img:'capa-noe.jpg', lesson:'Obedecer, não desistir e confiar nas promessas de Deus.', game:'Corrida para a Arca (3 fases)' },
+  { id:'criacao', t:'AT', title:'A Criação', ref:'Gênesis 1–2', min:2, img:'capa-criacao.jpg', lesson:'Deus criou tudo com amor, e você é uma obra especial das mãos dele.', game:'Encha o Mundo de Vida (3 fases)' },
+  { id:'jonas', t:'AT', title:'Jonas e o Grande Peixe', ref:'Jonas 1–4', min:2, img:'capa-jonas.jpg', lesson:'Deus dá uma segunda chance, e ama todas as pessoas.', game:'Nade, Jonas! (3 fases)' },
+  { id:'davi', t:'AT', title:'Davi e Golias', ref:'1 Samuel 17', min:2, img:'capa-davi.jpg', lesson:'Deus é maior que qualquer gigante: quem confia nele tem coragem.', game:'A Funda de Davi (3 fases)' },
 ];
 const get=k=>{ try{ return localStorage.getItem(k); }catch(e){ return null; } };
-const shelf=document.getElementById('shelf');
-for(const f of FILMS){
+const ORDER=['criacao','noe','davi','jonas','tempestade']; FILMS.sort((x,y)=>ORDER.indexOf(x.id)-ORDER.indexOf(y.id));
+for(const f of FILMS){ const shelf=document.querySelector('.shelf[data-t="'+f.t+'"]');
   const seen=!!get('bp_'+f.id+'_visto'), stars=+(get('bp_'+f.id+'_estrelas')||0);
   const el=document.createElement('article'); el.className='film';
   el.innerHTML=`
