@@ -1,0 +1,18 @@
+import pathlib
+HEAD='<!doctype html>\n<html lang="pt-BR">\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
+for src,dst,sid in [('noe-filme.html','shelf/noe.html','noe'),('davi-filme.html','shelf/davi.html','davi')]:
+    s=pathlib.Path(src).read_text()
+    def R(a,b,n=1):
+        global s
+        assert s.count(a)==n,(src,a[:60],s.count(a)); s=s.replace(a,b)
+    R('.ghost{','a.ghost{text-decoration:none;display:inline-block}\n.ghost{')
+    R('<button class="go" id="play">▶ Assistir o filme</button>','<button class="go" id="play">▶ Assistir o filme</button>\n    <div class="row" style="margin-top:12px"><a class="ghost" href="index.html">📚 Voltar à estante</a></div>')
+    R('<button class="ghost" id="again">↻ Assistir de novo</button></div>','<button class="ghost" id="again">↻ Assistir de novo</button><a class="ghost" href="index.html">📚 Estante</a></div>')
+    R('<button class="ghost" id="gFilm">🎬 Ver o filme</button></div>','<button class="ghost" id="gFilm">🎬 Ver o filme</button><a class="ghost" href="index.html">📚 Estante</a></div>')
+    R("$('gwin').hidden=false;","$('gwin').hidden=false; try{ const k='bp_%s_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), st)); }catch(e){}" % sid)
+    R("  $('summary').hidden = !l.summary;","  $('summary').hidden = !l.summary; if(l.summary){ try{ localStorage.setItem('bp_%s_visto','1'); }catch(e){} }" % sid)
+    a="try{ if(localStorage.getItem('bp_%s_visto')) $('coverGame').hidden=false; }catch(e){}"%sid
+    R(a, a+"\ntry{ if(location.hash==='#jogo') $('coverGame').hidden=false; }catch(e){}")
+    pathlib.Path(dst).write_text(HEAD+s)
+print('ok')
+# (o atalho #jogo é aplicado logo depois deste script)

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bíblia Play Filmes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* Layout: estante de livro ilustrado — cabeçalho com o nome, uma prateleira de filmes (capa + progresso + assistir/jogar), uma fileira "em breve" e um cantinho para os pais. Visual único: papel creme. */
+:root{
+  --paper:#fbf3e3; --paper2:#f3e6cc; --card:#fffaf0; --ink:#3a2c24; --muted:#7d6a58; --gold:#c98a3a; --gold2:#e8b65a; --leaf:#5f9a4c; --shelf:#b98250;
+  --display:'Fraunces', Georgia, 'Times New Roman', serif; --body:'Nunito', system-ui, sans-serif;
+  color-scheme:light;
+}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);
+  background-image:radial-gradient(circle at 15% 0%, rgba(232,182,90,.18), transparent 40%), radial-gradient(circle at 90% 10%, rgba(111,168,224,.16), transparent 40%);
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:28px 48px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:34px}
+header{display:grid;gap:8px;text-align:center;justify-items:center}
+.logo{font:800 clamp(38px,8vw,60px)/1 var(--display);letter-spacing:-.01em;text-wrap:balance}
+.logo span{color:var(--gold)}
+.tag{font:800 12px var(--body);letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+header p{margin:0;color:var(--muted);max-width:44ch;line-height:1.5}
+h2{font:800 clamp(22px,4.6vw,28px)/1.1 var(--display);margin:0 0 14px;text-wrap:balance}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;padding-bottom:18px;border-bottom:12px solid var(--shelf);border-radius:0 0 6px 6px;box-shadow:0 10px 0 -4px rgba(120,80,40,.25)}
+.film{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 14px 30px rgba(90,60,30,.14), 0 0 0 1px rgba(120,90,50,.1);display:flex;flex-direction:column;min-width:0}
+.cover{position:relative;aspect-ratio:10/7;max-width:100%;background:var(--paper2)}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+.ribbon{position:absolute;top:12px;left:12px;font:800 11px var(--body);letter-spacing:.14em;text-transform:uppercase;border-radius:999px;padding:5px 10px;background:var(--ink);color:#fff}
+.ribbon.done{background:var(--leaf)}
+.info{padding:16px 18px 18px;display:grid;gap:8px}
+.info h3{font:800 24px/1.1 var(--display);margin:0}
+.meta{font-size:13px;color:var(--muted)}
+.lesson{font-size:14.5px;line-height:1.45;margin:0}
+.prog{display:flex;gap:14px;flex-wrap:wrap;font:700 13px var(--body);color:var(--muted)}
+.prog b{color:var(--ink)}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:11px 18px;font:800 15px var(--body);text-decoration:none;border:0;cursor:pointer}
+.btn.go{color:#fff;background:linear-gradient(180deg,var(--gold2),var(--gold));box-shadow:0 6px 16px rgba(201,138,58,.3)}
+.btn.ghost{color:var(--ink);border:2px solid rgba(58,44,36,.18);background:transparent}
+.btn.ghost[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.soon{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.soon div{background:rgba(255,250,240,.6);border:2px dashed rgba(120,90,50,.25);border-radius:12px;padding:16px 14px;text-align:center;display:grid;gap:4px}
+.soon b{font:800 16px/1.2 var(--display)}
+.soon small{color:var(--muted);font-size:12px}
+.parents{background:var(--card);border-radius:14px;padding:20px 22px;display:grid;gap:12px;box-shadow:0 0 0 1px rgba(120,90,50,.1)}
+.parents ul{margin:0;padding-left:18px;display:grid;gap:6px;line-height:1.5;max-width:70ch}
+footer{text-align:center;color:var(--muted);font-size:13px}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="tag">Filmes da Bíblia</span>
+    <div class="logo">Bíblia <span>Play</span></div>
+    <p>Histórias da Bíblia em filmes ilustrados, com narração, um resumo do que aprendemos e um jogo de recompensa no final.</p>
+  </header>
+
+  <section>
+    <h2>📚 Sua estante</h2>
+    <div class="shelf" id="shelf"></div>
+  </section>
+
+  <section>
+    <h2>⏳ Chegando em breve</h2>
+    <div class="soon">
+      <div><b>Jonas</b><small>Jonas 1–4</small></div>
+      <div><b>Daniel na cova dos leões</b><small>Daniel 6</small></div>
+      <div><b>A Criação</b><small>Gênesis 1–2</small></div>
+      <div><b>Ester, a rainha corajosa</b><small>Ester 4–7</small></div>
+      <div><b>Jesus acalma a tempestade</b><small>Marcos 4</small></div>
+      <div><b>Pães e peixes</b><small>João 6</small></div>
+    </div>
+  </section>
+
+  <section class="parents">
+    <h2>👨‍👩‍👧 Para os pais</h2>
+    <ul>
+      <li>Cada filme tem uns <b>2 minutos</b>, em 4 capítulos, com legenda que acompanha a narração (ajuda quem está aprendendo a ler).</li>
+      <li>No final, um <b>resumo</b> com 3 lições, um versículo curto e uma <b>pergunta para conversar em família</b>.</li>
+      <li>Depois do filme, a criança ganha um <b>jogo da própria história</b>. Ninguém perde: é para brincar e lembrar o que aprendeu.</li>
+    </ul>
+  </section>
+  <footer>Bíblia Play · protótipo</footer>
+</div>
+
+<script>
+const FILMS=[
+  { id:'noe', title:'Noé e a Arca', ref:'Gênesis 6–9', min:2, img:'capa-noe.jpg', lesson:'Obedecer, não desistir e confiar nas promessas de Deus.', game:'Corrida para a Arca' },
+  { id:'davi', title:'Davi e Golias', ref:'1 Samuel 17', min:2, img:'capa-davi.jpg', lesson:'Deus é maior que qualquer gigante: quem confia nele tem coragem.', game:'A Funda de Davi' },
+];
+const get=k=>{ try{ return localStorage.getItem(k); }catch(e){ return null; } };
+const shelf=document.getElementById('shelf');
+for(const f of FILMS){
+  const seen=!!get('bp_'+f.id+'_visto'), stars=+(get('bp_'+f.id+'_estrelas')||0);
+  const el=document.createElement('article'); el.className='film';
+  el.innerHTML=`
+    <a class="cover" href="${f.id}.html" aria-label="Assistir ${f.title}"><img src="${f.img}" alt="Cena do filme ${f.title}" loading="lazy">
+      <span class="ribbon ${seen?'done':''}">${seen?'Assistido ✓':'Novo'}</span></a>
+    <div class="info">
+      <h3>${f.title}</h3>
+      <div class="meta">${f.ref} · ${f.min} min · 4 capítulos</div>
+      <p class="lesson">${f.lesson}</p>
+      <div class="prog"><span>🎮 ${f.game}: <b>${stars? '⭐'.repeat(stars)+'☆'.repeat(3-stars) : (seen?'liberado!':'assista para liberar')}</b></span></div>
+      <div class="acts">
+        <a class="btn go" href="${f.id}.html">▶ ${seen?'Assistir de novo':'Assistir'}</a>
+        <a class="btn ghost" href="${f.id}.html#jogo" ${seen?'':'aria-disabled="true" tabindex="-1"'}>🎮 Jogar</a>
+      </div>
+    </div>`;
+  shelf.appendChild(el);
+}
+</script>
