@@ -45,6 +45,14 @@ jesus:{ robe:['#f6f0e0','#d2c6a6'], sash:'#c0483a', skin:['#e3ad79','#c48a5a'], 
   pedro:{ robe:['#6f9ac8','#3e6a98'], sash:'#7a5a3a', skin:['#e2ab7c','#c48a5a'], hair:'#6a5a4a', beard:true, beardC:'#7a6a5a', s:1 },
   joao:{ robe:['#9cc77a','#5f9a4c'], sash:'#7a5a3a', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', s:.9 },
   andre:{ robe:['#eeb07a','#b96f3e'], sash:'#5a3a22', skin:['#d8a07a','#b07850'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', s:.96 },
+maria:{ robe:['#7fa8d8','#4a76b0'], sash:'#f4f1e8', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', scarf:'#f4f1e8', s:.92 },
+  jose:{ robe:['#b08a5e','#765434'], sash:'#5f9a4c', skin:['#e2ab7c','#c48a5a'], hair:'#4a3320', beard:true, beardC:'#4a3320', s:1 },
+  anjo:{ robe:['#ffffff','#e8e4f4'], sash:'#f2c24a', skin:['#f6d2ae','#e2ab7c'], hair:'#f2c868', longhair:true, s:1.05 },
+  pastor1:{ robe:['#c9a46a','#8a6a3a'], sash:'#6b4423', skin:['#d8a07a','#b07850'], hair:'#3a2a1a', scarf:'#e8d4a8', beard:true, beardC:'#5a4a3a', s:.98 },
+  pastor2:{ robe:['#8fa86a','#5f7a42'], sash:'#6b4423', skin:['#e8b48a','#c98f62'], hair:'#5a3a22', cap:'#a87848', s:.86 },
+  mago1:{ robe:['#9a6ac8','#5a3a8a'], sash:'#f2c24a', skin:['#c98f62','#a8714a'], hair:'#241b14', beard:true, beardC:'#e8e4dc', crown:true, s:1 },
+  mago2:{ robe:['#d0605a','#8a2e2a'], sash:'#f2c24a', skin:['#8a5a3a','#6a4028'], hair:'#1a120c', scarf:'#f2c24a', s:1 },
+  mago3:{ robe:['#5fa88a','#2f7a5a'], sash:'#f2c24a', skin:['#f0c39a','#d69b6c'], hair:'#6b4423', beard:true, beardC:'#6b4423', scarf:'#e8e0f4', s:1 },
 };
 function harp(){ ctx.save(); ctx.translate(16,-52); ctx.strokeStyle='#b8782e'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(0,22); ctx.quadraticCurveTo(-4,-6,12,-18); ctx.lineTo(18,20); ctx.closePath(); ctx.stroke(); ctx.restore(); }
 let TALK=null, MOUTH=0; // quem está falando e quanto a boca abre (do áudio)

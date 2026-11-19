@@ -483,7 +483,7 @@ const MOOD={ praia_ensino:[[60,64,67],[65,69,72],[62,65,69],[67,71,74]], barco_t
   tempestade_dorme:[[57,60,64],[53,57,60],[55,59,62],[52,55,59]], acorda:[[45,52,57,60],[44,51,56,60],[41,48,53,57],[43,50,55,59]], acalma:[[60,64,67,72],[65,69,72,77],[67,71,74,79],[72,76,79,84]],
   calma_n:[[57,60,64,69],[53,57,60,65],[55,59,62,67],[60,64,67,72]], estrelas_n:[[57,60,64,69],[53,57,60,65],[55,59,62,67],[60,64,67,72]], obra:[[60,64,67],[65,69,72],[67,71,74],[60,64,67]] };
 let chordT=0, chordI=0;
-function music(dt,sc){ if(!AC) return; musicGain.gain.value=lerp(musicGain.gain.value, voiceBusy()? .28 : .5, .05); chordT-=dt; if(chordT<=0){ chordT=3.8; const set=MOOD[sc]||MOOD.obra; const ch=set[chordI%set.length]; pad(ch,4.6,.05,(sc==='tempestade_n'||sc==='acorda')?700:1500);
+function music(dt,sc){ if(!AC || window.__noMusic) return; musicGain.gain.value=lerp(musicGain.gain.value, voiceBusy()? .28 : .5, .05); chordT-=dt; if(chordT<=0){ chordT=3.8; const set=MOOD[sc]||MOOD.obra; const ch=set[chordI%set.length]; pad(ch,4.6,.05,(sc==='tempestade_n'||sc==='acorda')?700:1500);
   if(sc!=='tempestade_n'&&sc!=='acorda') ch.forEach((n,i)=>pluck(n+12,.035,i*.22+.4)); chordI++; } rainSound((sc==='tempestade_n'||sc==='tempestade_dorme'||sc==='acorda')?1:0); }
 
 /* ================= PLAYER ================= */
@@ -650,5 +650,6 @@ function frame(ts){
   requestAnimationFrame(frame);
 }
 fit(); requestAnimationFrame(frame);
+try{ const _c=JSON.parse(localStorage.getItem('bp_cfg')||'{}'); if(_c.voz===false){ voiceOn=false; $('vo').textContent='🔇'; $('vo').setAttribute('aria-label','Narração desligada'); } if(_c.musica===false) window.__noMusic=true; }catch(e){}
 window.__P=P; window.__GS=GS; window.__cam=cam; window.__startGame=startGame; window.__SCRIPT=SCRIPT; window.__enter=enterLine;
 </script>

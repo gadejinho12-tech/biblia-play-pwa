@@ -1,0 +1,77 @@
+<title>Área dos Pais</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Nunito:wght@600;700;800&display=swap">
+<style>
+%%CSS%%
+/* Layout: cartões empilhados — configurações, progresso, instalar no celular, apagar progresso. */
+.box{background:var(--card);border-radius:16px;padding:18px 20px;box-shadow:0 0 0 1px rgba(120,90,50,.12);display:grid;gap:12px}
+.box h2{font:800 22px/1.15 var(--display);margin:0}
+.box p{margin:0;line-height:1.5;color:var(--muted);max-width:65ch}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px dashed rgba(120,90,50,.2)}
+.opt:first-of-type{border-top:0}
+.opt b{font:800 16px var(--body)} .opt small{display:block;color:var(--muted);font-size:13px}
+.sw{position:relative;width:58px;height:32px;border-radius:999px;border:0;background:#d8ccb8;cursor:pointer;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:left .2s}
+.sw[aria-checked="true"]{background:var(--ok)} .sw[aria-checked="true"]::after{left:30px}
+.sw:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td{padding:8px 4px;border-top:1px dashed rgba(120,90,50,.2)} td:last-child{text-align:right;white-space:nowrap}
+tr:first-child td{border-top:0}
+.tag{white-space:nowrap;display:inline-block;font:800 11px var(--body);letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:3px 8px;background:var(--paper2);color:var(--muted)}
+.tag.ok{background:#e4f2d8;color:#3f7a2e}
+.danger{color:#fff;background:linear-gradient(180deg,#e08070,#c0503a)}
+.steps{margin:0;padding-left:20px;line-height:1.6;color:var(--ink)}
+</style>
+<div class="wrap">
+  <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Área dos Pais</h1><span style="width:96px"></span></div>
+
+  <section class="box">
+    <h2>⚙️ Configurações</h2>
+    <div class="opt"><div><b>Narração</b><small>A narradora e os personagens falam (filmes e jogos).</small></div><button class="sw" id="voz" role="switch" aria-checked="true" aria-label="Narração"></button></div>
+    <div class="opt"><div><b>Música</b><small>Trilha suave de fundo nos filmes e nos jogos dos filmes.</small></div><button class="sw" id="musica" role="switch" aria-checked="true" aria-label="Música"></button></div>
+    <p id="saved" aria-live="polite"></p>
+  </section>
+
+  <section class="box">
+    <h2>📈 O que a criança já fez</h2>
+    <table id="prog"></table>
+  </section>
+
+  <section class="box">
+    <h2>📲 Instalar no celular</h2>
+    <p>O Bíblia Play pode ficar na tela inicial, como um aplicativo, e funciona mesmo sem internet depois de aberto uma vez.</p>
+    <div class="row" style="justify-content:flex-start"><button class="btn go" id="install" hidden>📲 Instalar agora</button></div>
+    <ol class="steps">
+      <li><b>Android (Chrome):</b> toque nos 3 pontinhos ⋮ → <b>Instalar app</b> (ou "Adicionar à tela inicial").</li>
+      <li><b>iPhone (Safari):</b> toque em compartilhar ⬆️ → <b>Adicionar à Tela de Início</b>.</li>
+    </ol>
+  </section>
+
+  <section class="box">
+    <h2>🧹 Apagar progresso</h2>
+    <p>Apaga filmes assistidos e estrelas deste aparelho (por exemplo, para outra criança começar do zero). As configurações acima continuam.</p>
+    <div class="row" style="justify-content:flex-start" id="eraseRow"><button class="btn ghost" id="erase">Apagar progresso…</button></div>
+    <div class="row" style="justify-content:flex-start" id="confirmRow" hidden><b style="align-self:center">Tem certeza?</b><button class="btn danger" id="yes">Sim, apagar</button><button class="btn ghost" id="no">Cancelar</button></div>
+  </section>
+</div>
+<script>
+%%COMMONLITE%%
+const FILMS=[['criacao','A Criação'],['noe','Noé e a Arca'],['davi','Davi e Golias'],['jonas','Jonas e o Grande Peixe'],['natal','O Nascimento de Jesus'],['tempestade','Jesus Acalma a Tempestade']];
+const GAMES=[['cacapalavras','Caça-palavras'],['memoria','Jogo da memória'],['quiz','Quiz bíblico']];
+function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function cfg(){ try{ return JSON.parse(get('bp_cfg')||'{}'); }catch(e){ return {}; } }
+function setCfg(k,v){ const c=cfg(); c[k]=v; try{ localStorage.setItem('bp_cfg',JSON.stringify(c)); $('saved').textContent='Salvo neste aparelho ✓'; }catch(e){ $('saved').textContent='Não foi possível salvar neste navegador.'; } }
+for(const id of ['voz','musica']){ const b=$(id); b.setAttribute('aria-checked', cfg()[id]===false? 'false':'true'); b.onclick=()=>{ const on=b.getAttribute('aria-checked')!=='true'; b.setAttribute('aria-checked',on); setCfg(id,on); }; }
+function stars(n){ return n? '⭐'.repeat(n)+'☆'.repeat(3-n) : '—'; }
+function render(){ const t=$('prog'); t.innerHTML='';
+  for(const [id,name] of FILMS){ const seen=!!get('bp_'+id+'_visto'), st=+(get('bp_'+id+'_estrelas')||0);
+    t.insertAdjacentHTML('beforeend',`<tr><td>🎬 ${name}</td><td><span class="tag ${seen?'ok':''}">${seen?'Assistido':'Não assistido'}</span></td><td>🎮 ${stars(st)}</td></tr>`); }
+  for(const [id,name] of GAMES){ const st=+(get('bp_'+id+'_estrelas')||0); t.insertAdjacentHTML('beforeend',`<tr><td>🎲 ${name}</td><td></td><td>${stars(st)}</td></tr>`); } }
+render();
+$('erase').onclick=()=>{ $('eraseRow').hidden=true; $('confirmRow').hidden=false; };
+$('no').onclick=()=>{ $('eraseRow').hidden=false; $('confirmRow').hidden=true; };
+$('yes').onclick=()=>{ try{ Object.keys(localStorage).filter(k=>k.startsWith('bp_') && k!=='bp_cfg').forEach(k=>localStorage.removeItem(k)); }catch(e){} render(); $('eraseRow').hidden=false; $('confirmRow').hidden=true; $('saved').textContent=''; $('erase').textContent='Progresso apagado ✓'; };
+let deferred=null; addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferred=e; $('install').hidden=false; });
+$('install').onclick=async()=>{ if(!deferred) return; deferred.prompt(); try{ await deferred.userChoice; }catch(e){} deferred=null; $('install').hidden=true; };
+</script>

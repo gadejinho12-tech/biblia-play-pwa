@@ -525,7 +525,7 @@ const MOOD={ pasto:[[60,64,67],[65,69,72],[62,65,69],[67,71,74]], vale:[[57,60,6
   acampamento:[[57,60,64],[55,59,62],[53,57,60],[52,56,59]], saul:[[57,60,64],[60,64,67],[53,57,60],[55,59,62]], riacho:[[60,64,67],[57,60,64],[65,69,72],[67,71,74]],
   duelo:[[45,52,57,60],[44,51,56,60],[41,48,53,57],[43,50,55,59]], funda:[[45,52,57,60],[47,54,59,62],[48,55,60,64],[50,57,62,66]], vitoria:[[62,66,69,74],[67,71,74,79],[64,67,71,76],[62,66,69,74]], obra:[[60,64,67],[65,69,72],[67,71,74],[60,64,67]] };
 let chordT=0, chordI=0;
-function music(dt,sc){ if(!AC) return; musicGain.gain.value=lerp(musicGain.gain.value, voiceBusy()? .28 : .5, .05); chordT-=dt; if(chordT<=0){ chordT=3.8; const set=MOOD[sc]||MOOD.obra; const ch=set[chordI%set.length]; pad(ch,4.6,.05,(sc==='golias'||sc==='duelo'||sc==='funda')?800:1500); if(sc==='golias'||sc==='duelo'){ thump(); }
+function music(dt,sc){ if(!AC || window.__noMusic) return; musicGain.gain.value=lerp(musicGain.gain.value, voiceBusy()? .28 : .5, .05); chordT-=dt; if(chordT<=0){ chordT=3.8; const set=MOOD[sc]||MOOD.obra; const ch=set[chordI%set.length]; pad(ch,4.6,.05,(sc==='golias'||sc==='duelo'||sc==='funda')?800:1500); if(sc==='golias'||sc==='duelo'){ thump(); }
   if(sc!=='golias'&&sc!=='duelo') ch.forEach((n,i)=>pluck(n+12,.035,i*.22+.4)); chordI++; } }
 
 /* ================= PLAYER ================= */
@@ -740,5 +740,6 @@ function frame(ts){
   requestAnimationFrame(frame);
 }
 fit(); requestAnimationFrame(frame);
+try{ const _c=JSON.parse(localStorage.getItem('bp_cfg')||'{}'); if(_c.voz===false){ voiceOn=false; $('vo').textContent='🔇'; $('vo').setAttribute('aria-label','Narração desligada'); } if(_c.musica===false) window.__noMusic=true; }catch(e){}
 window.__P=P; window.__GS=GS; window.__cam=cam; window.__startGame=startGame; window.__SCRIPT=SCRIPT; window.__enter=enterLine;
 </script>

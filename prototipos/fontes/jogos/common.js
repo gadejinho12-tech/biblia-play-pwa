@@ -33,5 +33,9 @@ const STORIES=[
   { id:'noe', name:'Noé e a Arca', who:'noe', ref:'Gênesis 6–9' },
   { id:'davi', name:'Davi e Golias', who:'davi', ref:'1 Samuel 17' },
   { id:'jonas', name:'Jonas', who:'jonas', ref:'Jonas 1–4' },
+  { id:'natal', name:'O Nascimento de Jesus', who:'maria', ref:'Lucas 2 · Mateus 2' },
   { id:'tempestade', name:'Jesus Acalma a Tempestade', who:'jesus', ref:'Marcos 4' },
 ];
+
+// configuração da Área dos Pais
+try{ const _c=JSON.parse(localStorage.getItem('bp_cfg')||'{}'); if(_c.voz===false){ voiceOn=false; addEventListener('DOMContentLoaded',()=>{}); setTimeout(()=>{ const b=document.getElementById('vo'); if(b){ b.textContent='🔇'; b.setAttribute('aria-label','Narração desligada'); } },0); } }catch(e){}

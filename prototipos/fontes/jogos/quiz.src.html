@@ -60,18 +60,20 @@ const QTEXT=["O que Deus criou no primeiro dia?","Em qual dia Deus fez o sol, a 
 "Para qual cidade Deus mandou Jonas?","O que Jonas fez quando Deus o chamou?","O que engoliu Jonas?","O que Jonas fez dentro do peixe?","O que Deus fez com o povo de Nínive?",
 "Onde Jesus estava durante a tempestade?","Quem acordou Jesus?","O que Jesus disse ao mar?","O que aconteceu depois que Jesus falou?","Quando sentimos medo, o que podemos fazer?"];
 QS.forEach((q,i)=>{ q.q=QTEXT[i]; q.rec='q'+String(i+1).padStart(2,'0'); });
+const EXTRA=%%EXTRA%%; EXTRA.forEach((e,i)=>QS.push({s:e[0],p:e[1],q:e[2],a:e[3],ref:e[4],rec:'q'+String(26+i).padStart(2,'0')}));
 let round=[], idx=0, score=0, results=[], sel=null, answered=false;
 const st=$('stories');
-const all={id:'todas',name:'Todas as histórias',who:'noe',ref:'8 perguntas sorteadas'};
-[all,...STORIES].forEach(s=>{ const b=document.createElement('button'); b.className='choice'; b.appendChild(portrait(s.who,96)); b.insertAdjacentHTML('beforeend',`<span>${s.name}</span><small>${s.id==='todas'?s.ref:s.ref+' · 5 perguntas'}</small>`); b.onclick=()=>{ sfx.tap(); start(s); }; st.appendChild(b); });
+const all={id:'todas',name:'Todas as histórias',who:'noe',ref:'10 perguntas sorteadas'};
+const DANIEL={id:'daniel',name:'Daniel na cova dos leões',who:'leao',ref:'Daniel 6'};
+[all,...STORIES,DANIEL].forEach(s=>{ const b=document.createElement('button'); b.className='choice'; b.appendChild(portrait(s.who,96)); b.insertAdjacentHTML('beforeend',`<span>${s.name}</span><small>${s.id==='todas'?s.ref:s.ref+' · '+Math.min(10,QS.filter(x=>x.s===s.id).length)+' perguntas'}</small>`); b.onclick=()=>{ sfx.tap(); start(s); }; st.appendChild(b); });
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-function start(s){ sel=s; round = s.id==='todas'? shuffle(QS).slice(0,8) : shuffle(QS.filter(q=>q.s===s.id)); idx=0; score=0; results=[]; $('pick').hidden=true; $('game').hidden=false; $('win').hidden=true; ac(); say('qi'); setTimeout(show, 3200); dots(); $('qtext').textContent='Preparando a primeira pergunta...'; $('opts').innerHTML=''; $('qpic').innerHTML=''; $('qref').textContent=''; }
+function start(s){ sel=s; round = s.id==='todas'? shuffle(QS).slice(0,10) : shuffle(QS.filter(q=>q.s===s.id)).slice(0,10); idx=0; score=0; results=[]; $('pick').hidden=true; $('game').hidden=false; $('win').hidden=true; ac(); say('qi'); setTimeout(show, 3200); dots(); $('qtext').textContent='Preparando a primeira pergunta...'; $('opts').innerHTML=''; $('qpic').innerHTML=''; $('qref').textContent=''; }
 function dots(){ const d=$('dots'); d.innerHTML=''; round.forEach((q,i)=>{ const e=document.createElement('i'); if(i<results.length) e.className=results[i]?'ok':'no'; else if(i===idx) e.className='now'; d.appendChild(e); }); }
 function show(){ if($('game').hidden) return; const q=round[idx]; answered=false; $('next').hidden=true; dots();
-  const story=STORIES.find(s=>s.id===q.s); $('qref').textContent=story.name+' · pergunta '+(idx+1)+' de '+round.length; $('qtext').textContent=q.q;
+  const story=[...STORIES,DANIEL].find(s=>s.id===q.s); $('qref').textContent=story.name+(q.ref?' · '+q.ref:'')+' · '+(idx+1)+' de '+round.length; $('qtext').textContent=q.q;
   const pic=$('qpic'); pic.innerHTML=''; pic.appendChild(portrait(q.p,88));
   const o=$('opts'); o.innerHTML=''; const opts=shuffle(q.a.map((t,k)=>({t,ok:k===0})));
-  opts.forEach((op,k)=>{ const b=document.createElement('button'); b.className='opt'; b.innerHTML='<span class="l">'+'ABC'[k]+'</span><span>'+op.t+'</span>'; b.dataset.ok=op.ok?1:0; b.onclick=()=>answer(b); o.appendChild(b); });
+  opts.forEach((op,k)=>{ const b=document.createElement('button'); b.className='opt'; b.innerHTML='<span class="l">'+'ABCD'[k]+'</span><span>'+op.t+'</span>'; b.dataset.ok=op.ok?1:0; b.onclick=()=>answer(b); o.appendChild(b); });
   say(q.rec); }
 function answer(b){ if(answered) return; answered=true; const ok=b.dataset.ok==='1'; results.push(ok); if(ok){ score++; b.classList.add('ok'); sfx.good(); say('qa'); }
   else { b.classList.add('no'); sfx.bad(); const r=[...$('opts').children].find(x=>x.dataset.ok==='1'); r.classList.add('ok','glow'); say('qb'); }

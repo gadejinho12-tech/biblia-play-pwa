@@ -2,6 +2,12 @@
 <html lang="pt-BR">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#fbf3e3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bíblia Play">
 <title>Bíblia Play Filmes</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,6 +66,9 @@ section{scroll-margin-top:70px}
 .game span.d{color:var(--muted);font-size:14px;line-height:1.4}
 .game span.s{font:800 13px var(--body)}
 .game:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:11px 18px;font:800 15px var(--body);text-decoration:none;border:0;cursor:pointer}
+.btn.go{color:#fff;background:linear-gradient(180deg,var(--gold2),var(--gold))}
+.btn.ghost{color:var(--ink);border:2px solid rgba(58,44,36,.18);background:transparent}
 .parents{background:var(--card);border-radius:14px;padding:20px 22px;display:grid;gap:12px;box-shadow:0 0 0 1px rgba(120,90,50,.1)}
 .parents ul{margin:0;padding-left:18px;display:grid;gap:6px;line-height:1.5;max-width:70ch}
 footer{text-align:center;color:var(--muted);font-size:13px}
@@ -109,13 +118,14 @@ footer{text-align:center;color:var(--muted);font-size:13px}
 
   <section class="parents">
     <h2>👨‍👩‍👧 Para os pais</h2>
+    <div class="row" style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn ghost" href="pais.html">⚙️ Área dos pais: configurações e progresso</a><button class="btn go" id="installBtn" hidden>📲 Instalar no celular</button></div>
     <ul>
       <li>Cada filme tem uns <b>2 minutos</b>, em 4 capítulos, com legenda que acompanha a narração (ajuda quem está aprendendo a ler).</li>
       <li>No final, um <b>resumo</b> com 3 lições, um versículo curto e uma <b>pergunta para conversar em família</b>.</li>
       <li>Depois do filme, a criança ganha um <b>jogo da própria história</b>. Ninguém perde: é para brincar e lembrar o que aprendeu.</li>
     </ul>
   </section>
-  <footer>Bíblia Play · protótipo</footer>
+  <footer>Bíblia Play · <a href="pais.html" style="color:inherit">Área dos pais</a></footer>
 </div>
 
 <script>
@@ -155,4 +165,8 @@ const GAMES=[
 const gbox=document.getElementById('games');
 for(const g of GAMES){ const st=+(get('bp_'+g.id+'_estrelas')||0); const a=document.createElement('a'); a.className='game'; a.href=g.id+'.html';
   a.innerHTML=`<span class="gi">${g.icon}</span><b>${g.name}</b><span class="d">${g.desc}</span><span class="s">${st? '⭐'.repeat(st)+'☆'.repeat(3-st) : '▶ Jogar'}</span>`; gbox.appendChild(a); }
+// app: funciona sem internet e pode ser instalado (só no site, não nesta prévia)
+if('serviceWorker' in navigator && location.protocol==='https:' && !/claude\.ai|claudeusercontent/.test(location.hostname)){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+let deferredInstall=null; addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredInstall=e; const b=document.getElementById('installBtn'); if(b) b.hidden=false; });
+document.getElementById('installBtn').onclick=async()=>{ if(!deferredInstall) return; deferredInstall.prompt(); try{ await deferredInstall.userChoice; }catch(e){} deferredInstall=null; document.getElementById('installBtn').hidden=true; };
 </script>
