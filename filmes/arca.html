@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script src="conta-config.js"></script><script src="conta.js"></script>
 <style>.bp-hello{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 6px;font:800 18px/1.2 Nunito,system-ui,sans-serif;color:#3a2c24}.bp-hello[hidden]{display:none!important}.bp-hello img{width:54px;height:54px;border-radius:50%;flex:none;animation:bpHop 1.2s ease-in-out infinite alternate}@keyframes bpHop{to{transform:translateY(-5px) rotate(-4deg)}}@media (prefers-reduced-motion:reduce){.bp-hello img{animation:none}}</style>
 <script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
   document.querySelectorAll('.bp-hello').forEach(el=>{ const i=el.querySelector('img'); i.src=img; el.querySelector('span').textContent=a.nome? 'Muito bem, '+a.nome+'!' : 'Muito bem!'; el.hidden=false; }); }catch(e){} })();</script>

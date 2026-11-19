@@ -28,6 +28,6 @@ for src,dst,sid,sv in [('noe-filme.html','shelf/noe.html','noe','st'),('davi-fil
   addEventListener('pointermove',()=>{ if(typeof poke==='function' && !c.hidden) poke(); },{passive:true}); })();</script>
 """
     s=s+'\n'+HELLO
-    pathlib.Path(dst).write_text(HEAD+s)
+    pathlib.Path(dst).write_text(HEAD+'<script src="conta-config.js"></script><script src="conta.js"></script>\n'+s)
 print('ok')
 # (o atalho #jogo é aplicado logo depois deste script)

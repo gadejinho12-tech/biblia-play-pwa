@@ -1,0 +1,63 @@
+<title>Entrar no Bíblia Play</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;0,9..144,900;1,9..144,600&family=Nunito:wght@600;700;800;900&display=swap">
+<script src="conta-config.js"></script><script src="conta.js"></script>
+<style>
+%%MARCACSS%%
+/* Layout: um cartão central sobre a noite — passo 1 e-mail, passo 2 código, passo 3 pronto. */
+body{background:radial-gradient(120% 90% at 70% 0%,var(--noite2),var(--noite) 60%,var(--noite3));min-height:100%}
+.wrapc{display:grid;place-items:center;padding-block:34px 60px}
+.card{background:var(--cartao);border-radius:26px;padding:clamp(22px,4vw,34px);width:100%;max-width:440px;display:grid;gap:14px;box-shadow:0 30px 60px rgba(5,6,25,.45)}
+.card h1{margin:0;font-size:30px;line-height:1.08}
+.card p{margin:0;color:var(--tinta2)}
+.code{letter-spacing:.5em;text-align:center;font-size:26px;font-variant-numeric:tabular-nums}
+.small{font:800 14px var(--body);color:var(--tinta2);background:none;border:0;cursor:pointer;text-decoration:underline;padding:0;justify-self:start}
+.ok{font-size:56px;line-height:1;text-align:center}
+.off{background:rgba(240,185,74,.18);border-radius:14px;padding:12px 14px;color:#6a4a10;font-weight:800}
+</style>
+%%LOGO%%
+<header class="bar gut"><div class="in"><a class="brand" href="index.html"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Bíblia <i>Play</i></span></a><a class="pill" href="index.html">← Estante</a></div></header>
+<main class="gut wrapc">
+  <form class="card" id="s1">
+    <h1>Entrar</h1>
+    <p>Digite o e-mail que você usou para assinar. Vamos mandar um código de 6 números. Não precisa de senha.</p>
+    <label for="email" style="font-weight:900">Seu e-mail</label>
+    <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="voce@email.com" required>
+    <button class="btn play" id="send" type="submit">Receber o código</button>
+    <div class="msg" id="m1" aria-live="polite"></div>
+    <a class="small" href="assinar.html" id="toSub">Ainda não assinou? Ver os planos</a>
+    <div class="off" id="off" hidden>O login ainda não está ligado. Por enquanto, tudo está liberado para experimentar! 🎉</div>
+  </form>
+  <form class="card" id="s2" hidden>
+    <h1>Confira seu e-mail</h1>
+    <p>Mandamos um código para <b id="em"></b>. Ele chega em até 1 minuto. Olhe também a caixa de spam.</p>
+    <label for="code" style="font-weight:900">Código</label>
+    <input id="code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" required>
+    <button class="btn play" id="ver" type="submit">Entrar</button>
+    <div class="msg" id="m2" aria-live="polite"></div>
+    <button class="small" type="button" id="back">Usar outro e-mail</button>
+  </form>
+  <div class="card" id="s3" hidden>
+    <div class="ok">🎉</div><h1 id="t3">Tudo liberado!</h1><p id="p3">Bom proveito nas histórias.</p>
+    <a class="btn play" id="go" href="index.html">Ir para a estante</a>
+    <button class="small" type="button" id="out">Sair desta conta</button>
+  </div>
+</main>
+<script>
+const $=id=>document.getElementById(id), de=new URLSearchParams(location.search).get('de'), B=window.BPConta;
+const show=n=>['s1','s2','s3'].forEach((id,i)=>$(id).hidden=i!==n-1);
+if(!B||!B.ON){ $('off').hidden=false; $('send').disabled=true; }
+function done(o){ show(3); if(o&&o.ativo){ $('t3').textContent='Tudo liberado!'; $('p3').textContent='Assinatura ativa para '+o.email+'.'; $('go').href=(de||'index')+'.html'; $('go').textContent=de?'Continuar de onde parei':'Ir para a estante'; }
+  else { $('t3').textContent='Você entrou, mas…'; $('p3').textContent='Não achamos assinatura ativa para '+(o?o.email:'esse e-mail')+'. Se você acabou de pagar, espere 1 minutinho e entre de novo. Se usou outro e-mail na compra, saia e entre com ele.'; $('go').href='assinar.html'; $('go').textContent='Ver os planos'; } }
+$('s1').onsubmit=async e=>{ e.preventDefault(); if(!B||!B.ON) return; const em=$('email').value.trim(); if(!/^\S+@\S+\.\S+$/.test(em)){ $('m1').className='msg err'; $('m1').textContent='Confira o e-mail: parece que falta alguma coisa.'; return; }
+  $('send').disabled=true; $('m1').className='msg'; $('m1').textContent='Enviando…';
+  try{ await B.sendCode(em); $('em').textContent=em; show(2); $('code').focus(); }catch(err){ $('m1').className='msg err'; $('m1').textContent=/rate|seconds/i.test(err.message)?'Espere 1 minuto antes de pedir outro código.':'Não conseguimos enviar. Confira a internet e tente de novo.'; }
+  $('send').disabled=false; };
+$('s2').onsubmit=async e=>{ e.preventDefault(); $('ver').disabled=true; $('m2').className='msg'; $('m2').textContent='Conferindo…';
+  try{ const o=await B.verify($('email').value,$('code').value); done(o); }catch(err){ $('m2').className='msg err'; $('m2').textContent='Código errado ou vencido. Confira os 6 números ou peça outro.'; }
+  $('ver').disabled=false; };
+$('back').onclick=()=>show(1);
+$('out').onclick=async()=>{ await B.logout(); show(1); };
+if(B&&B.ON) B.refresh().then(o=>{ if(o) done(o); }).catch(()=>{});
+</script>

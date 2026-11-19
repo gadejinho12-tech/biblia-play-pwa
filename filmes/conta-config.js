@@ -1,0 +1,20 @@
+/* ===== CONFIGURAÇÃO DA CONTA E DO PAGAMENTO =====
+   Enquanto SUPABASE_URL estiver vazio, o site funciona como antes: tudo liberado, sem login.
+   Depois de criar o Supabase e os produtos na Kiwify, é só preencher aqui. */
+window.BP_CONTA = {
+  // Supabase (Settings → API). A "anon key" é pública: pode ficar no site.
+  SUPABASE_URL: '',
+  SUPABASE_ANON_KEY: '',
+
+  // Links de pagamento da Kiwify (um para cada plano)
+  KIWIFY_MENSAL: '',
+  KIWIFY_ANUAL: '',
+
+  // Preços mostrados na página "Assinar"
+  PRECO_MENSAL: 'R$ 14,90',
+  PRECO_ANUAL: 'R$ 119,00',
+  PRECO_ANUAL_MES: 'R$ 9,92',
+
+  // O que é grátis (o resto pede assinatura)
+  GRATIS: ['criacao', 'noe', 'memoria', 'arca', 'ajudante', 'pais', 'marca', 'assinar', 'entrar', 'index'],
+};

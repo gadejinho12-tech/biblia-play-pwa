@@ -12,6 +12,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,600&family=Nunito:wght@600;700;800;900&display=swap">
+<script src="conta-config.js"></script><script src="conta.js"></script>
 <style>
 /* Layout: "noite de histórias" — barra fixa com a marca; palco noturno (filme em destaque rodando ao vivo);
    prateleiras de cartões vivos (rolam de lado no celular, grade no computador); faixa para a família; rodapé. */
@@ -48,6 +49,7 @@ a{color:inherit}
 .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--estrela);color:var(--noite);font-size:20px;text-decoration:none;overflow:hidden;flex:none;box-shadow:0 0 0 2px rgba(255,246,224,.4)}
 .av img{width:100%;height:100%}
 @media (max-width:520px){ .word{font-size:19px} .pill .lbl{display:none} .brand svg{width:34px;height:34px} }
+@media (max-width:430px){ .bar .brand .word{display:none} .bar .in{gap:8px} }
 
 /* palco noturno */
 .stage{background:radial-gradient(120% 90% at 70% 0%,var(--noite2),var(--noite) 55%,var(--noite3));color:#fff6e0;position:relative;overflow:hidden}
@@ -97,6 +99,8 @@ main{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(30px,5vw,48px);p
 .playo svg{width:18px;height:18px;margin-left:3px}
 .badge{position:absolute;right:10px;top:10px;font:900 11px var(--body);letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:999px;background:var(--coral);color:#fff}
 .badge.ok{background:var(--oliveira)}
+.badge.lock{background:var(--noite);color:var(--estrela2)}
+.card.locked .thumb canvas{filter:saturate(.75)}
 .body{padding:14px 16px 16px;display:grid;gap:6px;align-content:start}
 .body h3{font:900 21px/1.15 var(--display);margin:0;text-wrap:balance}
 .meta{font:700 13px var(--body);color:var(--tinta2)}
@@ -166,6 +170,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
   <a class="brand" href="#topo" aria-label="Bíblia Play, início"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Bíblia <i>Play</i></span></a>
   <a class="pill" href="arca.html" aria-label="Minha Arca e moedinhas">🪙 <b id="purse">0</b><span class="lbl"> · Minha Arca</span></a>
   <button class="pill gift" id="bau" aria-label="Baú do dia">🎁<span class="lbl"> Baú do dia</span><span class="dot" id="bauDot"></span></button>
+  <a class="pill" id="acct" href="assinar.html" hidden>⭐<span class="lbl"> Assinar</span></a>
   <a class="av" id="me" href="ajudante.html" aria-label="Criar meu ajudante">🧒</a>
 </div></header>
 
@@ -611,18 +616,22 @@ const SOON=[['Daniel na Cova dos Leões','Daniel 6','leao'],['Pães e Peixes','J
 const starTxt=n=>'★'.repeat(n)+'☆'.repeat(3-n);
 const TRI='<svg aria-hidden="true"><use href="#tri"/></svg>';
 
-for(const f of FILMS){ const seen=!!get('bp_'+f.id+'_visto'), st=+(get('bp_'+f.id+'_estrelas')||0);
-  const el=document.createElement('article'); el.className='card';
-  el.innerHTML=`<a class="thumb" href="${f.id}.html" aria-label="Assistir ${f.title}"><canvas></canvas><span class="badge ${seen?'ok':''}">${seen?'✓ Assistido':'Novo'}</span><span class="playo">${TRI}</span></a>
+const BC=window.BPConta||{ON:false,isFree:()=>true,isSub:()=>true};
+const LOCK=id=>BC.ON && !BC.isFree(id) && !BC.isSub();
+const HREF=(id,h)=>LOCK(id)? 'assinar.html?de='+id : (h||id+'.html');
+if(BC.ON){ $('acct').hidden=false; if(BC.isSub()){ $('acct').href='entrar.html'; $('acct').innerHTML='👤<span class="lbl"> Minha conta</span>'; } }
+for(const f of FILMS){ const seen=!!get('bp_'+f.id+'_visto'), st=+(get('bp_'+f.id+'_estrelas')||0), lk=LOCK(f.id);
+  const el=document.createElement('article'); el.className='card'+(lk?' locked':'');
+  el.innerHTML=`<a class="thumb" href="${HREF(f.id)}" aria-label="${lk?'Assinar para assistir':'Assistir'} ${f.title}"><canvas></canvas><span class="badge ${lk?'lock':(seen?'ok':'')}">${lk?'🔒 Assinantes':(seen?'✓ Assistido':'Novo')}</span><span class="playo">${TRI}</span></a>
     <div class="body"><h3>${f.title}</h3><div class="meta">${f.ref} · 2 min · 4 capítulos</div>
       <div class="game-line"><span>🎮 ${f.game}<br><span class="st" style="color:${st?'var(--ouro)':'var(--tinta2)'}">${st?starTxt(st):(seen?'Jogo liberado!':'Assista para liberar')}</span></span>
-      <a class="mini" href="${f.id}.html#jogo" ${seen?'':'aria-disabled="true" tabindex="-1"'}>Jogar</a></div></div>`;
+      <a class="mini" href="${HREF(f.id,f.id+'.html#jogo')}" ${seen&&!lk?'':'aria-disabled="true" tabindex="-1"'}>Jogar</a></div></div>`;
   document.querySelector('.rail[data-t="'+f.t+'"]').appendChild(el); vitrine(el.querySelector('canvas'),f.id); }
 
 vitrinePrep();
-for(const g of GAMES){ const st=+(get('bp_'+g.id+'_estrelas')||0); const el=document.createElement('article'); el.className='card';
-  el.innerHTML=`<a class="thumb" href="${g.href||g.id+'.html'}" aria-label="Jogar ${g.name}"><canvas></canvas><span class="playo">${TRI}</span></a>
-    <div class="body"><h3>${g.name}</h3><div class="meta">${g.desc}</div>${g.noStars?'':`<div class="game-line"><span class="st" style="color:${st?'var(--ouro)':'var(--tinta2)'}">${st?starTxt(st):'Ainda não jogado'}</span><a class="mini" href="${g.id}.html">Jogar</a></div>`}</div>`;
+for(const g of GAMES){ const st=+(get('bp_'+g.id+'_estrelas')||0), lk=LOCK(g.id); const el=document.createElement('article'); el.className='card'+(lk?' locked':'');
+  el.innerHTML=`<a class="thumb" href="${HREF(g.id,g.href)}" aria-label="Jogar ${g.name}"><canvas></canvas>${lk?'<span class="badge lock">🔒 Assinantes</span>':''}<span class="playo">${TRI}</span></a>
+    <div class="body"><h3>${g.name}</h3><div class="meta">${g.desc}</div>${g.noStars?'':`<div class="game-line"><span class="st" style="color:${st?'var(--ouro)':'var(--tinta2)'}">${st?starTxt(st):'Ainda não jogado'}</span><a class="mini" href="${HREF(g.id)}">Jogar</a></div>`}</div>`;
   $('games').appendChild(el); vitrine(el.querySelector('canvas'),g.id); }
 
 // "em breve": uma cena parada, desenhada uma vez
@@ -641,9 +650,9 @@ for(const [name,ref,kind] of SOON){ const el=document.createElement('article'); 
 let hi=Math.max(0,FILMS.findIndex(f=>!get('bp_'+f.id+'_visto'))), hv=vitrine($('hCanvas'),FILMS[hi].id,{offset:0}), hold=false;
 FILMS.forEach((f,i)=>{ const b=document.createElement('button'); b.setAttribute('aria-label',f.title); b.onclick=()=>{ showHero(i); hold=true; }; $('dots').appendChild(b); });
 function showHero(i){ hi=i; const f=FILMS[i], seen=!!get('bp_'+f.id+'_visto'); hv.scene=f.id; $('hTitle').textContent=f.title; $('hRef').textContent=f.ref+' · 2 minutos'; $('hLesson').textContent=f.lesson;
-  $('hPlay').href=$('hScreen').href=f.id+'.html'; $('hScreen').setAttribute('aria-label','Assistir '+f.title); $('hGame').href=f.id+'.html#jogo'; $('hTag').textContent='🎮 '+f.game;
-  if(seen){ $('hGame').removeAttribute('aria-disabled'); $('hGame').removeAttribute('tabindex'); } else { $('hGame').setAttribute('aria-disabled','true'); $('hGame').setAttribute('tabindex','-1'); }
-  $('hPlay').lastChild.textContent=seen?' Assistir de novo':' Assistir o filme';
+  $('hPlay').href=$('hScreen').href=HREF(f.id); $('hScreen').setAttribute('aria-label','Assistir '+f.title); $('hGame').href=HREF(f.id,f.id+'.html#jogo'); $('hTag').textContent='🎮 '+f.game;
+  if(seen && !LOCK(f.id)){ $('hGame').removeAttribute('aria-disabled'); $('hGame').removeAttribute('tabindex'); } else { $('hGame').setAttribute('aria-disabled','true'); $('hGame').setAttribute('tabindex','-1'); }
+  $('hPlay').lastChild.textContent=LOCK(f.id)?' Assinar para assistir':(seen?' Assistir de novo':' Assistir o filme');
   [...$('dots').children].forEach((b,j)=>b.setAttribute('aria-current',j===i)); }
 showHero(hi);
 ['mouseenter','focusin','touchstart'].forEach(ev=>document.querySelector('.stage').addEventListener(ev,()=>hold=true,{passive:true}));

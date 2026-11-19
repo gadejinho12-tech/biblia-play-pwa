@@ -1,0 +1,66 @@
+<title>Assinar Bíblia Play</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;0,9..144,900;1,9..144,600&family=Nunito:wght@600;700;800;900&display=swap">
+<script src="conta-config.js"></script><script src="conta.js"></script>
+<style>
+%%MARCACSS%%
+/* Layout: topo noturno com a promessa; dois planos lado a lado (anual em destaque); o que está incluído; "já assinei". */
+.hero{background:radial-gradient(120% 100% at 70% 0%,var(--noite2),var(--noite) 60%,var(--noite3));color:#fff6e0}
+.hero .in{padding-block:28px 90px;display:grid;gap:12px;text-align:center;justify-items:center}
+.hero h1{font-size:clamp(32px,6vw,54px);line-height:1.03;margin:0;max-width:18ch}
+.hero h1 i{color:var(--estrela)}
+.hero p{margin:0;max-width:48ch;color:#e6e0f2;font-size:18px}
+.lockmsg{background:rgba(240,185,74,.15);color:var(--estrela2);border-radius:999px;padding:6px 14px;font:800 14px var(--body)}
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:760px;margin:-64px auto 0;position:relative}
+@media (max-width:640px){ .plans{grid-template-columns:1fr} }
+.plan{background:var(--cartao);border-radius:24px;padding:24px;display:grid;gap:10px;box-shadow:0 18px 40px rgba(40,30,20,.14),0 0 0 1px rgba(120,90,50,.12);align-content:start}
+.plan.best{box-shadow:0 18px 40px rgba(40,30,20,.18),0 0 0 3px var(--estrela)}
+.plan .tag{justify-self:start;font:900 12px var(--body);letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:5px 10px;background:var(--papel2);color:var(--tinta2)}
+.plan.best .tag{background:var(--estrela);color:#3a2408}
+.plan h2{margin:0;font-size:26px}
+.price{font:900 40px/1 var(--display);font-variant-numeric:tabular-nums}
+.price small{font:800 16px var(--body);color:var(--tinta2)}
+.plan .note{color:var(--tinta2);font-size:15px;margin:0}
+.plan .btn{margin-top:6px}
+.soon{font:800 14px var(--body);color:var(--coral);text-align:center}
+.incl{max-width:760px;margin:34px auto 0;display:grid;gap:10px}
+.incl h3{margin:0 0 4px;font-size:24px}
+.incl ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
+@media (max-width:640px){ .incl ul{grid-template-columns:1fr} }
+.incl li{display:flex;gap:10px;align-items:flex-start}
+.incl li b{color:var(--oliveira)}
+.already{max-width:760px;margin:30px auto 50px;background:var(--noite);color:#fff6e0;border-radius:22px;padding:20px 22px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.already b{font:900 20px var(--display)}
+.fine{max-width:760px;margin:0 auto 40px;color:var(--tinta2);font-size:14px}
+</style>
+%%LOGO%%
+<header class="bar gut"><div class="in"><a class="brand" href="index.html"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Bíblia <i>Play</i></span></a><a class="pill" href="index.html">← Estante</a></div></header>
+<section class="hero gut"><div class="in">
+  <span class="lockmsg" id="lockmsg" hidden>🔒 Esse conteúdo é para assinantes</span>
+  <h1>Todas as histórias, <i>todos os jogos</i>, toda semana algo novo.</h1>
+  <p>Filmes curtos da Bíblia com narração, jogo de recompensa e um resumo para conversar em família. Sem anúncios.</p>
+</div></section>
+<main class="gut"><div class="in">
+  <div class="plans">
+    <div class="plan best"><span class="tag">Mais escolhido · 2 meses grátis</span><h2>Anual</h2><div class="price" id="pAnual">R$ 119<small> /ano</small></div><p class="note" id="pAnualMes">Sai por R$ 9,92 por mês.</p><a class="btn play" id="bAnual" href="#">Assinar o anual</a></div>
+    <div class="plan"><span class="tag">Flexível</span><h2>Mensal</h2><div class="price" id="pMensal">R$ 14,90<small> /mês</small></div><p class="note">Cancele quando quiser.</p><a class="btn dark" id="bMensal" href="#">Assinar o mensal</a></div>
+  </div>
+  <p class="soon" id="soon" hidden>Os pagamentos abrem em breve. Por enquanto, tudo está liberado para experimentar!</p>
+  <section class="incl"><h3>O que vem na assinatura</h3><ul>
+    <li><b>✓</b>Todos os filmes do Antigo e do Novo Testamento</li><li><b>✓</b>O jogo de recompensa de cada filme (3 fases)</li>
+    <li><b>✓</b>Caça-palavras, Quiz e Jogo da memória</li><li><b>✓</b>Um filme novo todo mês</li>
+    <li><b>✓</b>Vale para todos os filhos da casa</li><li><b>✓</b>Funciona sem internet depois de aberto</li></ul></section>
+  <div class="already"><div><b>Já assinou?</b><div>Entre com o e-mail que você usou na compra.</div></div><a class="btn play" id="bEntrar" href="entrar.html">Entrar</a></div>
+  <p class="fine">O pagamento é feito na Kiwify (Pix ou cartão). Depois de pagar, entre aqui com o mesmo e-mail e tudo é liberado na hora.</p>
+</div></main>
+<script>
+const $=id=>document.getElementById(id), C=window.BP_CONTA||{}, de=new URLSearchParams(location.search).get('de');
+if(de) $('lockmsg').hidden=false;
+$('pMensal').firstChild.textContent=C.PRECO_MENSAL||'R$ 14,90'; $('pAnual').firstChild.textContent=(C.PRECO_ANUAL||'R$ 119,00').replace(',00','');
+$('pAnualMes').textContent='Sai por '+(C.PRECO_ANUAL_MES||'R$ 9,92')+' por mês.';
+if(de) $('bEntrar').href='entrar.html?de='+encodeURIComponent(de);
+for(const [b,u] of [['bMensal',C.KIWIFY_MENSAL],['bAnual',C.KIWIFY_ANUAL]]){ if(u){ $(b).href=u; $(b).target='_blank'; $(b).rel='noopener'; } else { $(b).removeAttribute('href'); $(b).setAttribute('aria-disabled','true'); $(b).style.opacity=.55; $('soon').hidden=false; } }
+// já é assinante? volta para onde estava
+if(window.BPConta && BPConta.ON) BPConta.refresh().then(o=>{ if(o&&o.ativo) location.replace((de||'index')+'.html'); }).catch(()=>{});
+</script>

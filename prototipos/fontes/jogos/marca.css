@@ -1,0 +1,28 @@
+/* base visual da marca para as telas de dentro (noite + estrela + pergaminho) */
+:root{ --noite:#1d2150; --noite2:#2b3172; --noite3:#141739; --estrela:#f0b94a; --estrela2:#ffd77a; --ouro:#c98a3a; --papel:#fbf3e3; --papel2:#f3e6cc; --cartao:#fffaf0; --tinta:#33261f; --tinta2:#76624f; --oliveira:#5f9a4c; --coral:#e0705a;
+  --display:'Fraunces', Georgia, 'Times New Roman', serif; --body:'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; color-scheme:light; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--papel);color:var(--tinta);font:600 16px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--noite)}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--estrela);outline-offset:3px;border-radius:8px}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.in{max-width:1080px;margin:0 auto}
+.bar{background:var(--noite);color:#fff6e0}
+.bar .in{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;margin-right:auto}
+.brand svg{width:36px;height:36px}
+.word{font:900 21px/1 var(--display);letter-spacing:-.01em;white-space:nowrap}
+.word i{color:var(--estrela)}
+.pill{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 13px;font:800 14px var(--body);text-decoration:none;cursor:pointer;background:rgba(255,246,224,.1);color:#fff6e0;box-shadow:inset 0 0 0 1.5px rgba(255,246,224,.18)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 22px;font:900 16px var(--body);text-decoration:none;cursor:pointer}
+.btn.play{background:linear-gradient(180deg,var(--estrela2),var(--estrela));color:#3a2408;box-shadow:0 5px 0 #b97f22}
+.btn.play:active{transform:translateY(2px);box-shadow:0 3px 0 #b97f22}
+.btn.dark{background:var(--noite);color:#fff6e0}
+.btn.ghost{background:transparent;color:var(--tinta);box-shadow:inset 0 0 0 2px rgba(120,90,50,.25)}
+.btn[disabled]{opacity:.55;cursor:default}
+h1,h2,h3{font-family:var(--display);font-weight:900;letter-spacing:-.01em;text-wrap:balance}
+input{font:800 18px var(--body);color:var(--tinta);background:#fffdf7;border:2px solid rgba(120,90,50,.25);border-radius:14px;padding:13px 15px;width:100%}
+input:focus{border-color:var(--ouro);outline:none}
+.msg{min-height:1.5em;font-weight:800}
+.msg.err{color:#b4442e} .msg.ok{color:var(--oliveira)}
