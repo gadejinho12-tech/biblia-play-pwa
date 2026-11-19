@@ -20,3 +20,11 @@ pathlib.Path('shelf/ajudante.html').write_text(HEAD+s); print('ajudante', os.pat
 
 s=(J/'arca.src.html').read_text().replace('%%CSS%%',css).replace('%%ARTE%%',arte).replace('%%COMMON%%',common)
 pathlib.Path('shelf/arca.html').write_text(HEAD+HELLO+s); print('arca', os.path.getsize('shelf/arca.html'))
+
+vit=(J/'vitrine.js').read_text()
+_c=common; vit=_c[_c.index('const ANIMAIS='):_c.index('// histórias')]+'\n'+vit
+s=(J/'estante.src.html').read_text().replace('%%HELLO%%',HELLO).replace('%%ARTE%%',arte).replace('%%VITRINE%%',vit)
+pathlib.Path('shelf/index.html').write_text(s); print('estante', os.path.getsize('shelf/index.html'))
+
+s=(J/'marca.src.html').read_text().replace('%%ARTE%%',arte).replace('%%VITRINE%%',vit)
+pathlib.Path('shelf/marca.html').write_text(HEAD+s); print('marca', os.path.getsize('shelf/marca.html'))
