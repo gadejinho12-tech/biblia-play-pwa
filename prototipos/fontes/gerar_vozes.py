@@ -16,6 +16,9 @@ CAST = {
   'Marinheiro':   ('pm_santa',1.05, 0.92, False),
   'Jesus':        ('pm_alex', 0.94, 0.97, False),
   'Pedro':        ('pm_santa',1.02, 0.96, False),
+  'Maria':        ('pf_dora', 1.04, 1.13, False),
+  'José':         ('pm_santa',1.02, 1.05, False),
+  'Anjo':         ('pm_alex', 0.96, 1.08, True),
 }
 LINES = json.load(open(sys.argv[1]))
 OUT = sys.argv[2] if len(sys.argv)>2 else 'out'

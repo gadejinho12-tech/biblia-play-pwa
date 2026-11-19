@@ -91,7 +91,6 @@ footer{text-align:center;color:var(--muted);font-size:13px}
     <div class="shelf" data-t="NT"></div>
     <div class="soon">
       <div><b>Pães e peixes</b><small>João 6</small></div>
-      <div><b>O nascimento de Jesus</b><small>Lucas 2</small></div>
       <div><b>A ovelha perdida</b><small>Lucas 15</small></div>
       <div><b>Zaqueu</b><small>Lucas 19</small></div>
     </div>
@@ -121,6 +120,7 @@ footer{text-align:center;color:var(--muted);font-size:13px}
 
 <script>
 const FILMS=[
+  { id:'natal', t:'NT', title:'O Nascimento de Jesus', ref:'Lucas 2 · Mateus 2', min:2, img:'capa-natal.jpg', lesson:'Jesus é o maior presente de Deus para o mundo, porque Deus ama você.', game:'A Estrela de Belém (3 fases)' },
   { id:'tempestade', t:'NT', title:'Jesus Acalma a Tempestade', ref:'Marcos 4', min:2, img:'capa-tempestade.jpg', lesson:'Jesus tem poder sobre tudo: quando temos medo, podemos chamar por Ele.', game:'Silêncio, Mar! (3 fases)' },
   { id:'noe', t:'AT', title:'Noé e a Arca', ref:'Gênesis 6–9', min:2, img:'capa-noe.jpg', lesson:'Obedecer, não desistir e confiar nas promessas de Deus.', game:'Corrida para a Arca (3 fases)' },
   { id:'criacao', t:'AT', title:'A Criação', ref:'Gênesis 1–2', min:2, img:'capa-criacao.jpg', lesson:'Deus criou tudo com amor, e você é uma obra especial das mãos dele.', game:'Encha o Mundo de Vida (3 fases)' },
@@ -128,7 +128,7 @@ const FILMS=[
   { id:'davi', t:'AT', title:'Davi e Golias', ref:'1 Samuel 17', min:2, img:'capa-davi.jpg', lesson:'Deus é maior que qualquer gigante: quem confia nele tem coragem.', game:'A Funda de Davi (3 fases)' },
 ];
 const get=k=>{ try{ return localStorage.getItem(k); }catch(e){ return null; } };
-const ORDER=['criacao','noe','davi','jonas','tempestade']; FILMS.sort((x,y)=>ORDER.indexOf(x.id)-ORDER.indexOf(y.id));
+const ORDER=['criacao','noe','davi','jonas','natal','tempestade']; FILMS.sort((x,y)=>ORDER.indexOf(x.id)-ORDER.indexOf(y.id));
 for(const f of FILMS){ const shelf=document.querySelector('.shelf[data-t="'+f.t+'"]');
   const seen=!!get('bp_'+f.id+'_visto'), stars=+(get('bp_'+f.id+'_estrelas')||0);
   const el=document.createElement('article'); el.className='film';
