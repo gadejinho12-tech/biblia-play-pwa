@@ -1,3 +1,11 @@
 <style>.bp-hello{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 6px;font:800 18px/1.2 Nunito,system-ui,sans-serif;color:#3a2c24}.bp-hello[hidden]{display:none!important}.bp-hello img{width:54px;height:54px;border-radius:50%;flex:none;animation:bpHop 1.2s ease-in-out infinite alternate}@keyframes bpHop{to{transform:translateY(-5px) rotate(-4deg)}}@media (prefers-reduced-motion:reduce){.bp-hello img{animation:none}}</style>
 <script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
   document.querySelectorAll('.bp-hello').forEach(el=>{ const i=el.querySelector('img'); i.src=img; el.querySelector('span').textContent=a.nome? 'Muito bem, '+a.nome+'!' : 'Muito bem!'; el.hidden=false; }); }catch(e){} })();</script>
+<style>.bp-toast{position:fixed;left:50%;top:14px;transform:translate(-50%,-80px);z-index:9999;background:linear-gradient(180deg,#fff6d8,#ffe7a8);color:#5a3a10;font:800 18px/1 Nunito,system-ui,sans-serif;padding:10px 18px;border-radius:999px;box-shadow:0 8px 20px rgba(90,60,30,.25),0 0 0 2px #e8b65a;transition:transform .45s cubic-bezier(.3,1.5,.5,1);pointer-events:none;white-space:nowrap}.bp-toast.on{transform:translate(-50%,0)}</style>
+<script>
+/* moedinhas: ganhas nos filmes, jogos e no baú do dia; gastas na "Minha Arca" */
+function bpCoins(){ try{ return +(localStorage.getItem('bp_moedas')||0); }catch(e){ return 0; } }
+function bpToast(msg){ let t=document.querySelector('.bp-toast'); if(!t){ t=document.createElement('div'); t.className='bp-toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
+  t.textContent=msg; requestAnimationFrame(()=>t.classList.add('on')); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2600); }
+function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorage.setItem('bp_moedas', bpCoins()+n); }catch(e){ return; } bpToast('+'+n+' 🪙 '+(why||'moedinhas!')); }
+</script>

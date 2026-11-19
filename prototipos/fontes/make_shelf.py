@@ -11,8 +11,8 @@ for src,dst,sid,sv in [('noe-filme.html','shelf/noe.html','noe','st'),('davi-fil
     R('<button class="go" id="play">▶ Assistir o filme</button>','<button class="go" id="play">▶ Assistir o filme</button>\n    <div class="row" style="margin-top:12px"><a class="ghost" href="index.html">📚 Voltar à estante</a></div>')
     R('<button class="ghost" id="again">↻ Assistir de novo</button></div>','<button class="ghost" id="again">↻ Assistir de novo</button><a class="ghost" href="index.html">📚 Estante</a></div>')
     R('<button class="ghost" id="gFilm">🎬 Ver o filme</button></div>','<button class="ghost" id="gFilm">🎬 Ver o filme</button><a class="ghost" href="index.html">📚 Estante</a></div>')
-    R("$('gwin').hidden=false;","$('gwin').hidden=false; try{ const k='bp_%s_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), %s)); }catch(e){}" % (sid,sv))
-    R("  $('summary').hidden = !l.summary;","  $('summary').hidden = !l.summary; if(l.summary){ try{ localStorage.setItem('bp_%s_visto','1'); }catch(e){} }" % sid)
+    R("$('gwin').hidden=false;","$('gwin').hidden=false; try{ const k='bp_%s_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), %s)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(%s),'pelo jogo!'),900);" % (sid,sv,sv))
+    R("  $('summary').hidden = !l.summary;","  $('summary').hidden = !l.summary; if(l.summary){ try{ if(!localStorage.getItem('bp_%s_moeda')){ localStorage.setItem('bp_%s_moeda','1'); window.bpAddCoins&&bpAddCoins(10,'por assistir!'); } localStorage.setItem('bp_%s_visto','1'); }catch(e){} }" % (sid,sid,sid))
     a="try{ if(localStorage.getItem('bp_%s_visto')) $('coverGame').hidden=false; }catch(e){}"%sid
     R(a, a+"\ntry{ if(location.hash==='#jogo') $('coverGame').hidden=false; }catch(e){}")
     R("function music(dt,sc){ if(!AC) return;","function music(dt,sc){ if(!AC || window.__noMusic) return;")

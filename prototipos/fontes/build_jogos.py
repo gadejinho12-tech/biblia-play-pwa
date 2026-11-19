@@ -17,3 +17,6 @@ pathlib.Path('shelf/pais.html').write_text(HEAD+s); print('pais', os.path.getsiz
 
 s=(J/'ajudante.src.html').read_text().replace('%%CSS%%',css).replace('%%ARTE%%',arte).replace('%%COMMON%%',common)
 pathlib.Path('shelf/ajudante.html').write_text(HEAD+s); print('ajudante', os.path.getsize('shelf/ajudante.html'))
+
+s=(J/'arca.src.html').read_text().replace('%%CSS%%',css).replace('%%ARTE%%',arte).replace('%%COMMON%%',common)
+pathlib.Path('shelf/arca.html').write_text(HEAD+HELLO+s); print('arca', os.path.getsize('shelf/arca.html'))

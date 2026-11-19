@@ -1,0 +1,83 @@
+<title>Minha Arca</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Nunito:wght@600;700;800&display=swap">
+<style>
+%%CSS%%
+/* Layout: a cena da arca no topo (mostra o que já foi comprado), moedas, abas e a grade de figurinhas. */
+.scene{width:100%;aspect-ratio:16/8;border-radius:20px;box-shadow:0 10px 24px rgba(90,60,30,.15),0 0 0 1px rgba(120,90,50,.12);display:block;background:#bfe0f2}
+@media (max-width:560px){ .scene{aspect-ratio:4/3} }
+.purse{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+.coins{font:800 22px var(--display);background:linear-gradient(180deg,#fff6d8,#ffe7a8);border-radius:999px;padding:8px 18px;box-shadow:0 0 0 2px #e8b65a;font-variant-numeric:tabular-nums}
+.count{color:var(--muted);font:800 15px var(--body)}
+.tabs2{display:flex;justify-content:center;gap:8px}
+.tabs2 button{border:0;border-radius:999px;padding:10px 18px;font:800 15px var(--body);background:var(--paper2);color:var(--ink);cursor:pointer}
+.tabs2 button[aria-selected="true"]{background:var(--ink);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.stk{background:var(--card);border-radius:16px;padding:10px 8px 12px;display:grid;justify-items:center;gap:6px;box-shadow:0 0 0 1px rgba(120,90,50,.12);border:0;font:inherit;color:inherit;cursor:pointer}
+.stk canvas{width:96px;height:96px}
+.stk b{font:800 15px var(--body)}
+.stk .price{font:800 14px var(--body);border-radius:999px;padding:5px 12px;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#fff}
+.stk.poor .price{background:#e6dccb;color:#8a7a66}
+.stk.own{box-shadow:0 0 0 3px var(--ok)} .stk.own .price{background:#e4f2d8;color:#3f7a2e}
+.stk.rare b::after{content:" ✨"}
+.stk:focus-visible,.tabs2 button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.stk.pop{animation:pop .5s} @keyframes pop{40%{transform:scale(1.12)}}
+.tip{text-align:center;color:var(--muted);margin:0;line-height:1.5}
+</style>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Minha Arca</h1><span style="width:96px"></span></div>
+  <canvas class="scene" id="scene" aria-label="A arca com os animais e enfeites que você já tem"></canvas>
+  <div class="purse"><span class="coins" id="coins">🪙 0</span><span class="count" id="count"></span></div>
+  <div class="tabs2" role="tablist"><button role="tab" id="tA" aria-selected="true">🐾 Animais</button><button role="tab" id="tD" aria-selected="false">🎀 Enfeites</button></div>
+  <div class="grid" id="grid"></div>
+  <p class="tip">Ganhe moedinhas assistindo filmes, jogando e abrindo o <b>baú do dia</b> na estante.</p>
+</div>
+<script>
+const REC={};
+%%ARTE%%
+%%COMMON%%
+const ANIMALS=[['pomba','Pomba',10],['ovelha','Ovelha',10],['coelho','Coelho',10],['tartaruga','Tartaruga',11],['leao','Leão',12],['elefante','Elefante',12],['girafa','Girafa',13],['macaco','Macaco',13],['zebra','Zebra',14],['urso','Urso',15],['cavalo','Cavalo',40,1],['pavao','Pavão',50,1]];
+const DECOR=[['concha','Conchinha',7],['girassol','Girassol',8],['florrosa','Flor Rosa',8],['borboleta','Borboleta',8],['lampiao','Lampião',9],['coracao','Balão Coração',9],['bandeirinha','Bandeirinhas',10],['sol','Solzinho Feliz',11],['estrela','Estrela Dourada',12],['arcoiris','Arco-íris',15]];
+const AFIT={pomba:[.66,1,-4,-14],ovelha:[.8,1],coelho:[.8,1],tartaruga:[.72,1.05],leao:[.8,1],elefante:[.8,.82],girafa:[.92,.62],macaco:[.8,1],zebra:[.82,.86],urso:[.8,.9],cavalo:[.82,.86],pavao:[.8,1]};
+function getList(k){ try{ return JSON.parse(localStorage.getItem(k)||'[]'); }catch(e){ return []; } }
+let ownA=getList('bp_arca_animais'), ownD=getList('bp_arca_enfeites'), tab='A', fresh=null, freshT=0;
+function save(){ try{ localStorage.setItem('bp_arca_animais',JSON.stringify(ownA)); localStorage.setItem('bp_arca_enfeites',JSON.stringify(ownD)); }catch(e){} }
+function sticker(kind,id,size,locked){ const dpr=Math.min(devicePixelRatio||1,2), c=document.createElement('canvas'), L=document.createElement('canvas'); c.width=c.height=L.width=L.height=Math.round(size*dpr); c.style.width=c.style.height=size+'px';
+  ctx=L.getContext('2d'); ctx.scale(dpr,dpr); ctx.beginPath(); ctx.arc(size/2,size/2,size/2-1,0,7); ctx.clip();
+  if(kind==='A'){ const f=AFIT[id]; ctx.translate(size/2-4,size*f[0]); const k=size/96*f[1]; ctx.scale(k,k); if(f[2]!=null) animal(id,f[2],f[3],1.8,1,0); else animal(id,0,0,1,1,0); } else { ctx.translate(size/2,size/2); const k=size/90*1.5; ctx.scale(k,k); decor(id,0,id==='girassol'||id==='florrosa'?-4:0,1); }
+  if(locked){ ctx.setTransform(1,0,0,1,0,0); ctx.globalCompositeOperation='source-in'; ctx.fillStyle='#b9a888'; ctx.fillRect(0,0,L.width,L.height); }
+  const x=c.getContext('2d'); x.scale(dpr,dpr); const g=x.createRadialGradient(size/2,size*.4,size*.1,size/2,size/2,size*.7); g.addColorStop(0,locked?'#f6efe2':'#fffaf0'); g.addColorStop(1,locked?'#e6dccb':'#f0dcb8'); x.fillStyle=g; x.beginPath(); x.arc(size/2,size/2,size/2,0,7); x.fill();
+  x.setTransform(1,0,0,1,0,0); x.drawImage(L,0,0); if(locked){ x.scale(dpr,dpr); x.font='800 '+Math.round(size*.28)+'px Nunito,system-ui,sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillStyle='rgba(255,255,255,.9)'; x.fillText('?',size/2,size/2); } return c; }
+function render(){ const coins=bpCoins(); $('coins').textContent='🪙 '+coins; $('count').textContent=(ownA.length+ownD.length)+' de '+(ANIMALS.length+DECOR.length)+' figurinhas';
+  $('tA').setAttribute('aria-selected',tab==='A'); $('tD').setAttribute('aria-selected',tab==='D');
+  const g=$('grid'); g.innerHTML=''; const list=tab==='A'?ANIMALS:DECOR, own=tab==='A'?ownA:ownD;
+  for(const [id,name,cost,rare] of list){ const has=own.includes(id), b=document.createElement('button'); b.className='stk'+(has?' own':(coins<cost?' poor':''))+(rare?' rare':''); b.dataset.id=id;
+    b.appendChild(sticker(tab,id,96,!has)); b.insertAdjacentHTML('beforeend',`<b>${has?name:'?'}</b><span class="price">${has?'✓ Na arca':'🪙 '+cost}</span>`);
+    b.setAttribute('aria-label', has? name+', já está na arca' : 'Comprar por '+cost+' moedas'); b.onclick=()=>buy(tab,id,name,cost,b); g.appendChild(b); } }
+function buy(kind,id,name,cost,b){ ac(); const own=kind==='A'?ownA:ownD; if(own.includes(id)){ sfx.tap(); fresh=id; freshT=1.2; return; }
+  const c=bpCoins(); if(c<cost){ sfx.bad(); bpToast('Faltam '+(cost-c)+' 🪙 — jogue mais um pouquinho!'); return; }
+  try{ localStorage.setItem('bp_moedas',c-cost); }catch(e){ return; } own.push(id); save(); sfx.win(); confetti(); bpToast((kind==='A'?'O '+name+' entrou na arca! 🎉':name+' na arca! 🎀')); fresh=id; freshT=2.5; render(); const nb=$('grid').querySelector(`[data-id="${id}"]`); if(nb) nb.classList.add('pop'); }
+$('tA').onclick=()=>{ tab='A'; sfx.tap(); render(); }; $('tD').onclick=()=>{ tab='D'; sfx.tap(); render(); };
+/* cena: a arca na colina; os animais comprados ficam na frente e os enfeites em lugares fixos */
+const SLOTS={pomba:[150,-150],ovelha:[-170,0],coelho:[-120,8],tartaruga:[-60,14],leao:[60,10],elefante:[150,4],girafa:[-235,-4],macaco:[110,-178],zebra:[220,6],urso:[0,16],cavalo:[-290,2],pavao:[285,8]};
+const DSPOT={sol:[-330,-280,1.3],estrela:[330,-290,1.1],arcoiris:[0,-300,3.2],bandeirinha:[-10,-262,1.5],lampiao:[120,-240,1],coracao:[-150,-260,1.1],girassol:[-330,-10,1.2],florrosa:[330,-6,1.1],concha:[-20,32,.9],borboleta:[240,-150,1]};
+const sc=$('scene'), sx=sc.getContext('2d');
+function frame(){ G+=1/60; const r=sc.getBoundingClientRect(), dpr=Math.min(devicePixelRatio||1,2), w=Math.round(r.width*dpr), h=Math.round(r.height*dpr); if(sc.width!==w||sc.height!==h){ sc.width=w; sc.height=h; }
+  ctx=sx; sx.setTransform(1,0,0,1,0,0); const k=Math.min(w/820, h/400); const VW=w/k, VH=h/k; sx.setTransform(k,0,0,k,0,0);
+  sx.fillStyle=vgrad(0,VH,[[0,'#9fd0ee'],[.6,'#e6f2f4'],[1,'#fdf2da']]); sx.fillRect(0,0,VW,VH);
+  sx.save(); sx.translate(VW/2,VH*.84);
+  if(ownD.includes('arcoiris')) drawD('arcoiris'); if(ownD.includes('sol')) drawD('sol'); if(ownD.includes('estrela')) drawD('estrela');
+  ell(-260,-40,260,70,'#a9cf86'); ell(260,-30,280,60,'#9cc77a'); sx.fillStyle=vgrad(-40,200,[[0,'#8fbf6a'],[1,'#6aa653']]); sx.fillRect(-VW,-20,VW*2,400);
+  ark(0,-16,1,{lit:.5,ramp:1,doorLit:.4});
+  for(const id of ['bandeirinha','lampiao','coracao']) if(ownD.includes(id)) drawD(id);
+  const order=Object.keys(SLOTS).filter(id=>ownA.includes(id)).sort((a,b)=>SLOTS[a][1]-SLOTS[b][1]);
+  for(const id of order){ const [x,y]=SLOTS[id], j=id===fresh&&freshT>0? Math.abs(Math.sin(freshT*8))*10:0; if(j) glow(x,y-30,60,'#ffe68a',.5); animal(id,x,y-j,1.15,x>0?-1:1,x*.01); }
+  for(const id of ['girassol','florrosa','concha','borboleta']) if(ownD.includes(id)) drawD(id);
+  if(!ownA.length && !ownD.length){ sx.font='800 22px Nunito,system-ui,sans-serif'; sx.textAlign='center'; sx.fillStyle='#3a2c24'; sx.fillText('Escolha o primeiro amigo para a arca! 👇',0,24); }
+  sx.restore(); if(freshT>0) freshT-=1/60; requestAnimationFrame(frame); }
+function drawD(id){ const [x,y,s]=DSPOT[id]; let dx=0,dy=0; if(id==='borboleta'){ dx=Math.sin(G*.7)*60; dy=Math.sin(G*1.3)*20; } const j=id===fresh&&freshT>0? Math.abs(Math.sin(freshT*8))*8:0; if(j) glow(x,y,50,'#ffe68a',.5); decor(id,x+dx,y+dy-j,s); }
+render(); frame();
+window.__arca={render,get ownA(){return ownA;},get ownD(){return ownD;}};
+</script>

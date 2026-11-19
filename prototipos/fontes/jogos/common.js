@@ -11,7 +11,7 @@ function tone(n,dur,vol,delay,type){ const a=ac(); if(!a) return; const t0=a.cur
   const g=a.createGain(); g.gain.setValueAtTime(vol||.08,t0); g.gain.exponentialRampToValueAtTime(.0005,t0+(dur||.5)); o.connect(g); g.connect(a.destination); o.start(t0); o.stop(t0+(dur||.5)+.05); }
 const sfx={ tap:()=>tone(76,.12,.05), good:()=>{ tone(76,.4,.07); tone(81,.5,.06,.08); }, bad:()=>{ tone(52,.25,.06,0,'triangle'); tone(49,.3,.05,.1,'triangle'); }, win:()=>[72,76,79,84].forEach((n,i)=>tone(n,.7,.07,i*.13)) };
 // estrelas guardadas no aparelho (a estante mostra)
-function saveStars(key,st){ try{ localStorage.setItem(key, Math.max(+(localStorage.getItem(key)||0), st)); }catch(e){} }
+function saveStars(key,st){ try{ localStorage.setItem(key, Math.max(+(localStorage.getItem(key)||0), st)); }catch(e){}  if(window.bpAddCoins) setTimeout(()=>bpAddCoins(st*2,'pelo jogo!'),700); }
 function starText(st){ return '⭐'.repeat(st)+'☆'.repeat(3-st); }
 // confete
 function confetti(){ const c=$('confetti'); if(!c) return; const x=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight; const P=[]; const cols=['#e8b65a','#d97b6c','#6aa653','#6fa8e0','#b99be8'];

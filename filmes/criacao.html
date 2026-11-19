@@ -500,7 +500,7 @@ function enterLine(i){
   const prev=SCRIPT[i-1]; if(!prev || prev.sc!==l.sc || prev.card!=null || l.card!=null) P.scT=0;
   $('chapter').classList.toggle('on', l.card!=null);
   if(l.card!=null){ $('chapter').querySelector('.num').textContent='Capítulo '+(l.card+1); $('chapter').querySelector('h2').textContent=CH[l.card]; $('top').textContent='Cap. '+(l.card+1)+' · '+CH[l.card]; subEl.classList.remove('on'); speak(l); pluck(72,.06); pluck(76,.05,.2); pluck(79,.05,.4); return; }
-  $('summary').hidden = !l.summary; if(l.summary){ try{ localStorage.setItem('bp_criacao_visto','1'); }catch(e){} }
+  $('summary').hidden = !l.summary; if(l.summary){ try{ if(!localStorage.getItem('bp_criacao_moeda')){ localStorage.setItem('bp_criacao_moeda','1'); window.bpAddCoins&&bpAddCoins(10,'por assistir!'); } localStorage.setItem('bp_criacao_visto','1'); }catch(e){} }
   TALK = l.talk || null;
   const ref=(l.text.match(/\(([^)]*)\)\s*$/)||[])[1]; const body=l.text.replace(/\s*\([^)]*\)\s*$/,'');
   whoEl.textContent=l.who; txtEl.innerHTML=body.split(' ').map(w=>'<span class="w">'+w+'</span>').join(' ')+(ref?'<span class="ref">'+ref+'</span>':'');
@@ -592,7 +592,7 @@ function drop(){
 }
 function finishGame(){ GS.ended=true; gsay('g7','Parabéns! Você ajudou a encher o mundo de vida. Era muito bom!',true);
   const st=GS.mistakes.map(m=>m===0?3:(m<=2?2:1)); const avg=Math.round(st.reduce((a,b)=>a+b,0)/3); setTimeout(()=>{ if(MODE!=='game') return;
-  $('gStars').textContent='⭐'.repeat(avg)+'☆'.repeat(3-avg); $('gRes').textContent=PHASES.map((p,i)=>p.name.split(' · ')[1]+': '+'⭐'.repeat(st[i])).join('  ·  '); $('gwin').hidden=false; try{ const k='bp_criacao_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), avg)); }catch(e){} },3800); window.__lastStars=avg; }
+  $('gStars').textContent='⭐'.repeat(avg)+'☆'.repeat(3-avg); $('gRes').textContent=PHASES.map((p,i)=>p.name.split(' · ')[1]+': '+'⭐'.repeat(st[i])).join('  ·  '); $('gwin').hidden=false; try{ const k='bp_criacao_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), avg)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(avg),'pelo jogo!'),900); },3800); window.__lastStars=avg; }
 function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); }
   if(g.banner>0) g.banner-=dt; if(g.wrongT>0) g.wrongT-=dt; g.pop=Math.min(1,(g.pop||0)+dt*3); if(!g.drag) g.idle+=dt; for(const p of g.placed) p.t+=dt; }
 function drawItem(it,x,y,s,o){ o=o||{}; const t=o.t||0, ph=o.ph||0, dir=o.dir||1, live=o.live;
@@ -667,3 +667,11 @@ window.__P=P; window.__GS=GS; window.__cam=cam; window.__startGame=startGame; wi
 <style>.bp-hello{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 6px;font:800 18px/1.2 Nunito,system-ui,sans-serif;color:#3a2c24}.bp-hello[hidden]{display:none!important}.bp-hello img{width:54px;height:54px;border-radius:50%;flex:none;animation:bpHop 1.2s ease-in-out infinite alternate}@keyframes bpHop{to{transform:translateY(-5px) rotate(-4deg)}}@media (prefers-reduced-motion:reduce){.bp-hello img{animation:none}}</style>
 <script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
   document.querySelectorAll('.bp-hello').forEach(el=>{ const i=el.querySelector('img'); i.src=img; el.querySelector('span').textContent=a.nome? 'Muito bem, '+a.nome+'!' : 'Muito bem!'; el.hidden=false; }); }catch(e){} })();</script>
+<style>.bp-toast{position:fixed;left:50%;top:14px;transform:translate(-50%,-80px);z-index:9999;background:linear-gradient(180deg,#fff6d8,#ffe7a8);color:#5a3a10;font:800 18px/1 Nunito,system-ui,sans-serif;padding:10px 18px;border-radius:999px;box-shadow:0 8px 20px rgba(90,60,30,.25),0 0 0 2px #e8b65a;transition:transform .45s cubic-bezier(.3,1.5,.5,1);pointer-events:none;white-space:nowrap}.bp-toast.on{transform:translate(-50%,0)}</style>
+<script>
+/* moedinhas: ganhas nos filmes, jogos e no baú do dia; gastas na "Minha Arca" */
+function bpCoins(){ try{ return +(localStorage.getItem('bp_moedas')||0); }catch(e){ return 0; } }
+function bpToast(msg){ let t=document.querySelector('.bp-toast'); if(!t){ t=document.createElement('div'); t.className='bp-toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
+  t.textContent=msg; requestAnimationFrame(()=>t.classList.add('on')); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2600); }
+function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorage.setItem('bp_moedas', bpCoins()+n); }catch(e){ return; } bpToast('+'+n+' 🪙 '+(why||'moedinhas!')); }
+</script>

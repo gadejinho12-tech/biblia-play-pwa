@@ -98,7 +98,7 @@ tr:first-child td{border-top:0}
 
   <section class="box">
     <h2>🧹 Apagar progresso</h2>
-    <p>Apaga filmes assistidos, estrelas e o ajudante deste aparelho (por exemplo, para outra criança começar do zero). As configurações acima continuam.</p>
+    <p>Apaga filmes assistidos, estrelas, moedinhas, a Minha Arca e o ajudante deste aparelho (por exemplo, para outra criança começar do zero). As configurações acima continuam.</p>
     <div class="row" style="justify-content:flex-start" id="eraseRow"><button class="btn ghost" id="erase">Apagar progresso…</button></div>
     <div class="row" style="justify-content:flex-start" id="confirmRow" hidden><b style="align-self:center">Tem certeza?</b><button class="btn danger" id="yes">Sim, apagar</button><button class="btn ghost" id="no">Cancelar</button></div>
   </section>
@@ -115,6 +115,8 @@ function stars(n){ return n? '⭐'.repeat(n)+'☆'.repeat(3-n) : '—'; }
 function render(){ const t=$('prog'); t.innerHTML='';
   for(const [id,name] of FILMS){ const seen=!!get('bp_'+id+'_visto'), st=+(get('bp_'+id+'_estrelas')||0);
     t.insertAdjacentHTML('beforeend',`<tr><td>🎬 ${name}</td><td><span class="tag ${seen?'ok':''}">${seen?'Assistido':'Não assistido'}</span></td><td>🎮 ${stars(st)}</td></tr>`); }
+  let A=[],D=[]; try{ A=JSON.parse(get('bp_arca_animais')||'[]'); D=JSON.parse(get('bp_arca_enfeites')||'[]'); }catch(e){}
+  t.insertAdjacentHTML('beforeend',`<tr><td>🚢 Minha Arca</td><td><span class="tag">${A.length+D.length} de 22 figurinhas</span></td><td>🪙 ${+(get('bp_moedas')||0)}</td></tr>`);
   for(const [id,name] of GAMES){ const st=+(get('bp_'+id+'_estrelas')||0); t.insertAdjacentHTML('beforeend',`<tr><td>🎲 ${name}</td><td></td><td>${stars(st)}</td></tr>`); } }
 render();
 $('erase').onclick=()=>{ $('eraseRow').hidden=true; $('confirmRow').hidden=false; };
