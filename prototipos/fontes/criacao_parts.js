@@ -97,22 +97,22 @@ const CH=[ 'No princípio', 'Um mundo cheio de cores', 'Peixes, aves e animais',
 const N=(t)=>({who:'Narrador',text:t}), DEUS=t=>({who:'Deus',text:t});
 const SCRIPT=[
   {card:0},
-  {sc:'escuro', ...N('No princípio, antes de tudo existir, só havia escuridão... e o Espírito de Deus pairava sobre as águas. (Gênesis 1:1-2)')},
+  {sc:'escuro', ...N('No comecinho de tudo, não existia nada. Só escuridão... e silêncio. Mas Deus já estava lá! E o Espírito de Deus pairava sobre as águas. (Gênesis 1:1-2)')},
   {sc:'luz', ...DEUS('Haja luz! (Gênesis 1:3)')},
-  {sc:'luz', ...N('E houve luz! Deus viu que a luz era boa, e separou a luz da escuridão: o dia e a noite. Esse foi o primeiro dia.')},
-  {sc:'ceu', ...N('No segundo dia, Deus fez o céu, lá no alto, bem azul, por cima das águas. (Gênesis 1:6-8)')},
+  {sc:'luz', ...N('E a luz apareceu! Que lindo! Deus viu que a luz era boa. Ele separou a luz da escuridão. A luz, Ele chamou de dia. E a escuridão, de noite. Esse foi o primeiro dia.')},
+  {sc:'ceu', ...N('No segundo dia, Deus abriu o céu, bem lá no alto. Um céu azulzinho, por cima das águas. (Gênesis 1:6-8)')},
   {card:1},
-  {sc:'terra', ...DEUS('Que apareça a terra seca, e que ela se encha de plantas e árvores com frutos! (Gênesis 1:9-11)')},
-  {sc:'terra', ...N('No terceiro dia, surgiram montanhas, campos, flores e árvores cheias de frutas.')},
-  {sc:'astros', ...N('No quarto dia, Deus fez o sol para brilhar de dia, e a lua e as estrelas para enfeitar a noite. (Gênesis 1:16)')},
+  {sc:'terra', ...DEUS('Que apareça a terra seca! E que ela se encha de flores, plantas e árvores cheias de frutos! (Gênesis 1:9-11)')},
+  {sc:'terra', ...N('E a terra apareceu! Subiram montanhas. Nasceram campos e flores. E as árvores ficaram carregadinhas de frutas. Esse foi o terceiro dia.')},
+  {sc:'astros', ...N('No quarto dia, Deus acendeu o sol, para brilhar de dia. E para a noite, Ele fez a lua... e um montão de estrelas! (Gênesis 1:16)')},
   {card:2},
-  {sc:'mar', ...N('No quinto dia, Deus encheu o mar de peixes, e o céu de passarinhos voando e cantando. (Gênesis 1:20-21)')},
-  {sc:'animais6', ...N('No sexto dia, Deus fez os animais da terra: o leão, o elefante, a girafa, o coelho... cada um do seu jeitinho. (Gênesis 1:24-25)')},
+  {sc:'mar', ...N('No quinto dia, o mar se encheu de peixes! E o céu se encheu de passarinhos, voando e cantando. (Gênesis 1:20-21)')},
+  {sc:'animais6', ...N('No sexto dia, chegaram os animais da terra. O leão, o elefante, a girafa... e o coelhinho! Cada um do seu jeitinho. (Gênesis 1:24-25)')},
   {card:3},
-  {sc:'jardim', ...N('Então Deus fez o homem e a mulher, Adão e Eva, parecidos com Ele, para cuidarem de tudo e serem seus amigos. (Gênesis 1:27)')},
+  {sc:'jardim', ...N('E então, Deus fez o homem e a mulher: Adão e Eva. Eles eram parecidos com Deus. E foram feitos para cuidar de tudo, e para serem amigos dele. (Gênesis 1:27)')},
   {sc:'jardim', ...DEUS('Eu fiz tudo isto para vocês, com muito amor. Cuidem bem do meu mundo.')},
-  {sc:'descanso', ...N('Deus olhou tudo o que tinha feito, e viu que era muito bom! E no sétimo dia, Ele descansou. (Gênesis 1:31; 2:2)')},
-  {summary:true, sc:'descanso', ...N('Hoje aprendemos: Deus criou tudo com amor, e você também é uma obra especial das mãos dele.')},
+  {sc:'descanso', ...N('Deus olhou para tudo o que tinha feito... e sorriu. Era muito bom! E no sétimo dia, Deus descansou. (Gênesis 1:31; 2:2)')},
+  {summary:true, sc:'descanso', ...N('Sabe o que a gente aprendeu hoje? Que Deus criou tudo com amor. E criou você também! Você é uma obra especial das mãos de Deus.')},
 ];
 let vi=0; SCRIPT.forEach(l=>{ if(l.card==null){ vi++; l.rec='v'+String(vi).padStart(2,'0'); } else l.rec='c'+(l.card+1); });
 function lineDur(l){ if(l.card!=null) return Math.max(3.4,(REC_DUR[l.rec]||2)+1.2); if(l.rec && REC_DUR[l.rec]) return REC_DUR[l.rec]+.7; return Math.max(4, l.text.replace(/\(.*?\)/g,'').length*.068)+.8; }
@@ -133,7 +133,7 @@ let MODE='film';
 const GS={};
 const ITEM_ZONE={ pomba:'ceu', ave:'ceu', nuvem:'ceu', peixe:'mar', peixe2:'mar', tartaruga:'mar', arvore:'terra', flor:'terra', leao:'terra', coelho:'terra', elefante:'terra', girafa:'terra', ovelha:'terra', sol:'dia', lua:'noite', estrela:'noite' };
 const PHASES=[
-  { name:'Fase 1 · Céu e mar', items:['pomba','peixe','nuvem','peixe2','ave','tartaruga'], voice:['g1','Agora é a sua vez! Arraste cada criação para o lugar certo: o céu ou o mar.'] },
+  { name:'Fase 1 · Céu e mar', items:['pomba','peixe','nuvem','peixe2','ave','tartaruga'], voice:['g1','Agora é a sua vez! Arraste cada criação para o lugar certo. Ela mora no céu, ou no mar?'] },
   { name:'Fase 2 · Terra viva', items:['arvore','peixe','leao','pomba','flor','coelho','nuvem','elefante'], voice:['g5','Fase dois: agora tem terra também! Árvores, flores e animais moram na terra.'] },
   { name:'Fase 3 · Dia e noite', items:['sol','lua','girafa','estrela','peixe2','ovelha','ave','estrela','tartaruga','arvore'], voice:['g6','Fase três: o céu tem dia e noite! O sol vai no dia. A lua e as estrelas, na noite.'] },
 ];

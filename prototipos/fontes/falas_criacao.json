@@ -1,27 +1,127 @@
 [
- ["v01","Narrador","No princípio, antes de tudo existir, só havia escuridão... e o Espírito de Deus pairava sobre as águas."],
- ["v02","Deus","Haja luz!"],
- ["v03","Narrador","E houve luz! Deus viu que a luz era boa, e separou a luz da escuridão: o dia e a noite. Esse foi o primeiro dia."],
- ["v04","Narrador","No segundo dia, Deus fez o céu, lá no alto, bem azul, por cima das águas."],
- ["v05","Deus","Que apareça a terra seca, e que ela se encha de plantas e árvores com frutos!"],
- ["v06","Narrador","No terceiro dia, surgiram montanhas, campos, flores e árvores cheias de frutas."],
- ["v07","Narrador","No quarto dia, Deus fez o sol para brilhar de dia, e a lua e as estrelas para enfeitar a noite."],
- ["v08","Narrador","No quinto dia, Deus encheu o mar de peixes, e o céu de passarinhos voando e cantando."],
- ["v09","Narrador","No sexto dia, Deus fez os animais da terra: o leão, o elefante, a girafa, o coelho... cada um do seu jeitinho."],
- ["v10","Narrador","Então Deus fez o homem e a mulher, Adão e Eva, parecidos com Ele, para cuidarem de tudo e serem seus amigos."],
- ["v11","Deus","Eu fiz tudo isto para vocês, com muito amor. Cuidem bem do meu mundo."],
- ["v12","Narrador","Deus olhou tudo o que tinha feito, e viu que era muito bom! E no sétimo dia, Ele descansou."],
- ["v13","Narrador","Hoje aprendemos: Deus criou tudo com amor, e você também é uma obra especial das mãos dele."],
- ["c1","Narrador","Capítulo um. No princípio."],
- ["c2","Narrador","Capítulo dois. Um mundo cheio de cores."],
- ["c3","Narrador","Capítulo três. Peixes, aves e animais."],
- ["c4","Narrador","Capítulo quatro. Feitos com amor."],
- ["g1","Narrador","Agora é a sua vez! Arraste cada criação para o lugar certo: o céu ou o mar."],
- ["g2","Narrador","Isso!"],
- ["g3","Narrador","Ops! Esse mora em outro lugar."],
- ["g4","Narrador","E Deus viu que era bom! Vamos para a próxima fase."],
- ["g5","Narrador","Fase dois: agora tem terra também! Árvores, flores e animais moram na terra."],
- ["g6","Narrador","Fase três: o céu tem dia e noite! O sol vai no dia. A lua e as estrelas, na noite."],
- ["g7","Narrador","Parabéns! Você ajudou a encher o mundo de vida. Era muito bom!"],
- ["g8","Narrador","Muito bem!"]
+ [
+  "v01",
+  "Narrador",
+  "No comecinho de tudo, não existia nada. Só escuridão... e silêncio. Mas Deus já estava lá! E o Espírito de Deus pairava sobre as águas."
+ ],
+ [
+  "v02",
+  "Deus",
+  "Haja luz!"
+ ],
+ [
+  "v03",
+  "Narrador",
+  "E a luz apareceu! Que lindo! Deus viu que a luz era boa. Ele separou a luz da escuridão. A luz, Ele chamou de dia. E a escuridão, de noite. Esse foi o primeiro dia."
+ ],
+ [
+  "v04",
+  "Narrador",
+  "No segundo dia, Deus abriu o céu, bem lá no alto. Um céu azulzinho, por cima das águas."
+ ],
+ [
+  "v05",
+  "Deus",
+  "Que apareça a terra seca! E que ela se encha de flores, plantas e árvores cheias de frutos!"
+ ],
+ [
+  "v06",
+  "Narrador",
+  "E a terra apareceu! Subiram montanhas. Nasceram campos e flores. E as árvores ficaram carregadinhas de frutas. Esse foi o terceiro dia."
+ ],
+ [
+  "v07",
+  "Narrador",
+  "No quarto dia, Deus acendeu o sol, para brilhar de dia. E para a noite, Ele fez a lua... e um montão de estrelas!"
+ ],
+ [
+  "v08",
+  "Narrador",
+  "No quinto dia, o mar se encheu de peixes! E o céu se encheu de passarinhos, voando e cantando."
+ ],
+ [
+  "v09",
+  "Narrador",
+  "No sexto dia, chegaram os animais da terra. O leão, o elefante, a girafa... e o coelhinho! Cada um do seu jeitinho."
+ ],
+ [
+  "v10",
+  "Narrador",
+  "E então, Deus fez o homem e a mulher: Adão e Eva. Eles eram parecidos com Deus. E foram feitos para cuidar de tudo, e para serem amigos dele."
+ ],
+ [
+  "v11",
+  "Deus",
+  "Eu fiz tudo isto para vocês, com muito amor. Cuidem bem do meu mundo."
+ ],
+ [
+  "v12",
+  "Narrador",
+  "Deus olhou para tudo o que tinha feito... e sorriu. Era muito bom! E no sétimo dia, Deus descansou."
+ ],
+ [
+  "v13",
+  "Narrador",
+  "Sabe o que a gente aprendeu hoje? Que Deus criou tudo com amor. E criou você também! Você é uma obra especial das mãos de Deus."
+ ],
+ [
+  "c1",
+  "Narrador",
+  "Capítulo um. No princípio."
+ ],
+ [
+  "c2",
+  "Narrador",
+  "Capítulo dois. Um mundo cheio de cores."
+ ],
+ [
+  "c3",
+  "Narrador",
+  "Capítulo três. Peixes, aves e animais."
+ ],
+ [
+  "c4",
+  "Narrador",
+  "Capítulo quatro. Feitos com amor."
+ ],
+ [
+  "g1",
+  "Narrador",
+  "Agora é a sua vez! Arraste cada criação para o lugar certo. Ela mora no céu, ou no mar?"
+ ],
+ [
+  "g2",
+  "Narrador",
+  "Isso!"
+ ],
+ [
+  "g3",
+  "Narrador",
+  "Ops! Esse mora em outro lugar."
+ ],
+ [
+  "g4",
+  "Narrador",
+  "E Deus viu que era bom! Vamos para a próxima fase."
+ ],
+ [
+  "g5",
+  "Narrador",
+  "Fase dois: agora tem terra também! Árvores, flores e animais moram na terra."
+ ],
+ [
+  "g6",
+  "Narrador",
+  "Fase três: o céu tem dia e noite! O sol vai no dia. A lua e as estrelas, na noite."
+ ],
+ [
+  "g7",
+  "Narrador",
+  "Parabéns! Você ajudou a encher o mundo de vida. Era muito bom!"
+ ],
+ [
+  "g8",
+  "Narrador",
+  "Muito bem!"
+ ]
 ]
