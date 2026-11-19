@@ -1,4 +1,6 @@
 import pathlib
+H='<div class="bp-hello" hidden><img alt=""><span></span></div>'
+HELLO=pathlib.Path('jogos/hello.html').read_text()
 HEAD='<!doctype html>\n<html lang="pt-BR">\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
 for src,dst,sid,sv in [('noe-filme.html','shelf/noe.html','noe','st'),('davi-filme.html','shelf/davi.html','davi','st'),('criacao-filme.html','shelf/criacao.html','criacao','avg'),('jonas-filme.html','shelf/jonas.html','jonas','st'),('tempestade-filme.html','shelf/tempestade.html','tempestade','st'),('natal-filme.html','shelf/natal.html','natal','st')]:
     s=pathlib.Path(src).read_text()
@@ -15,6 +17,9 @@ for src,dst,sid,sv in [('noe-filme.html','shelf/noe.html','noe','st'),('davi-fil
     R(a, a+"\ntry{ if(location.hash==='#jogo') $('coverGame').hidden=false; }catch(e){}")
     R("function music(dt,sc){ if(!AC) return;","function music(dt,sc){ if(!AC || window.__noMusic) return;")
     R("window.__P=P;","try{ const _c=JSON.parse(localStorage.getItem('bp_cfg')||'{}'); if(_c.voz===false){ voiceOn=false; $('vo').textContent='🔇'; $('vo').setAttribute('aria-label','Narração desligada'); } if(_c.musica===false) window.__noMusic=true; }catch(e){}\nwindow.__P=P;")
+    R('<div class="eyebrow" style="text-align:center">Resumo da história</div>', H+'\n    <div class="eyebrow" style="text-align:center">Resumo da história</div>')
+    R('<div class="screen" id="gwin" hidden>\n  <div class="page cover">', '<div class="screen" id="gwin" hidden>\n  <div class="page cover">\n    '+H)
+    s=s+'\n'+HELLO
     pathlib.Path(dst).write_text(HEAD+s)
 print('ok')
 # (o atalho #jogo é aplicado logo depois deste script)

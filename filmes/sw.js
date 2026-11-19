@@ -1,8 +1,9 @@
 // Bíblia Play Filmes — funciona sem internet depois do primeiro acesso.
 // IMPORTANTE: ao publicar uma versão nova, aumente a VERSAO para os aparelhos baixarem tudo de novo.
-const VERSAO='filmes-v1';
+const VERSAO='filmes-v2';
 const ARQUIVOS=[
   './',
+  './ajudante.html',
   './cacapalavras.html',
   './capa-criacao.jpg',
   './capa-davi.jpg',

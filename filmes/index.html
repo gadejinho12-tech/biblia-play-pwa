@@ -71,6 +71,10 @@ section{scroll-margin-top:70px}
 .btn.ghost{color:var(--ink);border:2px solid rgba(58,44,36,.18);background:transparent}
 .parents{background:var(--card);border-radius:14px;padding:20px 22px;display:grid;gap:12px;box-shadow:0 0 0 1px rgba(120,90,50,.1)}
 .parents ul{margin:0;padding-left:18px;display:grid;gap:6px;line-height:1.5;max-width:70ch}
+.me{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:999px;padding:6px 16px 6px 6px;box-shadow:0 0 0 1px rgba(120,90,50,.12);text-decoration:none;color:var(--ink)}
+.me img{width:52px;height:52px;border-radius:50%}
+.me b{font:800 18px/1.1 var(--display)} .me small{display:block;color:var(--muted);font:700 13px var(--body)}
+.me .em{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:var(--paper2,#f3e6cc)}
 footer{text-align:center;color:var(--muted);font-size:13px}
 </style>
 
@@ -79,6 +83,7 @@ footer{text-align:center;color:var(--muted);font-size:13px}
     <span class="tag">Filmes da Bíblia</span>
     <div class="logo">Bíblia <span>Play</span></div>
     <p>Histórias da Bíblia em filmes ilustrados, com narração, um resumo do que aprendemos e um jogo de recompensa no final.</p>
+    <a class="me" id="me" href="ajudante.html"><span class="em">🧒</span><span><b>Crie seu ajudante</b><small>Ele vai brincar com você!</small></span></a>
   </header>
 
   <nav class="tabs" aria-label="Seções">
@@ -170,3 +175,6 @@ if('serviceWorker' in navigator && location.protocol==='https:' && !/claude\.ai|
 let deferredInstall=null; addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredInstall=e; const b=document.getElementById('installBtn'); if(b) b.hidden=false; });
 document.getElementById('installBtn').onclick=async()=>{ if(!deferredInstall) return; deferredInstall.prompt(); try{ await deferredInstall.userChoice; }catch(e){} deferredInstall=null; document.getElementById('installBtn').hidden=true; };
 </script>
+<script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
+  const m=document.getElementById('me'); m.innerHTML=''; const i=new Image(); i.src=img; i.alt=''; m.appendChild(i);
+  const t=document.createElement('span'); const b=document.createElement('b'); b.textContent=a.nome? 'Olá, '+a.nome+'! 👋' : 'Olá! 👋'; const sm=document.createElement('small'); sm.textContent='✏️ Mudar ajudante'; t.append(b,sm); m.appendChild(t); m.setAttribute('aria-label','Mudar ajudante'); }catch(e){} })();</script>

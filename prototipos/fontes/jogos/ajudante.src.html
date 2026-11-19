@@ -1,0 +1,68 @@
+<title>Crie seu Ajudante</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Nunito:wght@600;700;800&display=swap">
+<style>
+%%CSS%%
+/* Layout: o ajudante grande à esquerda (em cima no celular) e as escolhas ao lado, em cartões. */
+.maker{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:720px){ .maker{grid-template-columns:1fr} }
+.stage{background:radial-gradient(circle at 50% 40%,#fffaf0,#f0dcb8);border-radius:20px;display:grid;justify-items:center;padding:14px 10px 18px;box-shadow:0 10px 24px rgba(90,60,30,.12), 0 0 0 1px rgba(120,90,50,.1);position:sticky;top:70px}
+@media (max-width:720px){ .stage{position:static} }
+.stage canvas{width:220px;height:280px;max-width:100%}
+.stage .nm{font:800 26px/1 var(--display);min-height:28px}
+.opts{display:grid;gap:14px}
+.group{background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:0 0 0 1px rgba(120,90,50,.12);display:grid;gap:10px}
+.group b{font:800 15px var(--body)}
+.sw{display:flex;gap:10px;flex-wrap:wrap}
+.sw button{width:44px;height:44px;border-radius:50%;border:3px solid transparent;cursor:pointer;box-shadow:0 0 0 1px rgba(120,90,50,.25)}
+.sw button[aria-pressed="true"]{border-color:var(--ink);transform:scale(1.08)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{border:0;border-radius:999px;padding:9px 14px;font:800 14px var(--body);background:var(--paper2);color:var(--ink);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.sw button:focus-visible,.chips button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input{width:100%;border:2px solid rgba(120,90,50,.25);border-radius:12px;padding:12px 14px;font:800 18px var(--body);background:#fffdf7;color:var(--ink);-webkit-user-select:text;user-select:text}
+</style>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Crie seu Ajudante</h1><span style="width:96px"></span></div>
+  <p class="lead">Seu ajudante vai te acompanhar nas histórias e comemorar com você!</p>
+  <div class="maker">
+    <div class="stage"><canvas id="pv" width="440" height="560"></canvas><div class="nm" id="nm"></div></div>
+    <div class="opts">
+      <div class="group"><b>Qual é o seu nome?</b><input id="name" maxlength="14" placeholder="Toque para escrever" autocomplete="off"></div>
+      <div class="group"><b>Tom de pele</b><div class="sw" id="skin"></div></div>
+      <div class="group"><b>Cabelo</b><div class="chips" id="style"></div><div class="sw" id="hair"></div></div>
+      <div class="group"><b>Roupa</b><div class="sw" id="robe"></div></div>
+      <div class="row"><button class="btn go" id="save">✓ Pronto!</button><button class="btn ghost" id="rand">🎲 Surpresa</button></div>
+    </div>
+  </div>
+</div>
+<script>
+const REC={};
+%%ARTE%%
+%%COMMON%%
+const SKINS=[['#f6cfa6','#e2ab7c'],['#e8b48a','#c98f62'],['#c98f62','#a8714a'],['#8a5a3a','#6a4028']];
+const HAIRS=['#241b14','#5a3a22','#a5652f','#e8c070','#c0503a'];
+const ROBES=[['#7fa8d8','#4a76b0'],['#9cc77a','#5f9a4c'],['#ec9fa6','#b8687a'],['#ffd27a','#d9a441'],['#b99be8','#7a5ab0'],['#f2a65e','#c0703a']];
+const STYLES=[['curto','Curto'],['cacheado','Cacheado'],['comprido','Comprido'],['lenco','Lenço'],['bone','Boné']];
+let A={ nome:'', pele:0, estilo:'curto', cabelo:0, roupa:0 };
+try{ const o=JSON.parse(localStorage.getItem('bp_ajudante')||'null'); if(o) A=Object.assign(A,o); }catch(e){}
+function castOf(a){ const r=ROBES[a.roupa]; return { robe:r, sash:mix(r[1],'#000000',.25), skin:SKINS[a.pele], hair:HAIRS[a.cabelo], curly:a.estilo==='cacheado', longhair:a.estilo==='comprido', scarf:a.estilo==='lenco'? mix(r[0],'#ffffff',.55) : undefined, cap:a.estilo==='bone'? r[1] : undefined, s:.86 }; }
+function swatches(el,list,key,fill){ el.innerHTML=''; list.forEach((v,i)=>{ const b=document.createElement('button'); b.style.background=fill(v); b.setAttribute('aria-label',key+' '+(i+1)); b.setAttribute('aria-pressed',A[key]===i); b.onclick=()=>{ A[key]=i; sfx.tap(); ui(); }; el.appendChild(b); }); }
+function ui(){ swatches($('skin'),SKINS,'pele',v=>`linear-gradient(${v[0]},${v[1]})`); swatches($('hair'),HAIRS,'cabelo',v=>v); swatches($('robe'),ROBES,'roupa',v=>`linear-gradient(${v[0]},${v[1]})`);
+  const st=$('style'); st.innerHTML=''; STYLES.forEach(([id,n])=>{ const b=document.createElement('button'); b.textContent=n; b.setAttribute('aria-pressed',A.estilo===id); b.onclick=()=>{ A.estilo=id; sfx.tap(); ui(); }; st.appendChild(b); });
+  CAST.ajudante=castOf(A); $('nm').textContent=A.nome||''; }
+$('name').value=A.nome; $('name').oninput=e=>{ A.nome=e.target.value.replace(/[<>]/g,'').slice(0,14); $('nm').textContent=A.nome; };
+let celebrate=0; CAST.ajudante=castOf(A);
+const pv=$('pv'), px=pv.getContext('2d');
+(function loop(){ G+=1/60; ctx=px; px.setTransform(1,0,0,1,0,0); px.clearRect(0,0,440,560); px.setTransform(2,0,0,2,0,0);
+  const g=px.createRadialGradient(110,220,10,110,220,120); g.addColorStop(0,'rgba(255,240,200,.6)'); g.addColorStop(1,'rgba(255,240,200,0)'); px.fillStyle=g; px.fillRect(0,0,220,280);
+  px.save(); px.translate(110,262); px.scale(2.3,2.3); person('ajudante',0,0,{pose: celebrate>0? 'armsup' : 'open', dir:1}); px.restore(); if(celebrate>0) celebrate-=1/60; requestAnimationFrame(loop); })();
+$('rand').onclick=()=>{ A.pele=Math.floor(Math.random()*SKINS.length); A.cabelo=Math.floor(Math.random()*HAIRS.length); A.roupa=Math.floor(Math.random()*ROBES.length); A.estilo=STYLES[Math.floor(Math.random()*STYLES.length)][0]; sfx.good(); ui(); celebrate=1; };
+$('save').onclick=()=>{ A.nome=(A.nome||'').trim(); CAST.ajudante=castOf(A); const img=portrait('ajudante',120).toDataURL('image/png');
+  try{ localStorage.setItem('bp_ajudante',JSON.stringify(A)); localStorage.setItem('bp_ajudante_img',img); }catch(e){}
+  sfx.win(); confetti(); celebrate=2.2; $('save').textContent='✓ Salvo!'; setTimeout(()=>{ location.href='index.html'; },1600); };
+ui();
+window.__aj={get A(){return A;}};
+</script>

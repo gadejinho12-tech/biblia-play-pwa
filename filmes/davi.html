@@ -110,6 +110,7 @@ a.ghost{text-decoration:none;display:inline-block}
 </div>
 <div class="screen" id="gwin" hidden>
   <div class="page cover">
+    <div class="bp-hello" hidden><img alt=""><span></span></div>
     <div class="eyebrow">A Funda de Davi</div>
     <h1>Vitória! 🎉</h1>
     <div class="stars" id="gStars">⭐⭐⭐</div>
@@ -120,6 +121,7 @@ a.ghost{text-decoration:none;display:inline-block}
 </div>
 <div class="screen" id="summary" hidden>
   <div class="page sum">
+    <div class="bp-hello" hidden><img alt=""><span></span></div>
     <div class="eyebrow" style="text-align:center">Resumo da história</div>
     <h3>O que aprendemos com Davi</h3>
     <ul>
@@ -743,3 +745,7 @@ fit(); requestAnimationFrame(frame);
 try{ const _c=JSON.parse(localStorage.getItem('bp_cfg')||'{}'); if(_c.voz===false){ voiceOn=false; $('vo').textContent='🔇'; $('vo').setAttribute('aria-label','Narração desligada'); } if(_c.musica===false) window.__noMusic=true; }catch(e){}
 window.__P=P; window.__GS=GS; window.__cam=cam; window.__startGame=startGame; window.__SCRIPT=SCRIPT; window.__enter=enterLine;
 </script>
+
+<style>.bp-hello{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 6px;font:800 18px/1.2 Nunito,system-ui,sans-serif;color:#3a2c24}.bp-hello[hidden]{display:none!important}.bp-hello img{width:54px;height:54px;border-radius:50%;flex:none;animation:bpHop 1.2s ease-in-out infinite alternate}@keyframes bpHop{to{transform:translateY(-5px) rotate(-4deg)}}@media (prefers-reduced-motion:reduce){.bp-hello img{animation:none}}</style>
+<script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
+  document.querySelectorAll('.bp-hello').forEach(el=>{ const i=el.querySelector('img'); i.src=img; el.querySelector('span').textContent=a.nome? 'Muito bem, '+a.nome+'!' : 'Muito bem!'; el.hidden=false; }); }catch(e){} })();</script>
