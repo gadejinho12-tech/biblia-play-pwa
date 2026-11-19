@@ -35,6 +35,11 @@ body.game #sub{bottom:calc(118px + env(safe-area-inset-bottom,0px))}
   color:#fff;background:rgba(58,44,36,.55);border-radius:999px;padding:7px 12px;opacity:.9;pointer-events:none}
 #ctrl{position:fixed;left:0;right:0;bottom:0;z-index:7;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
   display:flex;align-items:center;gap:10px;background:linear-gradient(0deg, rgba(29,23,18,.7), rgba(29,23,18,0));transition:opacity .4s}
+#xbar{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:8;display:flex;gap:8px;transition:opacity .4s}
+#xbar.hide{opacity:0;pointer-events:none}
+.xb{border:0;border-radius:999px;height:34px;min-width:34px;padding:0 12px;display:grid;place-items:center;background:rgba(20,22,50,.38);color:#fff;font:800 13px var(--body);text-decoration:none;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:.82}
+.xb:hover,.xb:focus-visible{opacity:1;background:rgba(20,22,50,.6)}
+.xb:focus-visible{outline:2px solid #fff;outline-offset:2px}
 #ctrl.hide{opacity:0;pointer-events:none}
 .cb{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:rgba(251,243,227,.92);color:var(--ink);font:800 16px var(--body);cursor:pointer;display:grid;place-items:center}
 .cb.main{width:52px;height:52px;background:var(--gold);color:#fff;font-size:20px}
@@ -84,6 +89,7 @@ a.ghost{text-decoration:none;display:inline-block}
 <div id="top" hidden></div>
 <div id="sub"><span class="who"></span><div class="txt"></div></div>
 <div id="chapter"><div class="page"><div class="num"></div><h2></h2><div class="orn">❦</div></div></div>
+<div id="xbar" hidden><button class="xb" id="xskip" aria-label="Pular para o fim do filme">Pular ⏭</button><a class="xb" href="index.html" aria-label="Sair do filme e voltar para a estante">✕</a></div>
 <div id="ctrl" hidden>
   <button class="cb" id="prev" aria-label="Capítulo anterior">⏮</button>
   <button class="cb main" id="pp" aria-label="Pausar">❚❚</button>
@@ -663,6 +669,11 @@ fit(); requestAnimationFrame(frame);
 try{ const _c=JSON.parse(localStorage.getItem('bp_cfg')||'{}'); if(_c.voz===false){ voiceOn=false; $('vo').textContent='🔇'; $('vo').setAttribute('aria-label','Narração desligada'); } if(_c.musica===false) window.__noMusic=true; }catch(e){}
 window.__P=P; window.__GS=GS; window.__cam=cam; window.__startGame=startGame; window.__SCRIPT=SCRIPT; window.__enter=enterLine;
 </script>
+
+<script>(function(){ const x=document.getElementById('xbar'), c=document.getElementById('ctrl');
+  setInterval(()=>{ const sumOpen=!document.getElementById('summary').hidden; x.hidden=c.hidden || (typeof MODE!=='undefined' && MODE==='game'); document.getElementById('xskip').hidden=sumOpen; x.classList.toggle('hide', c.classList.contains('hide') && !sumOpen); },200);
+  document.getElementById('xskip').onclick=e=>{ e.stopPropagation(); const i=SCRIPT.findIndex(l=>l.summary); if(i<0) return; P.scT=0; enterLine(i); if(typeof poke==='function') poke(); };
+  addEventListener('pointermove',()=>{ if(typeof poke==='function' && !c.hidden) poke(); },{passive:true}); })();</script>
 
 <style>.bp-hello{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 6px;font:800 18px/1.2 Nunito,system-ui,sans-serif;color:#3a2c24}.bp-hello[hidden]{display:none!important}.bp-hello img{width:54px;height:54px;border-radius:50%;flex:none;animation:bpHop 1.2s ease-in-out infinite alternate}@keyframes bpHop{to{transform:translateY(-5px) rotate(-4deg)}}@media (prefers-reduced-motion:reduce){.bp-hello img{animation:none}}</style>
 <script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;

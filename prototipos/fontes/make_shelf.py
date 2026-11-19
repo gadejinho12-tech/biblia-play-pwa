@@ -19,6 +19,14 @@ for src,dst,sid,sv in [('noe-filme.html','shelf/noe.html','noe','st'),('davi-fil
     R("window.__P=P;","try{ const _c=JSON.parse(localStorage.getItem('bp_cfg')||'{}'); if(_c.voz===false){ voiceOn=false; $('vo').textContent='🔇'; $('vo').setAttribute('aria-label','Narração desligada'); } if(_c.musica===false) window.__noMusic=true; }catch(e){}\nwindow.__P=P;")
     R('<div class="eyebrow" style="text-align:center">Resumo da história</div>', H+'\n    <div class="eyebrow" style="text-align:center">Resumo da história</div>')
     R('<div class="screen" id="gwin" hidden>\n  <div class="page cover">', '<div class="screen" id="gwin" hidden>\n  <div class="page cover">\n    '+H)
+    R('<div id="ctrl" hidden>', '<div id="xbar" hidden><button class="xb" id="xskip" aria-label="Pular para o fim do filme">Pular ⏭</button><a class="xb" href="index.html" aria-label="Sair do filme e voltar para a estante">✕</a></div>\n<div id="ctrl" hidden>')
+    R('#ctrl.hide{', '#xbar{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:8;display:flex;gap:8px;transition:opacity .4s}\n#xbar.hide{opacity:0;pointer-events:none}\n.xb{border:0;border-radius:999px;height:34px;min-width:34px;padding:0 12px;display:grid;place-items:center;background:rgba(20,22,50,.38);color:#fff;font:800 13px var(--body);text-decoration:none;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:.82}\n.xb:hover,.xb:focus-visible{opacity:1;background:rgba(20,22,50,.6)}\n.xb:focus-visible{outline:2px solid #fff;outline-offset:2px}\n#ctrl.hide{')
+    s=s+"""
+<script>(function(){ const x=document.getElementById('xbar'), c=document.getElementById('ctrl');
+  setInterval(()=>{ const sumOpen=!document.getElementById('summary').hidden; x.hidden=c.hidden || (typeof MODE!=='undefined' && MODE==='game'); document.getElementById('xskip').hidden=sumOpen; x.classList.toggle('hide', c.classList.contains('hide') && !sumOpen); },200);
+  document.getElementById('xskip').onclick=e=>{ e.stopPropagation(); const i=SCRIPT.findIndex(l=>l.summary); if(i<0) return; P.scT=0; enterLine(i); if(typeof poke==='function') poke(); };
+  addEventListener('pointermove',()=>{ if(typeof poke==='function' && !c.hidden) poke(); },{passive:true}); })();</script>
+"""
     s=s+'\n'+HELLO
     pathlib.Path(dst).write_text(HEAD+s)
 print('ok')
