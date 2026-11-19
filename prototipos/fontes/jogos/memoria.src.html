@@ -1,0 +1,70 @@
+<title>Jogo da Memória</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Nunito:wght@600;700;800&display=swap">
+<style>
+%%CSS%%
+/* Layout: cabeçalho, escolha de nível e um tabuleiro de cartas que se ajusta à tela. */
+.bar{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font:800 15px var(--body);color:var(--muted)}
+.bar b{color:var(--ink);font-variant-numeric:tabular-nums}
+.board{display:grid;gap:10px;margin:0 auto;width:100%;max-width:640px}
+.card{position:relative;aspect-ratio:3/4;max-width:100%;perspective:800px;border:0;padding:0;background:transparent;cursor:pointer}
+.card .in{position:absolute;inset:0;transition:transform .45s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
+.card.up .in,.card.done .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;box-shadow:0 8px 18px rgba(90,60,30,.16), 0 0 0 1px rgba(120,90,50,.15)}
+.back{background:linear-gradient(160deg,#f6e3bc,#e3c38a);}
+.back::before{content:"";position:absolute;inset:7px;border:2px solid rgba(255,250,235,.8);border-radius:8px}
+.back span{font:800 clamp(20px,5vw,30px) var(--display);color:#fff8e8;text-shadow:0 2px 0 rgba(150,100,40,.35)}
+.front{background:var(--card);transform:rotateY(180deg);grid-template-rows:1fr auto;padding:8px 6px 6px;gap:2px}
+.front canvas{max-width:100%;height:auto}
+.front em{font:800 clamp(11px,2.6vw,14px)/1.1 var(--body);font-style:normal;text-align:center}
+.card.done .front{box-shadow:0 0 0 3px var(--ok), 0 8px 18px rgba(90,60,30,.16)}
+.card.shake .in{animation:shake .35s}
+@keyframes shake{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-5px)}75%{transform:rotateY(180deg) translateX(5px)}}
+</style>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Jogo da Memória</h1><button class="pill" id="vo" aria-label="Narração ligada">🔊</button></div>
+  <section id="pick" class="wrap">
+    <p class="lead">Vire duas cartas e encontre os pares de personagens e animais das histórias da Bíblia.</p>
+    <div class="choices" id="levels"></div>
+  </section>
+  <section id="game" class="wrap" hidden>
+    <div class="bar"><span>Pares: <b id="pairs">0 / 0</b></span><span>Jogadas: <b id="moves">0</b></span><button class="pill" id="restart">↻ Recomeçar</button></div>
+    <div class="board" id="board"></div>
+  </section>
+</div>
+<div class="overlay" id="win" hidden><div class="page"><span class="eyebrow">Jogo da memória</span><h2>Você achou todos! 🎉</h2><div class="stars" id="wStars"></div><p class="lead" id="wRes"></p>
+  <div class="row"><button class="btn go" id="again">↻ Jogar de novo</button><button class="btn ghost" id="other">Outro nível</button><a class="btn ghost" href="index.html">📚 Estante</a></div></div></div>
+<script>
+const REC=%%REC%%;
+%%ARTE%%
+%%COMMON%%
+const POOL=['noe','davi','golias','jonas','jesus','pedro','adao','eva','saul','ovelha','leao','elefante','girafa','pomba','coelho','arca'];
+const NAME={noe:'Noé',davi:'Davi',golias:'Golias',jonas:'Jonas',jesus:'Jesus',pedro:'Pedro',adao:'Adão',eva:'Eva',saul:'Rei Saul',ovelha:'Ovelha',leao:'Leão',elefante:'Elefante',girafa:'Girafa',pomba:'Pomba',coelho:'Coelho',arca:'Arca'};
+const LEVELS=[ {id:'f',name:'Fácil',pairs:6,cols:3,who:'ovelha'}, {id:'m',name:'Médio',pairs:8,cols:4,who:'noe'}, {id:'d',name:'Difícil',pairs:10,cols:4,who:'golias'} ];
+let L=null, first=null, lock=false, moves=0, found=0;
+const lv=$('levels');
+LEVELS.forEach(l=>{ const b=document.createElement('button'); b.className='choice'; b.appendChild(portrait(l.who,96)); b.insertAdjacentHTML('beforeend',`<span>${l.name}</span><small>${l.pairs} pares · ${l.pairs*2} cartas</small>`); b.onclick=()=>{ sfx.tap(); start(l); }; lv.appendChild(b); });
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function start(l){ L=l; first=null; lock=false; moves=0; found=0; $('pick').hidden=true; $('game').hidden=false; $('win').hidden=true;
+  const ids=shuffle(POOL.slice()).slice(0,l.pairs); const deck=shuffle([...ids,...ids]);
+  const cols = innerWidth<520? Math.min(l.cols,4) : (l.pairs===10? 5 : l.cols);
+  const bd=$('board'); bd.innerHTML=''; bd.style.gridTemplateColumns=`repeat(${cols},1fr)`; bd.style.maxWidth = (cols*128)+'px';
+  deck.forEach((id,i)=>{ const c=document.createElement('button'); c.className='card'; c.dataset.id=id; c.setAttribute('aria-label','Carta '+(i+1));
+    c.innerHTML='<div class="in"><div class="face back"><span>✦</span></div><div class="face front"><em>'+NAME[id]+'</em></div></div>';
+    const cv=portrait(id,110,['#fffaf0','#f3e2c0']); cv.style.width='100%'; cv.style.height='auto'; c.querySelector('.front').prepend(cv);
+    c.onclick=()=>flip(c); bd.appendChild(c); });
+  upd(); say('mi'); }
+function upd(){ $('pairs').textContent=found+' / '+L.pairs; $('moves').textContent=moves; }
+function flip(c){ if(lock || c.classList.contains('up') || c.classList.contains('done')) return; ac(); sfx.tap(); c.classList.add('up');
+  if(!first){ first=c; return; }
+  moves++; upd(); const a=first, b=c; first=null;
+  if(a.dataset.id===b.dataset.id){ setTimeout(()=>{ a.classList.add('done'); b.classList.add('done'); a.classList.remove('up'); b.classList.remove('up'); a.setAttribute('aria-label',NAME[a.dataset.id]); b.setAttribute('aria-label',NAME[b.dataset.id]); sfx.good(); say('m_'+a.dataset.id); found++; upd(); if(found===L.pairs) setTimeout(win,900); },350); }
+  else { lock=true; setTimeout(()=>{ a.classList.add('shake'); b.classList.add('shake'); sfx.bad(); },450); setTimeout(()=>{ a.classList.remove('up','shake'); b.classList.remove('up','shake'); lock=false; },1100); } }
+function win(){ const st = moves<=L.pairs*1.6? 3 : (moves<=L.pairs*2.4? 2 : 1); saveStars('bp_memoria_estrelas',st);
+  $('wStars').textContent=starText(st); $('wRes').textContent='Nível '+L.name+' · '+moves+' jogadas'; $('win').hidden=false; sfx.win(); confetti(); setTimeout(()=>say('mf'),400); }
+$('restart').onclick=()=>start(L); $('again').onclick=()=>start(L); $('other').onclick=()=>{ $('win').hidden=true; $('game').hidden=true; $('pick').hidden=false; };
+$('vo').onclick=e=>toggleVoice(e.currentTarget);
+window.__mem={start,LEVELS};
+</script>

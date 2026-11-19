@@ -1,0 +1,85 @@
+<title>Quiz Bíblico</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Nunito:wght@600;700;800&display=swap">
+<style>
+%%CSS%%
+/* Layout: escolha da história; depois um cartão de pergunta (retrato + pergunta) e 3 respostas grandes. */
+.dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--paper2);box-shadow:inset 0 0 0 1px rgba(120,90,50,.2)}
+.dots i.ok{background:var(--ok)} .dots i.no{background:var(--bad)} .dots i.now{background:var(--gold2)}
+.qcard{background:var(--card);border-radius:16px;padding:18px 20px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;box-shadow:0 10px 24px rgba(90,60,30,.12), 0 0 0 1px rgba(120,90,50,.1);max-width:640px;margin:0 auto;width:100%}
+.qcard h2{font:800 clamp(20px,4.8vw,28px)/1.2 var(--display);margin:0;text-wrap:balance}
+.qcard small{display:block;font:800 12px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.opts{display:grid;gap:12px;max-width:640px;margin:0 auto;width:100%}
+.opt{border:0;border-radius:14px;padding:16px 18px;background:var(--card);font:800 clamp(16px,4vw,19px)/1.3 var(--body);color:var(--ink);text-align:left;cursor:pointer;box-shadow:0 6px 14px rgba(90,60,30,.1), 0 0 0 2px rgba(120,90,50,.12);display:flex;gap:12px;align-items:center}
+.opt .l{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--paper2);font:800 15px var(--body)}
+.opt.ok{box-shadow:0 0 0 3px var(--ok);background:#eef7e6} .opt.ok .l{background:var(--ok);color:#fff}
+.opt.no{box-shadow:0 0 0 3px var(--bad);background:#fbebe7;animation:shake .35s} .opt.no .l{background:var(--bad);color:#fff}
+.opt.glow{animation:glow 1s ease-in-out 2}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes glow{50%{transform:scale(1.03)}}
+.next{display:flex;justify-content:center}
+</style>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Quiz Bíblico</h1><button class="pill" id="vo" aria-label="Narração ligada">🔊</button></div>
+  <section id="pick" class="wrap">
+    <p class="lead">Perguntas sobre os filmes da estante. A narradora lê a pergunta; toque na resposta certa!</p>
+    <div class="choices" id="stories"></div>
+  </section>
+  <section id="game" class="wrap" hidden>
+    <div class="dots" id="dots"></div>
+    <div class="qcard"><div id="qpic"></div><div><small id="qref"></small><h2 id="qtext"></h2></div></div>
+    <div class="opts" id="opts"></div>
+    <div class="next"><button class="btn go" id="next" hidden>Próxima ▸</button></div>
+  </section>
+</div>
+<div class="overlay" id="win" hidden><div class="page"><span class="eyebrow">Quiz bíblico</span><h2 id="wTitle">Muito bem!</h2><div class="stars" id="wStars"></div><p class="lead" id="wRes"></p>
+  <div class="row"><button class="btn go" id="again">↻ Jogar de novo</button><button class="btn ghost" id="other">Outra história</button><a class="btn ghost" href="index.html">📚 Estante</a></div></div></div>
+<script>
+const REC=%%REC%%;
+%%ARTE%%
+%%COMMON%%
+const QS=[
+ {s:'criacao',p:'adao',a:['A luz','Os animais','Os peixes']}, {s:'criacao',p:'adao',a:['No quarto dia','No primeiro dia','No sétimo dia']}, {s:'criacao',p:'eva',a:['Descansou','Fez o mar','Fez os peixes']},
+ {s:'criacao',p:'eva',a:['Adão e Eva','Noé e Sara','Davi e Ester']}, {s:'criacao',p:'adao',a:['Que era muito bom','Que estava mais ou menos','Que estava feio']},
+ {s:'noe',p:'noe',a:['Uma arca','Uma casa','Uma torre']}, {s:'noe',p:'elefante',a:['De dois em dois','Um de cada vez','Todos voando']}, {s:'noe',p:'noe',a:['Quarenta','Sete','Três']},
+ {s:'noe',p:'pomba',a:['Uma folha de oliveira','Um peixinho','Uma flor']}, {s:'noe',p:'noe',a:['O arco-íris','Uma estrela','Uma nuvem']},
+ {s:'davi',p:'davi',a:['Cuidava das ovelhas','Já era rei','Era pescador']}, {s:'davi',p:'golias',a:['Golias','Sansão','Faraó']}, {s:'davi',p:'davi',a:['Cinco','Duas','Dez']},
+ {s:'davi',p:'saul',a:['Era grande e pesada demais','Era feia','Estava quebrada']}, {s:'davi',p:'davi',a:['Senhor','Rei','Exército']},
+ {s:'jonas',p:'jonas',a:['Nínive','Belém','Jerusalém']}, {s:'jonas',p:'jonas',a:['Fugiu num navio','Obedeceu na hora','Ficou dormindo']}, {s:'jonas',p:'jonas',a:['Um grande peixe','Um tubarão','Um polvo']},
+ {s:'jonas',p:'jonas',a:['Orou e pediu perdão','Dormiu','Cantou uma música']}, {s:'jonas',p:'rei',a:['Perdoou','Castigou','Esqueceu']},
+ {s:'tempestade',p:'jesus',a:['No barco, dormindo num travesseiro','Na praia','Numa casa']}, {s:'tempestade',p:'pedro',a:['Os discípulos','Os peixes','Um anjo']},
+ {s:'tempestade',p:'jesus',a:['Silêncio! Aquiete-se!','Corra!','Fique bravo!']}, {s:'tempestade',p:'pedro',a:['O mar ficou calmo','Choveu mais forte','O barco afundou']},
+ {s:'tempestade',p:'jesus',a:['Chamar por Jesus','Fugir','Ficar bravo']},
+];
+const QTEXT=["O que Deus criou no primeiro dia?","Em qual dia Deus fez o sol, a lua e as estrelas?","O que Deus fez no sétimo dia?","Como se chamavam o primeiro homem e a primeira mulher?","Deus olhou tudo o que tinha feito. O que Ele achou?",
+"O que Deus pediu para Noé construir?","Como os animais entraram na arca?","Quantos dias e noites choveu?","O que a pomba trouxe no bico?","Qual foi o sinal da promessa de Deus para Noé?",
+"O que Davi fazia antes de enfrentar o gigante?","Qual era o nome do gigante?","Quantas pedras Davi escolheu no riacho?","Por que Davi não usou a armadura do rei?","Davi disse: a batalha é do...",
+"Para qual cidade Deus mandou Jonas?","O que Jonas fez quando Deus o chamou?","O que engoliu Jonas?","O que Jonas fez dentro do peixe?","O que Deus fez com o povo de Nínive?",
+"Onde Jesus estava durante a tempestade?","Quem acordou Jesus?","O que Jesus disse ao mar?","O que aconteceu depois que Jesus falou?","Quando sentimos medo, o que podemos fazer?"];
+QS.forEach((q,i)=>{ q.q=QTEXT[i]; q.rec='q'+String(i+1).padStart(2,'0'); });
+let round=[], idx=0, score=0, results=[], sel=null, answered=false;
+const st=$('stories');
+const all={id:'todas',name:'Todas as histórias',who:'noe',ref:'8 perguntas sorteadas'};
+[all,...STORIES].forEach(s=>{ const b=document.createElement('button'); b.className='choice'; b.appendChild(portrait(s.who,96)); b.insertAdjacentHTML('beforeend',`<span>${s.name}</span><small>${s.id==='todas'?s.ref:s.ref+' · 5 perguntas'}</small>`); b.onclick=()=>{ sfx.tap(); start(s); }; st.appendChild(b); });
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function start(s){ sel=s; round = s.id==='todas'? shuffle(QS).slice(0,8) : shuffle(QS.filter(q=>q.s===s.id)); idx=0; score=0; results=[]; $('pick').hidden=true; $('game').hidden=false; $('win').hidden=true; ac(); say('qi'); setTimeout(show, 3200); dots(); $('qtext').textContent='Preparando a primeira pergunta...'; $('opts').innerHTML=''; $('qpic').innerHTML=''; $('qref').textContent=''; }
+function dots(){ const d=$('dots'); d.innerHTML=''; round.forEach((q,i)=>{ const e=document.createElement('i'); if(i<results.length) e.className=results[i]?'ok':'no'; else if(i===idx) e.className='now'; d.appendChild(e); }); }
+function show(){ if($('game').hidden) return; const q=round[idx]; answered=false; $('next').hidden=true; dots();
+  const story=STORIES.find(s=>s.id===q.s); $('qref').textContent=story.name+' · pergunta '+(idx+1)+' de '+round.length; $('qtext').textContent=q.q;
+  const pic=$('qpic'); pic.innerHTML=''; pic.appendChild(portrait(q.p,88));
+  const o=$('opts'); o.innerHTML=''; const opts=shuffle(q.a.map((t,k)=>({t,ok:k===0})));
+  opts.forEach((op,k)=>{ const b=document.createElement('button'); b.className='opt'; b.innerHTML='<span class="l">'+'ABC'[k]+'</span><span>'+op.t+'</span>'; b.dataset.ok=op.ok?1:0; b.onclick=()=>answer(b); o.appendChild(b); });
+  say(q.rec); }
+function answer(b){ if(answered) return; answered=true; const ok=b.dataset.ok==='1'; results.push(ok); if(ok){ score++; b.classList.add('ok'); sfx.good(); say('qa'); }
+  else { b.classList.add('no'); sfx.bad(); const r=[...$('opts').children].find(x=>x.dataset.ok==='1'); r.classList.add('ok','glow'); say('qb'); }
+  dots(); $('next').hidden=false; $('next').textContent = idx+1<round.length? 'Próxima ▸' : 'Ver resultado ▸'; $('next').focus(); }
+$('next').onclick=()=>{ sfx.tap(); idx++; if(idx<round.length) show(); else finish(); };
+function finish(){ const pct=score/round.length; const s= pct>=.85? 3 : (pct>=.55? 2 : 1); saveStars('bp_quiz_estrelas',s);
+  $('wTitle').textContent= s===3? 'Que memória boa! 🎉' : (s===2? 'Muito bem! 👏' : 'Boa tentativa! 💛'); $('wStars').textContent=starText(s); $('wRes').textContent='Você acertou '+score+' de '+round.length+' · '+sel.name; $('win').hidden=false; sfx.win(); if(s===3) confetti(); setTimeout(()=>say('qf'),300); }
+$('again').onclick=()=>start(sel); $('other').onclick=()=>{ $('win').hidden=true; $('game').hidden=true; $('pick').hidden=false; };
+$('vo').onclick=e=>toggleVoice(e.currentTarget);
+window.__qz={start,STORIES,get round(){return round;}};
+</script>

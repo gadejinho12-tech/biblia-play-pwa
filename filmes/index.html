@@ -53,6 +53,13 @@ section{scroll-margin-top:70px}
 .soon.games div{gap:6px}
 .gi{font-size:30px}
 .lead{margin:-6px 0 6px;color:var(--muted)}
+.games-live{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.game{background:var(--card);border-radius:14px;padding:18px;text-decoration:none;color:var(--ink);display:grid;gap:6px;box-shadow:0 10px 24px rgba(90,60,30,.12), 0 0 0 1px rgba(120,90,50,.1)}
+.game .gi{font-size:40px}
+.game b{font:800 21px/1.1 var(--display)}
+.game span.d{color:var(--muted);font-size:14px;line-height:1.4}
+.game span.s{font:800 13px var(--body)}
+.game:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .parents{background:var(--card);border-radius:14px;padding:20px 22px;display:grid;gap:12px;box-shadow:0 0 0 1px rgba(120,90,50,.1)}
 .parents ul{margin:0;padding-left:18px;display:grid;gap:6px;line-height:1.5;max-width:70ch}
 footer{text-align:center;color:var(--muted);font-size:13px}
@@ -93,10 +100,8 @@ footer{text-align:center;color:var(--muted);font-size:13px}
   <section id="jogos">
     <h2>🎲 Jogos clássicos</h2>
     <p class="lead">Jogos de sempre, com temas da Bíblia — para brincar a qualquer hora.</p>
+    <div class="games-live" id="games"></div>
     <div class="soon games">
-      <div><span class="gi">🔤</span><b>Caça-palavras</b><small>em breve</small></div>
-      <div><span class="gi">🃏</span><b>Jogo da memória</b><small>em breve</small></div>
-      <div><span class="gi">❓</span><b>Quiz bíblico</b><small>em breve</small></div>
       <div><span class="gi">🧩</span><b>Quebra-cabeça</b><small>em breve</small></div>
       <div><span class="gi">📜</span><b>Monte o versículo</b><small>em breve</small></div>
       <div><span class="gi">🔍</span><b>Ache as diferenças</b><small>em breve</small></div>
@@ -142,4 +147,12 @@ for(const f of FILMS){ const shelf=document.querySelector('.shelf[data-t="'+f.t+
     </div>`;
   shelf.appendChild(el);
 }
+const GAMES=[
+  { id:'cacapalavras', icon:'🔤', name:'Caça-palavras', desc:'Palavras de cada história, em 3 níveis.' },
+  { id:'memoria', icon:'🃏', name:'Jogo da memória', desc:'Ache os pares de personagens e animais.' },
+  { id:'quiz', icon:'❓', name:'Quiz bíblico', desc:'Perguntas sobre os filmes, com narração.' },
+];
+const gbox=document.getElementById('games');
+for(const g of GAMES){ const st=+(get('bp_'+g.id+'_estrelas')||0); const a=document.createElement('a'); a.className='game'; a.href=g.id+'.html';
+  a.innerHTML=`<span class="gi">${g.icon}</span><b>${g.name}</b><span class="d">${g.desc}</span><span class="s">${st? '⭐'.repeat(st)+'☆'.repeat(3-st) : '▶ Jogar'}</span>`; gbox.appendChild(a); }
 </script>
