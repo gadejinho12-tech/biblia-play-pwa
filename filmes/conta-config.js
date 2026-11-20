@@ -7,8 +7,8 @@ window.BP_CONTA = {
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtcG12cmhieXppdWxoZ21ianh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxMzAyNTQsImV4cCI6MjExMDcwNjI1NH0.us5TihNd3k9JqIBZ0v_3BUNJUw0-woepy2Gs3BXMKe0',
 
   // Links de pagamento da Kiwify (um para cada plano)
-  KIWIFY_MENSAL: '',
-  KIWIFY_ANUAL: '',
+  KIWIFY_MENSAL: 'https://pay.kiwify.com.br/vMYkAzH',
+  KIWIFY_ANUAL: 'https://pay.kiwify.com.br/jBVV1nl',
 
   // Preços mostrados na página "Assinar"
   PRECO_MENSAL: 'R$ 14,90',
