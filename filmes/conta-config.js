@@ -3,8 +3,8 @@
    Depois de criar o Supabase e os produtos na Kiwify, é só preencher aqui. */
 window.BP_CONTA = {
   // Supabase (Settings → API). A "anon key" é pública: pode ficar no site.
-  SUPABASE_URL: '',
-  SUPABASE_ANON_KEY: '',
+  SUPABASE_URL: 'https://gmpmvrhbyziulhgmbjxv.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtcG12cmhieXppdWxoZ21ianh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxMzAyNTQsImV4cCI6MjExMDcwNjI1NH0.us5TihNd3k9JqIBZ0v_3BUNJUw0-woepy2Gs3BXMKe0',
 
   // Links de pagamento da Kiwify (um para cada plano)
   KIWIFY_MENSAL: '',
