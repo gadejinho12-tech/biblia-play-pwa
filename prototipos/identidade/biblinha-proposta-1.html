@@ -57,7 +57,7 @@ p.lead{max-width:640px;font-size:18px}
 .chip{background:#fff;border-radius:999px;padding:8px 16px;font:800 15px Nunito;box-shadow:0 4px 0 #D8E9F3}
 .filmes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:18px}
 .filme{background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 6px 0 #D8E9F3}
-.filme .capa{height:120px;display:flex;align-items:center;justify-content:center;font-size:54px}
+.filme .capa img{display:block;width:100%;aspect-ratio:10/7;object-fit:cover}
 .filme .info{padding:12px 16px 16px}
 .filme h3{font-size:22px}
 .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 22px;font:800 18px "Baloo 2";cursor:pointer}
@@ -183,9 +183,9 @@ footer{padding:30px 0 50px;text-align:center;font-size:14px;opacity:.7}
       <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip">🪙 12 moedas</span><span class="chip">🐑 Minha Arca</span></div>
     </div>
     <div class="filmes">
-      <div class="filme"><div class="capa" style="background:#BDE9FF">🌍</div><div class="info"><span class="selo">NOVO</span><h3>A Criação</h3><button class="btn play">▶ Assistir</button></div></div>
-      <div class="filme"><div class="capa" style="background:#D7F2C9">🚢</div><div class="info"><span class="selo" style="background:var(--ceu)">2 min</span><h3>Arca de Noé</h3><button class="btn alt">🎮 Jogar</button></div></div>
-      <div class="filme"><div class="capa" style="background:#FFE9B8">🪨</div><div class="info"><span class="selo" style="background:var(--laranja)">🔒 Assinantes</span><h3>Davi e Golias</h3><button class="btn play">▶ Assistir</button></div></div>
+      <div class="filme"><div class="capa"><img src="../../filmes/capa-criacao.jpg" alt=""></div><div class="info"><span class="selo">NOVO</span><h3>A Criação</h3><button class="btn play">▶ Assistir</button></div></div>
+      <div class="filme"><div class="capa"><img src="../../filmes/capa-noe.jpg" alt=""></div><div class="info"><span class="selo" style="background:var(--ceu)">2 min</span><h3>Arca de Noé</h3><button class="btn alt">🎮 Jogar</button></div></div>
+      <div class="filme"><div class="capa"><img src="../../filmes/capa-davi.jpg" alt=""></div><div class="info"><span class="selo" style="background:var(--laranja)">🔒 Assinantes</span><h3>Davi e Golias</h3><button class="btn play">▶ Assistir</button></div></div>
     </div>
   </div>
 </div></section>

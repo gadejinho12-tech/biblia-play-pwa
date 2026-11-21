@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Biblinha Play – proposta 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --manha:#8FD3F4; --pessego:#FFB38A; --menta:#8FD8A8; --lavanda:#B9A6F0; --mel:#F6C453;
+  --tinta:#3B3355; --papel:#FFF8EE; --cartao:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--papel);color:var(--tinta);font:500 17px/1.55 Nunito,system-ui,sans-serif}
+h1,h2,h3{font-family:Fredoka,Nunito,sans-serif;font-weight:600;line-height:1.1}
+.wrap{max-width:1100px;margin:auto;padding:0 20px}
+section{padding:48px 0}
+.rot{font:800 13px Nunito;letter-spacing:.14em;text-transform:uppercase;color:#C47B55;margin-bottom:8px}
+h2{font-size:clamp(30px,5vw,42px);margin-bottom:10px}
+p.lead{max-width:640px;font-size:18px}
+
+/* logo */
+.logo{display:inline-flex;align-items:center;gap:.25em;font-family:Fredoka;font-weight:700;font-size:var(--t,60px);line-height:1}
+.logo .arco{width:1.7em;height:1.7em;flex:none}
+.logo .txt{display:flex;flex-direction:column;line-height:.9}
+.logo .b{color:var(--tinta);letter-spacing:-.01em}
+.logo .p{font-size:.56em;letter-spacing:.06em;background:linear-gradient(90deg,#FF8E7A,#F6B54B 30%,#62C38A 55%,#5FB2E6 75%,#9A84E8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-left:.06em}
+.logo.claro .b{color:#fff}
+
+/* topo com a arte do jogo */
+.hero{position:relative;min-height:440px;display:flex;align-items:flex-end;overflow:hidden;background:#cfe9f7}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#fff8ee00 35%,#fff8eeee 92%)}
+.hero .wrap{position:relative;z-index:2;width:100%;padding-bottom:28px;display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.hero .tag{font:600 22px Fredoka;margin-top:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 24px;font:600 19px Fredoka;cursor:pointer}
+.btn.play{background:linear-gradient(#FFC09C,#FF9A6B);color:#fff;box-shadow:0 6px 16px #FF9A6B66;text-shadow:0 1px 0 #d9733f}
+.btn.alt{background:#fff;color:var(--tinta);box-shadow:0 6px 16px #3B335522}
+
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:26px}
+.card{background:var(--cartao);border-radius:30px;padding:22px;box-shadow:0 10px 30px #3B335514;text-align:center}
+.card h3{font-size:22px;margin:8px 0 4px}.card p{font-size:15px}
+.pose svg{width:170px;height:170px}
+
+.cores .sw{border-radius:26px;height:110px;display:flex;align-items:flex-end;padding:12px 14px;font:800 15px Nunito;color:var(--tinta);box-shadow:0 8px 20px #3B335512}
+.cores .sw span{display:block;font-weight:600;font-size:13px;opacity:.85}
+
+.estante{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:22px}
+.filme{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 10px 28px #3B335518}
+.filme img{display:block;width:100%;aspect-ratio:10/7;object-fit:cover}
+.filme .info{padding:12px 16px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.filme h3{font-size:21px}
+.filme small{display:block;font-size:13px;opacity:.7}
+.mini{width:46px;height:46px;border-radius:50%;border:0;background:linear-gradient(#FFC09C,#FF9A6B);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px #FF9A6B66;flex:none}
+.mini i{border-left:14px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.selo{position:absolute;left:12px;top:12px;background:#fffffff0;border-radius:999px;padding:4px 12px;font:800 12px Nunito}
+.filme .capa{position:relative}
+
+.icones{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin-top:22px}
+.icone{width:150px;height:150px;border-radius:40px;background:radial-gradient(circle at 50% 120%,#FFE9C9,#BFE6F8 70%);position:relative;overflow:hidden;box-shadow:0 10px 24px #5FB2E655}
+.icone svg{position:absolute;inset:0;width:100%;height:100%}
+.peq{width:72px;height:72px;border-radius:20px}
+.regras li{margin:6px 0 6px 20px}
+footer{padding:30px 0 50px;text-align:center;font-size:14px;opacity:.7}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <radialGradient id="gLa" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#FBF3E6"/><stop offset="1" stop-color="#E9DCC8"/></radialGradient>
+    <radialGradient id="gRosto" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#F7DCC6"/><stop offset="1" stop-color="#DDB08F"/></radialGradient>
+    <linearGradient id="gArco" x1="0" x2="1"><stop offset="0" stop-color="#FF8E7A"/><stop offset=".3" stop-color="#F6B54B"/><stop offset=".55" stop-color="#62C38A"/><stop offset=".78" stop-color="#5FB2E6"/><stop offset="1" stop-color="#9A84E8"/></linearGradient>
+    <filter id="sombra" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#3B3355" flood-opacity=".18"/></filter>
+    <g id="ov">
+      <ellipse cx="100" cy="178" rx="52" ry="7" fill="#3B3355" opacity=".12"/>
+      <rect x="76" y="140" width="13" height="36" rx="6.5" fill="#6B5A57"/>
+      <rect x="114" y="140" width="13" height="36" rx="6.5" fill="#6B5A57"/>
+      <g fill="url(#gLa)" filter="url(#sombra)" >
+        <circle cx="72" cy="112" r="30"/><circle cx="104" cy="98" r="34"/><circle cx="136" cy="112" r="30"/>
+        <circle cx="88" cy="136" r="28"/><circle cx="122" cy="136" r="28"/><circle cx="104" cy="122" r="34"/>
+      </g>
+      <ellipse cx="66" cy="96" rx="15" ry="8" transform="rotate(-25 66 96)" fill="#E2B897"/>
+      <ellipse cx="128" cy="96" rx="15" ry="8" transform="rotate(25 128 96)" fill="#E2B897"/>
+      <ellipse cx="97" cy="106" rx="29" ry="31" fill="url(#gRosto)"/>
+      <g fill="#fff"><circle cx="84" cy="78" r="11"/><circle cx="97" cy="71" r="12"/><circle cx="110" cy="78" r="11"/></g>
+      <ellipse cx="80" cy="117" rx="6" ry="3.6" fill="#F59C9C" opacity=".7"/><ellipse cx="114" cy="117" rx="6" ry="3.6" fill="#F59C9C" opacity=".7"/>
+    </g>
+    <g id="olhos"><circle cx="87" cy="103" r="4.2" fill="#3B3355"/><circle cx="107" cy="103" r="4.2" fill="#3B3355"/><circle cx="88.3" cy="101.7" r="1.4" fill="#fff"/><circle cx="108.3" cy="101.7" r="1.4" fill="#fff"/></g>
+    <path id="sorriso" d="M90 116 q7 6 14 0" fill="none" stroke="#3B3355" stroke-width="3" stroke-linecap="round"/>
+  </defs>
+</svg>
+
+<header class="hero">
+  <img src="../../filmes/capa-noe.jpg" alt="Cena do filme Arca de Noé">
+  <div class="wrap">
+    <div style="background:#fff8eee6;border-radius:30px;padding:14px 22px 16px;box-shadow:0 10px 30px #3B335522">
+      <div class="logo" style="--t:clamp(44px,8vw,76px)">
+        <svg class="arco" viewBox="0 0 100 100"><path d="M8 74 a42 42 0 0 1 84 0" fill="none" stroke="url(#gArco)" stroke-width="10" stroke-linecap="round"/><g transform="translate(-14 -2) scale(.6)"><use href="#ov"/><use href="#olhos"/><use href="#sorriso"/></g></svg>
+        <span class="txt"><span class="b">Biblinha</span><span class="p">PLAY</span></span>
+      </div>
+      <div class="tag">Histórias da Bíblia para assistir e brincar</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap"><button class="btn play">▶ Assistir</button><button class="btn alt">🎮 Jogar</button></div>
+  </div>
+</header>
+
+<section><div class="wrap">
+  <div class="rot">Proposta 2 · estilo livro de histórias</div>
+  <h2>A Lili, desenhada como nos filmes</h2>
+  <p class="lead">Aqui a ovelhinha segue o mesmo jeito dos desenhos que já temos: sem contorno preto, luz suave e cores de aquarela. Assim ela parece ter saído de dentro dos filmes.</p>
+  <div class="grid">
+    <div class="card pose"><svg viewBox="34 52 136 132"><use href="#ov"/><use href="#olhos"/><use href="#sorriso"/></svg><h3>Feliz</h3><p>No logo e na tela inicial.</p></div>
+    <div class="card pose"><svg viewBox="30 38 145 146"><g transform="translate(0,-8)"><use href="#ov"/>
+      <path d="M82 104 q5 -6 10 0 M102 104 q5 -6 10 0" fill="none" stroke="#3B3355" stroke-width="3" stroke-linecap="round"/><path d="M89 114 q8 12 16 0 z" fill="#3B3355"/></g>
+      <path d="M150 70 a40 40 0 0 0 -80 -12" fill="none" stroke="url(#gArco)" stroke-width="6" stroke-linecap="round" opacity=".9"/>
+      <g fill="#F6C453"><circle cx="48" cy="70" r="5"/><circle cx="160" cy="92" r="4"/><circle cx="58" cy="52" r="3"/></g></svg><h3>Comemorando</h3><p>Quando termina um filme ou jogo.</p></div>
+    <div class="card pose"><svg viewBox="34 52 136 132"><use href="#ov"/>
+      <path d="M82 104 q5 4 10 0 M102 104 q5 4 10 0" fill="none" stroke="#3B3355" stroke-width="3" stroke-linecap="round"/>
+      <path d="M150 62 a14 14 0 1 0 12 20 a11 11 0 1 1 -12 -20z" fill="#F6C453"/></svg><h3>Dormindo</h3><p>Hora de dormir e telas de espera.</p></div>
+    <div class="card pose"><svg viewBox="34 52 136 132"><use href="#ov"/><use href="#olhos"/><ellipse cx="97" cy="116" rx="4" ry="5" fill="#3B3355"/>
+      <g transform="translate(150 70)"><circle r="16" fill="#B9A6F0"/><text y="7" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#fff">?</text></g></svg><h3>Curiosa</h3><p>Dicas e perguntas nos jogos.</p></div>
+  </div>
+</div></section>
+
+<section style="background:#fff"><div class="wrap">
+  <div class="rot">Cores de arco-íris suave</div>
+  <h2>As cores da aliança</h2>
+  <p class="lead">Tons de aquarela que combinam com as capas dos filmes. O arco-íris lembra a promessa de Deus a Noé e aparece no logo.</p>
+  <div class="grid cores">
+    <div class="sw" style="background:var(--manha)"><div>Manhã<span>#8FD3F4 · céu e fundos</span></div></div>
+    <div class="sw" style="background:var(--pessego)"><div>Pêssego<span>#FFB38A · botão assistir</span></div></div>
+    <div class="sw" style="background:var(--menta)"><div>Menta<span>#8FD8A8 · acertos e "Novo"</span></div></div>
+    <div class="sw" style="background:var(--mel)"><div>Mel<span>#F6C453 · moedas e estrelas</span></div></div>
+    <div class="sw" style="background:var(--lavanda)"><div>Lavanda<span>#B9A6F0 · dicas e área dos pais</span></div></div>
+    <div class="sw" style="background:var(--tinta);color:#fff"><div>Tinta<span>#3B3355 · textos</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="rot">Como fica no site · com os desenhos de verdade</div>
+  <h2>A estante</h2>
+  <div class="estante">
+    <div class="filme"><div class="capa"><img src="../../filmes/capa-criacao.jpg" alt=""><span class="selo">✨ Novo</span></div><div class="info"><div><h3>A Criação</h3><small>2 min · com jogo</small></div><button class="mini" aria-label="Assistir"><i></i></button></div></div>
+    <div class="filme"><div class="capa"><img src="../../filmes/capa-noe.jpg" alt=""><span class="selo">🌈 Favorito</span></div><div class="info"><div><h3>Arca de Noé</h3><small>2 min · com jogo</small></div><button class="mini" aria-label="Assistir"><i></i></button></div></div>
+    <div class="filme"><div class="capa"><img src="../../filmes/capa-davi.jpg" alt=""><span class="selo">🔒 Assinantes</span></div><div class="info"><div><h3>Davi e Golias</h3><small>3 min · com jogo</small></div><button class="mini" aria-label="Assistir"><i></i></button></div></div>
+    <div class="filme"><div class="capa"><img src="../../filmes/capa-jonas.jpg" alt=""><span class="selo">🔒 Assinantes</span></div><div class="info"><div><h3>Jonas</h3><small>3 min · com jogo</small></div><button class="mini" aria-label="Assistir"><i></i></button></div></div>
+    <div class="filme"><div class="capa"><img src="../../filmes/capa-natal.jpg" alt=""><span class="selo">🔒 Assinantes</span></div><div class="info"><div><h3>O Natal</h3><small>3 min · com jogo</small></div><button class="mini" aria-label="Assistir"><i></i></button></div></div>
+    <div class="filme"><div class="capa"><img src="../../filmes/capa-tempestade.jpg" alt=""><span class="selo">🔒 Assinantes</span></div><div class="info"><div><h3>A Tempestade</h3><small>3 min · com jogo</small></div><button class="mini" aria-label="Assistir"><i></i></button></div></div>
+  </div>
+</div></section>
+
+<section style="background:#fff"><div class="wrap">
+  <div class="rot">Ícone do app e da Kiwify</div>
+  <h2>O que aparece no celular</h2>
+  <div class="icones">
+    <div class="icone"><svg viewBox="0 0 150 150"><path d="M22 112 a53 53 0 0 1 106 0" fill="none" stroke="url(#gArco)" stroke-width="14" stroke-linecap="round"/><g transform="translate(-14 2) scale(.86)"><use href="#ov"/><use href="#olhos"/><use href="#sorriso"/></g></svg></div>
+    <div class="icone peq"><svg viewBox="0 0 150 150"><path d="M22 112 a53 53 0 0 1 106 0" fill="none" stroke="url(#gArco)" stroke-width="14" stroke-linecap="round"/><g transform="translate(-14 2) scale(.86)"><use href="#ov"/><use href="#olhos"/><use href="#sorriso"/></g></svg></div>
+    <div style="max-width:420px"><p>A Lili debaixo do arco-íris. Fica delicado e se destaca na tela do celular, ao lado dos outros apps.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap regras">
+  <div class="rot">Regras para a idade</div>
+  <h2>Feito para quem tem 3 a 7 anos</h2>
+  <ul>
+    <li><b>Os desenhos mandam</b>: as capas dos filmes são grandes e a criança escolhe pela imagem.</li>
+    <li><b>Letras redondas</b> (Fredoka) e poucas palavras.</li>
+    <li><b>Um só botão por filme</b> (o círculo de play), fácil de acertar com o dedo.</li>
+    <li><b>Clima calmo</b>: cores suaves, sem piscar, bom também para a hora de dormir.</li>
+  </ul>
+</div></section>
+
+<footer>Biblinha Play · proposta de identidade 2 · rascunho para aprovação</footer>
+</body>
+</html>
