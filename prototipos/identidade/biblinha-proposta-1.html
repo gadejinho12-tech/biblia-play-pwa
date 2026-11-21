@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Biblinha Play – proposta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ceu:#4FB8EE; --ceu-claro:#DDF3FF; --sol:#FFC93C; --grama:#62BD45; --laranja:#FF8A3D;
+  --rosa:#FF9DB0; --tinta:#2B3A55; --nuvem:#FFFDF6; --la:#FFFFFF; --rosto:#8A5A44;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--nuvem);color:var(--tinta);font:500 17px/1.5 Nunito,system-ui,sans-serif}
+h1,h2,h3,.logo{font-family:"Baloo 2",Nunito,sans-serif;line-height:1.05}
+.wrap{max-width:1100px;margin:auto;padding:0 20px}
+section{padding:48px 0}
+.rot{font:800 13px Nunito;letter-spacing:.14em;text-transform:uppercase;color:var(--laranja);margin-bottom:8px}
+h2{font-size:clamp(30px,5vw,44px);margin-bottom:10px}
+p.lead{max-width:640px;font-size:18px}
+
+/* topo */
+.hero{background:linear-gradient(#BDE9FF,#E9F8FF 70%);position:relative;overflow:hidden;padding:40px 0 120px}
+.hero .wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.hero .sol{position:absolute;right:6%;top:30px;width:110px;height:110px;border-radius:50%;background:var(--sol);box-shadow:0 0 0 18px #FFC93C33,0 0 0 40px #FFC93C1f}
+.nuvemd{position:absolute;background:#fff;border-radius:60px;height:38px}
+.nuvemd::before,.nuvemd::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.nuvemd::before{width:46px;height:46px;left:18px;top:-24px}.nuvemd::after{width:34px;height:34px;left:52px;top:-14px}
+.morro{position:absolute;left:-5%;right:-5%;bottom:-60px;height:150px;background:var(--grama);border-radius:50% 50% 0 0}
+.morro2{position:absolute;right:-10%;width:60%;bottom:-70px;height:140px;background:#7DCB5E;border-radius:50% 50% 0 0}
+.tag{font:700 22px "Baloo 2";margin-top:6px}
+.hero .logo-grande{position:relative;z-index:2}
+
+/* logo */
+.logo{display:flex;align-items:center;gap:6px;font-weight:800}
+.logo .nome{font-size:var(--t,64px);letter-spacing:-.01em;color:var(--tinta)}
+.logo .nome b{color:var(--laranja);font-weight:800}
+.logo .play{display:inline-flex;align-items:center;gap:.18em;background:var(--sol);color:var(--tinta);border-radius:999px;padding:.02em .42em .02em .3em;font-size:calc(var(--t,64px)*.62);box-shadow:0 .08em 0 #E0A21B;transform:rotate(-4deg);margin-left:.1em}
+.logo .play i{width:0;height:0;border-left:.5em solid var(--tinta);border-top:.3em solid transparent;border-bottom:.3em solid transparent;display:inline-block;border-radius:2px}
+.logo.claro .nome{color:#fff}
+
+/* cartões */
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:26px}
+.card{background:#fff;border-radius:28px;padding:22px;box-shadow:0 6px 0 #E8E1CF;border:2px solid #F1EAD8;text-align:center}
+.card h3{font-size:22px;margin:10px 0 4px}
+.card p{font-size:15px}
+.pose svg{width:150px;height:150px}
+
+.cores .sw{border-radius:24px;height:110px;display:flex;align-items:flex-end;padding:12px 14px;color:#fff;font:800 15px Nunito;box-shadow:0 5px 0 #0000001a}
+.cores .sw span{display:block;font-weight:600;opacity:.9;font-size:13px}
+.cores .claro{color:var(--tinta)}
+
+/* exemplo */
+.tela{background:linear-gradient(#CFEFFF,#F3FBFF);border-radius:32px;padding:20px;border:3px solid #fff;box-shadow:0 10px 30px #4FB8EE33}
+.barra{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{background:#fff;border-radius:999px;padding:8px 16px;font:800 15px Nunito;box-shadow:0 4px 0 #D8E9F3}
+.filmes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:18px}
+.filme{background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 6px 0 #D8E9F3}
+.filme .capa img{display:block;width:100%;aspect-ratio:10/7;object-fit:cover}
+.filme .info{padding:12px 16px 16px}
+.filme h3{font-size:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 22px;font:800 18px "Baloo 2";cursor:pointer}
+.btn.play{background:var(--laranja);color:#fff;box-shadow:0 5px 0 #D96A22}
+.btn.alt{background:var(--sol);color:var(--tinta);box-shadow:0 5px 0 #E0A21B}
+.selo{display:inline-block;background:var(--grama);color:#fff;font:800 12px Nunito;border-radius:999px;padding:3px 10px;margin-bottom:6px}
+
+.icones{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;margin-top:22px}
+.icone{width:150px;height:150px;border-radius:38px;background:linear-gradient(#7FD0FA,#3FA9E6);position:relative;overflow:hidden;box-shadow:0 8px 20px #3FA9E655}
+.icone svg{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:120%}
+.icone .badge{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:50%;background:var(--sol);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #E0A21B}
+.icone .badge i{border-left:14px solid var(--tinta);border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.peq{width:72px;height:72px;border-radius:20px}.peq .badge{width:22px;height:22px;right:6px;top:6px}.peq .badge i{border-left-width:8px;border-top-width:5px;border-bottom-width:5px;margin-left:2px}
+.regras li{margin:6px 0 6px 20px}
+footer{padding:30px 0 50px;text-align:center;font-size:14px;opacity:.7}
+@media (max-width:600px){.logo .nome{--t:44px}.hero{padding-bottom:100px}.hero .sol{width:70px;height:70px}}
+</style>
+</head>
+<body>
+
+<!-- Ovelhinha reutilizável -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="la">
+      <circle cx="78" cy="112" r="34"/><circle cx="112" cy="96" r="36"/><circle cx="142" cy="116" r="30"/>
+      <circle cx="96" cy="138" r="30"/><circle cx="130" cy="140" r="28"/><circle cx="60" cy="132" r="22"/>
+    </g>
+    <g id="corpo">
+      <rect x="78" y="146" width="14" height="34" rx="7" fill="#2B3A55"/>
+      <rect x="126" y="146" width="14" height="34" rx="7" fill="#2B3A55"/>
+      <use href="#la" fill="#2B3A55" stroke="#2B3A55" stroke-width="12"/>
+      <use href="#la" fill="#fff"/>
+      <!-- cabeça -->
+      <ellipse cx="62" cy="92" rx="14" ry="8" transform="rotate(-30 62 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+      <ellipse cx="124" cy="92" rx="14" ry="8" transform="rotate(30 124 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+      <ellipse cx="93" cy="104" rx="30" ry="33" fill="#8A5A44" stroke="#2B3A55" stroke-width="6"/>
+      <g fill="#fff" stroke="#2B3A55" stroke-width="5">
+        <circle cx="80" cy="74" r="12"/><circle cx="106" cy="72" r="13"/><circle cx="93" cy="64" r="13"/>
+      </g>
+      <g fill="#fff"><circle cx="80" cy="74" r="9.5"/><circle cx="106" cy="72" r="10.5"/><circle cx="93" cy="65" r="10"/></g>
+      <ellipse cx="74" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/><ellipse cx="112" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/>
+    </g>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="sol"></div>
+  <div class="nuvemd" style="width:120px;left:8%;top:40px"></div>
+  <div class="nuvemd" style="width:90px;left:46%;top:70px;transform:scale(.8)"></div>
+  <div class="morro2"></div><div class="morro"></div>
+  <div class="wrap">
+    <svg viewBox="30 40 150 150" width="190" height="190" style="position:relative;z-index:2">
+      <use href="#corpo"/>
+      <circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/>
+      <circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/>
+      <path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+    <div class="logo-grande">
+      <div class="logo" style="--t:clamp(46px,9vw,84px)"><span class="nome">Bibli<b>nha</b></span><span class="play"><i></i>Play</span></div>
+      <div class="tag">Histórias da Bíblia para assistir e brincar</div>
+    </div>
+  </div>
+</header>
+
+<section><div class="wrap">
+  <div class="rot">Proposta 1 · para 3 a 7 anos</div>
+  <h2>Conheça a Lili, a ovelhinha</h2>
+  <p class="lead">A Lili acompanha a criança no site: comemora quando ela termina um filme, dá dicas nos jogos e "dorme" na hora de dormir. Ovelha lembra o Bom Pastor e é fácil de reconhecer de longe, até para quem ainda não lê. (O nome Lili é só sugestão.)</p>
+  <div class="grid">
+    <div class="card pose">
+      <svg viewBox="30 40 150 150"><use href="#corpo"/>
+        <circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/>
+        <circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/>
+        <path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/></svg>
+      <h3>Feliz</h3><p>No logo e na tela inicial.</p>
+    </div>
+    <div class="card pose">
+      <svg viewBox="30 30 150 160"><g transform="translate(0,-10)"><use href="#corpo"/>
+        <path d="M76 101 q6 -8 12 0 M98 101 q6 -8 12 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+        <path d="M82 113 q11 16 22 0 z" fill="#2B3A55"/></g>
+        <g fill="#FFC93C" stroke="#E0A21B" stroke-width="2"><path d="M40 60 l4 9 10 1 -8 6 3 10 -9 -6 -9 6 3 -10 -8 -6 10 -1z"/><path d="M160 52 l3 7 8 1 -6 5 2 8 -7 -5 -7 5 2 -8 -6 -5 8 -1z"/></g>
+        <path d="M150 90 l10 -4 M152 104 l11 2" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/></svg>
+      <h3>Comemorando</h3><p>Quando termina um filme ou jogo.</p>
+    </div>
+    <div class="card pose">
+      <svg viewBox="30 40 150 150"><use href="#corpo"/>
+        <path d="M76 101 q6 6 12 0 M98 101 q6 6 12 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+        <ellipse cx="93" cy="117" rx="4" ry="3" fill="#2B3A55"/>
+        <text x="132" y="74" font-family="Baloo 2" font-weight="800" font-size="22" fill="#4FB8EE">z</text><text x="146" y="58" font-family="Baloo 2" font-weight="800" font-size="16" fill="#4FB8EE">z</text></svg>
+      <h3>Dormindo</h3><p>Hora de dormir e telas de espera.</p>
+    </div>
+    <div class="card pose">
+      <svg viewBox="30 40 150 150"><use href="#corpo"/>
+        <circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/>
+        <circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/>
+        <ellipse cx="93" cy="118" rx="5" ry="6" fill="#2B3A55"/>
+        <g transform="translate(140 50)"><circle r="17" fill="#FF8A3D"/><text x="0" y="8" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="24" fill="#fff">?</text></g></svg>
+      <h3>Curiosa</h3><p>Dicas e perguntas nos jogos.</p>
+    </div>
+  </div>
+</div></section>
+
+<section style="background:#fff"><div class="wrap">
+  <div class="rot">Cores de dia ensolarado</div>
+  <h2>Céu, sol e campo</h2>
+  <p class="lead">Cores alegres e fortes, que a criança reconhece. O texto fica num azul-escuro macio (não preto), que é mais gostoso de ler.</p>
+  <div class="grid cores">
+    <div class="sw" style="background:var(--ceu)"><div>Céu<span>#4FB8EE · fundos e filmes</span></div></div>
+    <div class="sw claro" style="background:var(--sol)"><div>Sol<span>#FFC93C · moedas, estrelas, "Play"</span></div></div>
+    <div class="sw" style="background:var(--grama)"><div>Campo<span>#62BD45 · acertos e "Novo"</span></div></div>
+    <div class="sw" style="background:var(--laranja)"><div>Laranja<span>#FF8A3D · botão principal</span></div></div>
+    <div class="sw claro" style="background:var(--rosa)"><div>Bochecha<span>#FF9DB0 · detalhes carinhosos</span></div></div>
+    <div class="sw" style="background:var(--tinta)"><div>Tinta<span>#2B3A55 · textos e contornos</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="rot">Como fica no site</div>
+  <h2>A estante, do jeito novo</h2>
+  <div class="tela" style="margin-top:20px">
+    <div class="barra">
+      <div class="logo" style="--t:34px"><span class="nome">Bibli<b>nha</b></span><span class="play"><i></i>Play</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip">🪙 12 moedas</span><span class="chip">🐑 Minha Arca</span></div>
+    </div>
+    <div class="filmes">
+      <div class="filme"><div class="capa"><img src="../../filmes/capa-criacao.jpg" alt=""></div><div class="info"><span class="selo">NOVO</span><h3>A Criação</h3><button class="btn play">▶ Assistir</button></div></div>
+      <div class="filme"><div class="capa"><img src="../../filmes/capa-noe.jpg" alt=""></div><div class="info"><span class="selo" style="background:var(--ceu)">2 min</span><h3>Arca de Noé</h3><button class="btn alt">🎮 Jogar</button></div></div>
+      <div class="filme"><div class="capa"><img src="../../filmes/capa-davi.jpg" alt=""></div><div class="info"><span class="selo" style="background:var(--laranja)">🔒 Assinantes</span><h3>Davi e Golias</h3><button class="btn play">▶ Assistir</button></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section style="background:#fff"><div class="wrap">
+  <div class="rot">Ícone do app e da Kiwify</div>
+  <h2>O que aparece no celular</h2>
+  <div class="icones">
+    <div class="icone"><svg viewBox="30 50 150 140"><use href="#corpo"/><circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/><circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/><path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/></svg><div class="badge"><i></i></div></div>
+    <div class="icone peq"><svg viewBox="30 50 150 140"><use href="#corpo"/><circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/><path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/></svg><div class="badge"><i></i></div></div>
+    <div style="max-width:420px"><p>A Lili aparece "espiando" de baixo, com o botão de play no canto. Funciona pequenininho na tela do celular e também na imagem do produto da Kiwify (300×250).</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap regras">
+  <div class="rot">Regras para a idade</div>
+  <h2>Feito para quem tem 3 a 7 anos</h2>
+  <ul>
+    <li><b>Botões grandes</b> (pelo menos do tamanho de um dedinho) e com desenho, não só palavra.</li>
+    <li><b>Letras redondas e grandes</b> (Baloo 2), poucas palavras por tela.</li>
+    <li><b>A Lili guia</b>: ela aponta o próximo passo, então a criança não precisa ler.</li>
+    <li><b>Cores com sentido</b>: laranja = assistir, amarelo = jogar, verde = acertou.</li>
+    <li><b>Sem sustos</b>: nada de vermelho de erro; quando erra, a Lili diz "quase! tenta de novo".</li>
+  </ul>
+</div></section>
+
+<footer>Biblinha Play · proposta de identidade 1 · rascunho para aprovação</footer>
+</body>
+</html>
