@@ -79,6 +79,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-
 .stk.pop{animation:pop .5s} @keyframes pop{40%{transform:scale(1.12)}}
 .tip{text-align:center;color:var(--muted);margin:0;line-height:1.5}
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"><link rel="stylesheet" href="tema-biblinha.css">
 <canvas id="confetti"></canvas>
 <div class="wrap">
   <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Minha Arca</h1><span style="width:96px"></span></div>
@@ -90,7 +91,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-
 </div>
 <script>
 const REC={};
-/* arte.js — o mesmo desenho dos personagens dos filmes do Bíblia Play */
+/* arte.js — o mesmo desenho dos personagens dos filmes do Biblinha Play */
 let ctx=null; let G=0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
 const ss=(a,b,x)=>{ const t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };

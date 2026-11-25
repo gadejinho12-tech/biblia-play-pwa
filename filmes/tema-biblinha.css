@@ -1,0 +1,61 @@
+/* ===== Tema Biblinha Play — dia ensolarado, 3 a 7 anos =====
+   Carregado no fim de cada página: troca as cores e as letras do tema antigo ("noite e pergaminho")
+   sem mexer nos desenhos dos filmes e dos jogos. */
+:root{
+  /* páginas de filmes e jogos */
+  --paper:#FFFDF6; --paper2:#F4EEDC; --card:#FFFFFF; --ink:#2B3A55; --muted:#5B6A86;
+  --gold:#FF8A3D; --gold2:#FFA766; --leaf:#62BD45; --sky:#4FB8EE; --rose:#FF9DB0; --ok:#62BD45; --bad:#FF8A3D;
+  /* estante, assinar, entrar */
+  --noite:#2B3A55; --noite2:#3A4C6E; --noite3:#22304A; --estrela:#FFC93C; --estrela2:#FFD966; --ouro:#FF8A3D;
+  --papel:#FFFDF6; --papel2:#F4EEDC; --cartao:#FFFFFF; --tinta:#2B3A55; --tinta2:#5B6A86; --oliveira:#62BD45; --coral:#FF8A3D;
+  /* novas */
+  --ceu:#4FB8EE; --sol:#FFC93C; --grama:#62BD45; --laranja:#FF8A3D;
+  --display:'Baloo 2', Nunito, system-ui, sans-serif;
+}
+h1,h2,h3{font-family:var(--display)}
+
+/* Marca: Bibli(nha) [▶ Play] */
+.word{font:800 24px/1 var(--display)!important;color:var(--tinta);letter-spacing:-.01em;display:inline-flex;align-items:center;gap:6px}
+.word b{color:var(--laranja);font-weight:800}
+.word i{font-style:normal}
+.word .pl{display:inline-flex;align-items:center;gap:.2em;background:var(--sol);color:var(--tinta);border-radius:999px;padding:.08em .45em .04em .35em;font-size:.68em;box-shadow:0 .1em 0 #E0A21B;transform:rotate(-4deg)}
+.word .pl::before{content:"";border-left:.5em solid var(--tinta);border-top:.3em solid transparent;border-bottom:.3em solid transparent}
+
+/* Barra de cima (assinar, entrar) */
+body::before{background:#BDE9FF!important}
+header.bar{background:rgba(255,253,246,.96);color:var(--tinta);box-shadow:0 2px 0 #E8F3FA}
+header.bar .pill{background:#fff;color:var(--tinta);box-shadow:0 3px 0 #D8E9F3,inset 0 0 0 1.5px #E3EEF5}
+header.bar .brand svg{width:42px;height:42px}
+
+/* Topo de céu no lugar da noite */
+.hero{background:linear-gradient(#BDE9FF,#E9F8FF 80%)!important;color:var(--tinta)!important}
+.hero h1 i{color:var(--laranja)!important;font-style:normal}
+.hero p{color:var(--tinta2)!important}
+.lockmsg{background:#fff!important;color:var(--tinta)!important;box-shadow:0 3px 0 #D8E9F3}
+.already{background:linear-gradient(#DDF3FF,#C8ECFF)!important;color:var(--tinta)!important}
+.plan.best{box-shadow:0 10px 0 #F1E3B8,0 0 0 4px var(--sol)!important}
+
+/* Botões gordinhos de apertar */
+.btn{font-family:var(--display)!important;font-weight:800!important;letter-spacing:0}
+.btn.play,.btn.go{background:var(--laranja)!important;color:#fff!important;box-shadow:0 5px 0 #D96A22!important}
+.btn.dark{background:var(--tinta)!important;color:#fff!important;box-shadow:0 5px 0 #18233A}
+.btn.ghost{box-shadow:inset 0 0 0 2px #D8E2EC!important;border-color:#D8E2EC!important}
+
+/* Cartões e campos mais redondos */
+.plan,.card{border-radius:28px}
+input{border-radius:18px!important}
+input:focus{border-color:var(--ceu)!important}
+:focus-visible{outline-color:var(--ceu)!important}
+
+/* Filmes: cartão de capa e fim, botões do player */
+.page{background:#FFFFFC!important;border-radius:32px!important;box-shadow:0 10px 0 #E8E1CF,0 24px 50px rgba(0,0,0,.25)!important}
+.page h1,.page h2{font-weight:800}
+.go{font-family:var(--display)!important;font-weight:800!important;font-size:20px!important;background:var(--laranja)!important;box-shadow:0 5px 0 #D96A22,0 12px 24px rgba(255,138,61,.3)!important}
+.ghost{border-color:#D8E2EC!important;font-family:var(--display)!important;font-weight:800!important}
+.eyebrow{color:var(--laranja)!important}
+.cb{background:rgba(255,255,255,.95)!important}
+.chip{background:#fff!important}
+
+/* Entrar: céu no lugar da noite */
+body:has(.wrapc){background:linear-gradient(#BDE9FF,#E9F8FF 70%,#FFFDF6)!important}
+.wrapc .card{box-shadow:0 10px 0 #CFE6F2,0 24px 50px rgba(79,184,238,.25)!important}
