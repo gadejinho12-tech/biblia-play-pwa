@@ -1,544 +1,219 @@
 <!doctype html>
 <html lang="pt-BR">
+<head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script src="conta-config.js"></script><script src="conta.js"></script>
-<title>Marca Bíblia Play</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marca Biblinha Play</title>
+<link rel="icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,600&family=Nunito:wght@600;700;800;900&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-/* Layout: guia da marca em capítulos — capa noturna com o logo, depois logo, cores, letras, personagens, jeito de falar e aplicações. */
-:root{ --noite:#1d2150; --noite2:#2b3172; --estrela:#f0b94a; --estrela2:#ffd77a; --ouro:#c98a3a; --papel:#fbf3e3; --papel2:#f3e6cc; --cartao:#fffaf0; --tinta:#33261f; --tinta2:#76624f; --oliveira:#5f9a4c; --ceu:#6fa8e0; --coral:#e0705a;
-  --display:'Fraunces', Georgia, 'Times New Roman', serif; --body:'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; color-scheme:light; }
-*{box-sizing:border-box}
-body{background:var(--papel);color:var(--tinta);font:600 16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--noite)}
-.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.in{max-width:1080px;margin:0 auto}
-:focus-visible{outline:3px solid var(--estrela);outline-offset:3px}
-.cover{background:radial-gradient(120% 100% at 70% 0%,var(--noite2),var(--noite) 60%,#141739);color:#fff6e0}
-.cover .in{padding-block:22px 64px;display:grid;gap:40px}
-.back{color:#fff6e0;font:800 14px var(--body);text-decoration:none;opacity:.85}
-.lock{display:flex;align-items:center;gap:clamp(14px,3vw,26px);flex-wrap:wrap}
-.lock svg{width:clamp(84px,14vw,132px);height:clamp(84px,14vw,132px)}
-.word{font:900 clamp(46px,9vw,96px)/.95 var(--display);letter-spacing:-.025em}
-.word i{color:var(--estrela)}
-.slogan{font:italic 600 clamp(20px,3vw,28px)/1.3 var(--display);color:#efe8f6;max-width:30ch;margin:0}
-section.ch{padding-block:clamp(36px,6vw,64px);border-bottom:1.5px dashed rgba(120,90,50,.2)}
-.eye{font:900 13px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--ouro)}
-h2{font:900 clamp(28px,4.4vw,42px)/1.08 var(--display);margin:6px 0 12px;letter-spacing:-.01em;text-wrap:balance}
-p.lead{max-width:62ch;color:var(--tinta2);margin:0 0 22px;font-size:17px}
-.grid{display:grid;gap:16px}
-.g3{grid-template-columns:repeat(3,minmax(0,1fr))} .g4{grid-template-columns:repeat(4,minmax(0,1fr))} .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-@media (max-width:820px){ .g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))} }
-@media (max-width:480px){ .g3,.g4,.g2{grid-template-columns:1fr} }
-.tile{border-radius:20px;padding:22px;display:grid;gap:10px;place-items:center;min-height:170px;text-align:center;min-width:0}
-.tile small{font:800 13px var(--body);opacity:.8}
-.on-noite{background:var(--noite);color:#fff6e0} .on-papel{background:var(--cartao);box-shadow:0 0 0 1px rgba(120,90,50,.15)} .on-estrela{background:var(--estrela);color:var(--noite)}
-.sw{border-radius:18px;overflow:hidden;background:var(--cartao);box-shadow:0 0 0 1px rgba(120,90,50,.15)}
-.sw .c{height:96px}
-.sw div.t{padding:12px 14px} .sw b{display:block;font:900 16px var(--body)} .sw code{font:700 13px ui-monospace,Menlo,Consolas,monospace;color:var(--tinta2)} .sw span{display:block;font-size:14px;color:var(--tinta2);line-height:1.4;margin-top:4px}
-.type{background:var(--cartao);border-radius:20px;padding:24px;box-shadow:0 0 0 1px rgba(120,90,50,.15);display:grid;gap:8px;min-width:0}
-.type .big{font:900 clamp(40px,7vw,64px)/1 var(--display);letter-spacing:-.02em}
-.type .big2{font:900 clamp(32px,6vw,52px)/1 var(--body)}
-.type p{margin:0;color:var(--tinta2)}
-.cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
-.cast figure{margin:0;display:grid;justify-items:center;gap:6px;text-align:center}
-.cast figcaption{font:800 14px var(--body)}
-.do{display:grid;gap:12px}
-.do div{background:var(--cartao);border-radius:16px;padding:14px 18px;box-shadow:0 0 0 1px rgba(120,90,50,.12)}
-.do b{font:900 17px var(--body)} .do span{display:block;color:var(--tinta2)}
-.say{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline}
-.yes{color:var(--oliveira);font-weight:900} .no{color:var(--coral);font-weight:900}
-.apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:center}
-@media (max-width:820px){ .apps{grid-template-columns:1fr} }
-.phone{justify-self:center;width:210px;max-width:100%;aspect-ratio:9/18;border-radius:34px;background:#141739;padding:10px;box-shadow:0 20px 40px rgba(20,23,57,.35)}
-.phone .scr{height:100%;border-radius:26px;background:linear-gradient(160deg,#6fa8e0,#2b3172 60%,#1d2150);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-content:start;gap:12px 6px;padding:30px 10px}
-.phone .ic{display:grid;justify-items:center;gap:4px;font:800 8px var(--body);color:#fff;text-align:center;min-width:0}
-.phone .ic i{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.25)}
-.phone .ic svg{width:34px;height:34px}
-.post{border-radius:22px;overflow:hidden;aspect-ratio:1;max-width:100%;background:var(--noite);color:#fff6e0;display:grid;align-content:space-between;padding:22px;position:relative}
-.post::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(20,23,57,.88),rgba(20,23,57,.05) 55%,rgba(20,23,57,.75))}
-.post h3{font:900 28px/1.05 var(--display);margin:0;position:relative;z-index:2}
-.post h3 i{color:var(--estrela)}
-.post canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.95}
-.post .foot{position:relative;z-index:2;display:flex;align-items:center;gap:8px;font:900 15px var(--display)}
-.post .foot svg{width:28px;height:28px}
-.ticket{border-radius:22px;background:var(--estrela);color:var(--noite);padding:22px;display:grid;gap:10px}
-.ticket b{font:900 26px/1.05 var(--display)}
-.ticket span{font-weight:800}
-.ticket .btn{justify-self:start;background:var(--noite);color:#fff6e0;border-radius:999px;padding:11px 18px;font:900 15px var(--body)}
-footer{padding-block:28px 44px;color:var(--tinta2);font:700 14px var(--body)}
+:root{
+  --ceu:#4FB8EE; --ceu-claro:#DDF3FF; --sol:#FFC93C; --grama:#62BD45; --laranja:#FF8A3D;
+  --rosa:#FF9DB0; --tinta:#2B3A55; --nuvem:#FFFDF6; --la:#FFFFFF; --rosto:#8A5A44;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--nuvem);color:var(--tinta);font:500 17px/1.5 Nunito,system-ui,sans-serif}
+h1,h2,h3,.logo{font-family:"Baloo 2",Nunito,sans-serif;line-height:1.05}
+.wrap{max-width:1100px;margin:auto;padding:0 20px}
+section{padding:48px 0}
+.rot{font:800 13px Nunito;letter-spacing:.14em;text-transform:uppercase;color:var(--laranja);margin-bottom:8px}
+h2{font-size:clamp(30px,5vw,44px);margin-bottom:10px}
+p.lead{max-width:640px;font-size:18px}
+
+/* topo */
+.hero{background:linear-gradient(#BDE9FF,#E9F8FF 70%);position:relative;overflow:hidden;padding:40px 0 120px}
+.hero .wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.hero .sol{position:absolute;right:6%;top:30px;width:110px;height:110px;border-radius:50%;background:var(--sol);box-shadow:0 0 0 18px #FFC93C33,0 0 0 40px #FFC93C1f}
+.nuvemd{position:absolute;background:#fff;border-radius:60px;height:38px}
+.nuvemd::before,.nuvemd::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.nuvemd::before{width:46px;height:46px;left:18px;top:-24px}.nuvemd::after{width:34px;height:34px;left:52px;top:-14px}
+.morro{position:absolute;left:-5%;right:-5%;bottom:-60px;height:150px;background:var(--grama);border-radius:50% 50% 0 0}
+.morro2{position:absolute;right:-10%;width:60%;bottom:-70px;height:140px;background:#7DCB5E;border-radius:50% 50% 0 0}
+.tag{font:700 22px "Baloo 2";margin-top:6px}
+.hero .logo-grande{position:relative;z-index:2}
+
+/* logo */
+.logo{display:flex;align-items:center;gap:6px;font-weight:800}
+.logo .nome{font-size:var(--t,64px);letter-spacing:-.01em;color:var(--tinta)}
+.logo .nome b{color:var(--laranja);font-weight:800}
+.logo .play{display:inline-flex;align-items:center;gap:.18em;background:var(--sol);color:var(--tinta);border-radius:999px;padding:.02em .42em .02em .3em;font-size:calc(var(--t,64px)*.62);box-shadow:0 .08em 0 #E0A21B;transform:rotate(-4deg);margin-left:.1em}
+.logo .play i{width:0;height:0;border-left:.5em solid var(--tinta);border-top:.3em solid transparent;border-bottom:.3em solid transparent;display:inline-block;border-radius:2px}
+.logo.claro .nome{color:#fff}
+
+/* cartões */
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:26px}
+.card{background:#fff;border-radius:28px;padding:22px;box-shadow:0 6px 0 #E8E1CF;border:2px solid #F1EAD8;text-align:center}
+.card h3{font-size:22px;margin:10px 0 4px}
+.card p{font-size:15px}
+.pose svg{width:150px;height:150px}
+
+.cores .sw{border-radius:24px;height:110px;display:flex;align-items:flex-end;padding:12px 14px;color:#fff;font:800 15px Nunito;box-shadow:0 5px 0 #0000001a}
+.cores .sw span{display:block;font-weight:600;opacity:.9;font-size:13px}
+.cores .claro{color:var(--tinta)}
+
+/* exemplo */
+.tela{background:linear-gradient(#CFEFFF,#F3FBFF);border-radius:32px;padding:20px;border:3px solid #fff;box-shadow:0 10px 30px #4FB8EE33}
+.barra{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{background:#fff;border-radius:999px;padding:8px 16px;font:800 15px Nunito;box-shadow:0 4px 0 #D8E9F3}
+.filmes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:18px}
+.filme{background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 6px 0 #D8E9F3}
+.filme .capa img{display:block;width:100%;aspect-ratio:10/7;object-fit:cover}
+.filme .info{padding:12px 16px 16px}
+.filme h3{font-size:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 22px;font:800 18px "Baloo 2";cursor:pointer}
+.btn.play{background:var(--laranja);color:#fff;box-shadow:0 5px 0 #D96A22}
+.btn.alt{background:var(--sol);color:var(--tinta);box-shadow:0 5px 0 #E0A21B}
+.selo{display:inline-block;background:var(--grama);color:#fff;font:800 12px Nunito;border-radius:999px;padding:3px 10px;margin-bottom:6px}
+
+.icones{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;margin-top:22px}
+.icone{width:150px;height:150px;border-radius:38px;background:linear-gradient(#7FD0FA,#3FA9E6);position:relative;overflow:hidden;box-shadow:0 8px 20px #3FA9E655}
+.icone svg{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:120%}
+.icone .badge{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:50%;background:var(--sol);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #E0A21B}
+.icone .badge i{border-left:14px solid var(--tinta);border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.peq{width:72px;height:72px;border-radius:20px}.peq .badge{width:22px;height:22px;right:6px;top:6px}.peq .badge i{border-left-width:8px;border-top-width:5px;border-bottom-width:5px;margin-left:2px}
+.regras li{margin:6px 0 6px 20px}
+footer{padding:30px 0 50px;text-align:center;font-size:14px;opacity:.7}
+@media (max-width:600px){.logo .nome{--t:44px}.hero{padding-bottom:100px}.hero .sol{width:70px;height:70px}}
 </style>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <symbol id="logo" viewBox="0 0 64 64">
-    <defs><linearGradient id="lgN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f8a"/><stop offset="1" stop-color="#1d2150"/></linearGradient>
-    <linearGradient id="lgS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#f0b94a"/></linearGradient></defs>
-    <rect width="64" height="64" rx="16" fill="url(#lgN)"/>
-    <path d="M8 44 C18 38 26 39 32 44 C38 39 46 38 56 44 L56 50 C46 45 38 46 32 51 C26 46 18 45 8 50 Z" fill="#fbf3e3"/>
-    <path d="M32 44 L32 51" stroke="#d8c39a" stroke-width="1.4"/>
-    <path d="M25 15 L44 27 L25 39 Z" fill="url(#lgS)" stroke="#ffe7a6" stroke-width="1.6" stroke-linejoin="round"/>
-    <path d="M49 9 Q49 14 54 14 Q49 14 49 19 Q49 14 44 14 Q49 14 49 9 Z" fill="#fff3c4"/>
-  </symbol>
-  <symbol id="mark" viewBox="0 0 64 64">
-    <path d="M8 44 C18 38 26 39 32 44 C38 39 46 38 56 44 L56 50 C46 45 38 46 32 51 C26 46 18 45 8 50 Z" fill="currentColor"/>
-    <path d="M25 15 L44 27 L25 39 Z" fill="currentColor"/>
-    <path d="M49 9 Q49 14 54 14 Q49 14 49 19 Q49 14 44 14 Q49 14 49 9 Z" fill="currentColor"/>
-  </symbol>
-</defs></svg>
+</head>
+<body>
 
-<header class="cover gut"><div class="in">
-  <a class="back" href="index.html">← Voltar para a estante</a>
-  <div class="lock"><svg aria-hidden="true"><use href="#logo"/></svg><div class="word">Bíblia <i>Play</i></div></div>
-  <p class="slogan">Assista, brinque e aprenda com as histórias da Bíblia.</p>
-</div></header>
+<!-- Ovelhinha reutilizável -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="la">
+      <circle cx="78" cy="112" r="34"/><circle cx="112" cy="96" r="36"/><circle cx="142" cy="116" r="30"/>
+      <circle cx="96" cy="138" r="30"/><circle cx="130" cy="140" r="28"/><circle cx="60" cy="132" r="22"/>
+    </g>
+    <g id="corpo">
+      <rect x="78" y="146" width="14" height="34" rx="7" fill="#2B3A55"/>
+      <rect x="126" y="146" width="14" height="34" rx="7" fill="#2B3A55"/>
+      <use href="#la" fill="#2B3A55" stroke="#2B3A55" stroke-width="12"/>
+      <use href="#la" fill="#fff"/>
+      <!-- cabeça -->
+      <ellipse cx="62" cy="92" rx="14" ry="8" transform="rotate(-30 62 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+      <ellipse cx="124" cy="92" rx="14" ry="8" transform="rotate(30 124 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+      <ellipse cx="93" cy="104" rx="30" ry="33" fill="#8A5A44" stroke="#2B3A55" stroke-width="6"/>
+      <g fill="#fff" stroke="#2B3A55" stroke-width="5">
+        <circle cx="80" cy="74" r="12"/><circle cx="106" cy="72" r="13"/><circle cx="93" cy="64" r="13"/>
+      </g>
+      <g fill="#fff"><circle cx="80" cy="74" r="9.5"/><circle cx="106" cy="72" r="10.5"/><circle cx="93" cy="65" r="10"/></g>
+      <ellipse cx="74" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/><ellipse cx="112" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/>
+    </g>
+  </defs>
+</svg>
 
-<main class="gut"><div class="in">
-  <section class="ch">
-    <div class="eye">A ideia</div>
-    <h2>Uma noite de histórias, com a luz de uma estrela.</h2>
-    <p class="lead">O símbolo junta três coisas: o <b>livro aberto</b> (a Bíblia), o <b>botão de play</b> (filme e jogo) e uma <b>estrelinha</b>, lembrando a estrela de Belém e a hora de ouvir histórias antes de dormir. O fundo é o azul da noite; a luz dourada é o que a criança leva no coração.</p>
-    <div class="grid g4">
-      <div class="tile on-noite"><svg width="96" height="96" aria-hidden="true"><use href="#logo"/></svg><small>Ícone do app</small></div>
-      <div class="tile on-papel"><svg width="70" height="70" aria-hidden="true"><use href="#logo"/></svg><div style="font:900 26px var(--display)">Bíblia <i style="color:var(--ouro)">Play</i></div><small>No papel creme</small></div>
-      <div class="tile on-estrela"><svg width="84" height="84" style="color:var(--noite)" aria-hidden="true"><use href="#mark"/></svg><small>Símbolo em uma cor</small></div>
-      <div class="tile on-noite"><svg width="84" height="84" style="color:var(--estrela)" aria-hidden="true"><use href="#mark"/></svg><small>Símbolo em dourado</small></div>
+<header class="hero">
+  <a href="index.html" style="position:relative;z-index:3;display:inline-block;margin:0 0 10px 20px;font:800 16px Nunito;color:#2B3A55;text-decoration:none;background:#fff;border-radius:999px;padding:8px 16px;box-shadow:0 3px 0 #D8E9F3">← Voltar para a estante</a>
+  <div class="sol"></div>
+  <div class="nuvemd" style="width:120px;left:8%;top:40px"></div>
+  <div class="nuvemd" style="width:90px;left:46%;top:70px;transform:scale(.8)"></div>
+  <div class="morro2"></div><div class="morro"></div>
+  <div class="wrap">
+    <svg viewBox="30 40 150 150" width="190" height="190" style="position:relative;z-index:2">
+      <use href="#corpo"/>
+      <circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/>
+      <circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/>
+      <path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+    <div class="logo-grande">
+      <div class="logo" style="--t:clamp(46px,9vw,84px)"><span class="nome">Bibli<b>nha</b></span><span class="play"><i></i>Play</span></div>
+      <div class="tag">Histórias da Bíblia para assistir e brincar</div>
     </div>
-  </section>
+  </div>
+</header>
 
-  <section class="ch">
-    <div class="eye">Cores</div>
-    <h2>Seis cores, cada uma com um papel.</h2>
-    <p class="lead">A noite e a estrela fazem a marca. O pergaminho é o chão das prateleiras. As cores de apoio aparecem pouco, sempre com função.</p>
-    <div class="grid g3">
-      <div class="sw"><div class="c" style="background:#1d2150"></div><div class="t"><b>Noite de Belém</b><code>#1D2150</code><span>Fundo da marca, palco dos filmes, botões escuros.</span></div></div>
-      <div class="sw"><div class="c" style="background:linear-gradient(90deg,#ffd77a,#f0b94a)"></div><div class="t"><b>Estrela</b><code>#F0B94A</code><span>A ação principal: Assistir, Jogar, a palavra “Play”.</span></div></div>
-      <div class="sw"><div class="c" style="background:#fbf3e3;box-shadow:inset 0 -1px rgba(120,90,50,.15)"></div><div class="t"><b>Pergaminho</b><code>#FBF3E3</code><span>Fundo das páginas, como papel de livro ilustrado.</span></div></div>
-      <div class="sw"><div class="c" style="background:#33261f"></div><div class="t"><b>Tinta</b><code>#33261F</code><span>Textos. Nunca preto puro: é tinta de pena.</span></div></div>
-      <div class="sw"><div class="c" style="background:#5f9a4c"></div><div class="t"><b>Oliveira</b><code>#5F9A4C</code><span>Acertos, “assistido”, coisas boas (a folha da pomba).</span></div></div>
-      <div class="sw"><div class="c" style="background:#e0705a"></div><div class="t"><b>Coral</b><code>#E0705A</code><span>Novidades e avisos. Usar só em selos pequenos.</span></div></div>
+<section><div class="wrap">
+  <div class="rot">A mascote · para 3 a 7 anos</div>
+  <h2>Conheça a Lili, a ovelhinha</h2>
+  <p class="lead">A Lili acompanha a criança no site: comemora quando ela termina um filme, dá dicas nos jogos e "dorme" na hora de dormir. Ovelha lembra o Bom Pastor e é fácil de reconhecer de longe, até para quem ainda não lê.</p>
+  <div class="grid">
+    <div class="card pose">
+      <svg viewBox="30 40 150 150"><use href="#corpo"/>
+        <circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/>
+        <circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/>
+        <path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/></svg>
+      <h3>Feliz</h3><p>No logo e na tela inicial.</p>
     </div>
-  </section>
-
-  <section class="ch">
-    <div class="eye">Letras</div>
-    <h2>Uma letra que conta histórias e outra que ajuda a ler.</h2>
-    <div class="grid g2">
-      <div class="type"><div class="big">Aa Fraunces</div><p><b>Títulos e momentos especiais.</b> Tem jeito de livro antigo, mas é calorosa e redondinha. Em itálico dourado, marca a palavra mais importante.</p></div>
-      <div class="type"><div class="big2">Aa Nunito</div><p><b>Textos, botões e legendas.</b> Letras abertas e arredondadas, fáceis para quem está aprendendo a ler.</p></div>
+    <div class="card pose">
+      <svg viewBox="30 30 150 160"><g transform="translate(0,-10)"><use href="#corpo"/>
+        <path d="M76 101 q6 -8 12 0 M98 101 q6 -8 12 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+        <path d="M82 113 q11 16 22 0 z" fill="#2B3A55"/></g>
+        <g fill="#FFC93C" stroke="#E0A21B" stroke-width="2"><path d="M40 60 l4 9 10 1 -8 6 3 10 -9 -6 -9 6 3 -10 -8 -6 10 -1z"/><path d="M160 52 l3 7 8 1 -6 5 2 8 -7 -5 -7 5 2 -8 -6 -5 8 -1z"/></g>
+        <path d="M150 90 l10 -4 M152 104 l11 2" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/></svg>
+      <h3>Comemorando</h3><p>Quando termina um filme ou jogo.</p>
     </div>
-  </section>
-
-  <section class="ch">
-    <div class="eye">Personagens</div>
-    <h2>O mesmo traço em todas as histórias.</h2>
-    <p class="lead">Rostos simples, bochechas coradas, roupas de cores suaves e uma luz de fim de tarde no contorno. Cada personagem tem sempre as mesmas cores, em todos os filmes e jogos.</p>
-    <div class="cast" id="cast"></div>
-  </section>
-
-  <section class="ch">
-    <div class="eye">Jeito de falar</div>
-    <h2>Como um adulto querido contando história no sofá.</h2>
-    <div class="do">
-      <div><b>Perto e carinhoso</b><span>Fala com a criança, não sobre ela: “Sabe o que a gente aprendeu hoje?”</span></div>
-      <div><b>Frases curtas</b><span>Uma ideia por frase. Versículos curtos, sempre com a referência.</span></div>
-      <div><b>Ninguém perde</b><span>No jogo, errar é tentar de novo: “Ops! Esse mora em outro lugar.”</span></div>
-      <div class="say"><span class="yes">Sim</span><span>“Muito bem, Ana! Você ajudou a encher o mundo de vida!”</span><span class="no">Não</span><span>“Resposta incorreta. Tente novamente.”</span></div>
+    <div class="card pose">
+      <svg viewBox="30 40 150 150"><use href="#corpo"/>
+        <path d="M76 101 q6 6 12 0 M98 101 q6 6 12 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+        <ellipse cx="93" cy="117" rx="4" ry="3" fill="#2B3A55"/>
+        <text x="132" y="74" font-family="Baloo 2" font-weight="800" font-size="22" fill="#4FB8EE">z</text><text x="146" y="58" font-family="Baloo 2" font-weight="800" font-size="16" fill="#4FB8EE">z</text></svg>
+      <h3>Dormindo</h3><p>Hora de dormir e telas de espera.</p>
     </div>
-  </section>
-
-  <section class="ch">
-    <div class="eye">Aplicações</div>
-    <h2>A marca no dia a dia.</h2>
-    <div class="apps">
-      <div class="phone" aria-label="Ícone na tela do celular"><div class="scr">
-        <span class="ic"><i></i>Fotos</span><span class="ic"><i></i>Câmera</span><span class="ic"><svg aria-hidden="true"><use href="#logo"/></svg>Bíblia Play</span><span class="ic"><i></i>Músicas</span>
-        <span class="ic"><i></i>Mapas</span><span class="ic"><i></i>Relógio</span><span class="ic"><i></i>Notas</span><span class="ic"><i></i>Ajustes</span></div></div>
-      <div class="post"><canvas id="postC"></canvas><h3>Novo filme:<br><i>Jesus acalma a tempestade</i></h3><div class="foot"><svg aria-hidden="true"><use href="#logo"/></svg>Bíblia Play</div></div>
-      <div class="ticket"><span>Para a família</span><b>Histórias da Bíblia que a criança assiste, brinca e lembra.</b><span>6 filmes · 9 jogos · funciona sem internet</span><a class="btn" href="index.html" style="text-decoration:none">Abrir a estante</a></div>
+    <div class="card pose">
+      <svg viewBox="30 40 150 150"><use href="#corpo"/>
+        <circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/>
+        <circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/>
+        <ellipse cx="93" cy="118" rx="5" ry="6" fill="#2B3A55"/>
+        <g transform="translate(140 50)"><circle r="17" fill="#FF8A3D"/><text x="0" y="8" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="24" fill="#fff">?</text></g></svg>
+      <h3>Curiosa</h3><p>Dicas e perguntas nos jogos.</p>
     </div>
-  </section>
-</div></main>
-<footer class="gut"><div class="in">Bíblia Play · guia da marca · versão 1</div></footer>
-<script>
-/* arte.js — o mesmo desenho dos personagens dos filmes do Bíblia Play */
-let ctx=null; let G=0;
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
-const ss=(a,b,x)=>{ const t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
-const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-const hex=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
-const mix=(a,b,t)=>{ const A=hex(a),B=hex(b); return 'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')+')'; };
-const rgba=(h,a)=>{ const c=hex(h); return `rgba(${c[0]},${c[1]},${c[2]},${a})`; };
+  </div>
+</div></section>
 
-/* ===== luz da cena (todas as cenas usam o mesmo sistema) ===== */
-const LIGHT={dx:1, rim:'#fff1c8', rimA:.55};
-function vgrad(y0,y1,stops){ const g=ctx.createLinearGradient(0,y0,0,y1); stops.forEach(([o,c])=>g.addColorStop(o,c)); return g; }
-function ell(x,y,rx,ry,fill,rot){ ctx.beginPath(); ctx.ellipse(x,y,Math.max(.1,rx),Math.max(.1,ry),rot||0,0,7); ctx.fillStyle=fill; ctx.fill(); }
-function shade(x,y,rx,ry,top,bot,rot){ ell(x,y,rx,ry,vgrad(y-ry,y+ry,[[0,top],[1,bot]]),rot); }
-function rr(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
-function softShadow(x,y,rx,a){ const g=ctx.createRadialGradient(x,y,1,x,y,rx); g.addColorStop(0,`rgba(40,25,20,${a||.3})`); g.addColorStop(1,'rgba(40,25,20,0)'); ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,rx,rx*.25,0,0,7); ctx.fill(); }
-function rim(x,y,rx,ry,a0,a1){ ctx.save(); ctx.strokeStyle=rgba(LIGHT.rim.startsWith('#')?LIGHT.rim:'#fff1c8', LIGHT.rimA); ctx.lineWidth=2.6; ctx.lineCap='round'; ctx.beginPath();
-  const s=LIGHT.dx>0?0:Math.PI; ctx.ellipse(x,y,rx-1,ry-1,0,s+(a0||-1.1),s+(a1||1.1)); ctx.stroke(); ctx.restore(); }
-function glow(x,y,r,color,a){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,rgba(color,a)); g.addColorStop(1,rgba(color,0)); ctx.fillStyle=g; ctx.fillRect(x-r,y-r,r*2,r*2); }
+<section style="background:#fff"><div class="wrap">
+  <div class="rot">Cores de dia ensolarado</div>
+  <h2>Céu, sol e campo</h2>
+  <p class="lead">Cores alegres e fortes, que a criança reconhece. O texto fica num azul-escuro macio (não preto), que é mais gostoso de ler.</p>
+  <div class="grid cores">
+    <div class="sw" style="background:var(--ceu)"><div>Céu<span>#4FB8EE · fundos e filmes</span></div></div>
+    <div class="sw claro" style="background:var(--sol)"><div>Sol<span>#FFC93C · moedas, estrelas, "Play"</span></div></div>
+    <div class="sw" style="background:var(--grama)"><div>Campo<span>#62BD45 · acertos e "Novo"</span></div></div>
+    <div class="sw" style="background:var(--laranja)"><div>Laranja<span>#FF8A3D · botão principal</span></div></div>
+    <div class="sw claro" style="background:var(--rosa)"><div>Bochecha<span>#FF9DB0 · detalhes carinhosos</span></div></div>
+    <div class="sw" style="background:var(--tinta)"><div>Tinta<span>#2B3A55 · textos e contornos</span></div></div>
+  </div>
+</div></section>
 
-const CAST={
-noe:{ robe:['#6fa8e0','#3a6fae'], sash:'#c98a3a', skin:['#f6cfa6','#e2ab7c'], hair:'#f2efe8', beard:true, s:1 },
-  filho:{ robe:['#9cc77a','#5f9a4c'], sash:'#8a5a34', skin:['#f0c39a','#d69b6c'], hair:'#6b4423', s:.86 },
-  vizinho:{ robe:['#eeb07a','#b96f3e'], sash:'#7a4a2a', skin:['#e2b088','#c08060'], hair:'#3a2a1a', s:.95 },
-  vizinho2:{ robe:['#c79ad8','#8a5aa8'], sash:'#5a3a6a', skin:['#c98f62','#a8714a'], hair:'#241b14', s:.9 },
-  esposa:{ robe:['#ec9fa6','#b8687a'], sash:'#c98a3a', skin:['#f3c8a0','#dca07a'], hair:'#9a8a80', scarf:'#f4e6c8', s:.92 },
-  sem:{ robe:['#e8c46a','#b8903a'], sash:'#6b4423', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', s:.86 },
-  jafe:{ robe:['#7fc4c0','#3f8a86'], sash:'#6b4423', skin:['#f6cfa6','#e2ab7c'], hair:'#a5652f', s:.84 },
-davi:{ robe:['#e8d9a8','#b8a070'], sash:'#8a5a34', skin:['#f6cfa6','#e2ab7c'], hair:'#b4582a', curly:true, s:.8 },
-  golias:{ robe:['#e6b862','#94621f'], armor:true, sash:'#5a2a1a', skin:['#d8a07a','#b07850'], hair:'#2a1a10', beard:true, beardC:'#2e1e12', helmet:true, s:2.3 },
-  saul:{ robe:['#9a6ac8','#5a3a8a'], sash:'#e8b860', skin:['#e8b88a','#c8946a'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', crown:true, s:1.02 },
-  soldado:{ robe:['#a8805a','#6e4e32'], sash:'#5a3a22', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', cap:'#8a6a48', s:.95 },
-  irmao:{ robe:['#7a9ac0','#4a6a90'], sash:'#5a3a22', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', cap:'#7a5a3a', s:.97 },
-adao:{ robe:['#8fbf6a','#557f3a'], sash:'#7a5a2a', skin:['#e8b48a','#c98f62'], hair:'#5a3a22', s:1 },
-  eva:{ robe:['#b4d47e','#6f9a48'], sash:'#e8a0a8', skin:['#f3c8a0','#dca07a'], hair:'#8a4a26', longhair:true, s:.94 },
-jonas:{ robe:['#e3b27a','#a8703f'], sash:'#5f9a4c', skin:['#e8b48a','#c98f62'], hair:'#4a3320', beard:true, beardC:'#4a3320', s:1 },
-  marinheiro:{ robe:['#d0745a','#8a3e2a'], sash:'#3a2a1a', skin:['#d8a07a','#b07850'], hair:'#2a1a10', cap:'#3e6fa8', beard:true, beardC:'#3a2a1a', s:1 },
-  marinheiro2:{ robe:['#7fa8c8','#4a7090'], sash:'#3a2a1a', skin:['#e2ab7c','#c48a5a'], hair:'#5a3a22', cap:'#c0503a', s:.95 },
-  rei:{ robe:['#9a6ac8','#5a3a8a'], sash:'#e8b860', skin:['#d8a07a','#b07850'], hair:'#2a1a10', beard:true, beardC:'#2a1a10', crown:true, s:1 },
-  povo1:{ robe:['#c9b48a','#9a845a'], sash:'#6b4423', skin:['#c98f62','#a8714a'], hair:'#241b14', s:.9 },
-  povo2:{ robe:['#7fc4c0','#3f8a86'], sash:'#6b4423', skin:['#f0c39a','#d69b6c'], hair:'#6b4423', s:.86 },
-  povo3:{ robe:['#ec9fa6','#b8687a'], sash:'#c98a3a', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', longhair:true, s:.84 },
-  crianca:{ robe:['#ffd27a','#d9a441'], sash:'#c0503a', skin:['#f6cfa6','#e2ab7c'], hair:'#6b4423', s:.62 },
-jesus:{ robe:['#f6f0e0','#d2c6a6'], sash:'#c0483a', skin:['#e3ad79','#c48a5a'], hair:'#6b4423', beard:true, beardC:'#6b4423', longhair:true, s:1 },
-  pedro:{ robe:['#6f9ac8','#3e6a98'], sash:'#7a5a3a', skin:['#e2ab7c','#c48a5a'], hair:'#6a5a4a', beard:true, beardC:'#7a6a5a', s:1 },
-  joao:{ robe:['#9cc77a','#5f9a4c'], sash:'#7a5a3a', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', s:.9 },
-  andre:{ robe:['#eeb07a','#b96f3e'], sash:'#5a3a22', skin:['#d8a07a','#b07850'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', s:.96 },
-maria:{ robe:['#7fa8d8','#4a76b0'], sash:'#f4f1e8', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', scarf:'#f4f1e8', s:.92 },
-  jose:{ robe:['#b08a5e','#765434'], sash:'#5f9a4c', skin:['#e2ab7c','#c48a5a'], hair:'#4a3320', beard:true, beardC:'#4a3320', s:1 },
-  anjo:{ robe:['#ffffff','#e8e4f4'], sash:'#f2c24a', skin:['#f6d2ae','#e2ab7c'], hair:'#f2c868', longhair:true, s:1.05 },
-  pastor1:{ robe:['#c9a46a','#8a6a3a'], sash:'#6b4423', skin:['#d8a07a','#b07850'], hair:'#3a2a1a', scarf:'#e8d4a8', beard:true, beardC:'#5a4a3a', s:.98 },
-  pastor2:{ robe:['#8fa86a','#5f7a42'], sash:'#6b4423', skin:['#e8b48a','#c98f62'], hair:'#5a3a22', cap:'#a87848', s:.86 },
-  mago1:{ robe:['#9a6ac8','#5a3a8a'], sash:'#f2c24a', skin:['#c98f62','#a8714a'], hair:'#241b14', beard:true, beardC:'#e8e4dc', crown:true, s:1 },
-  mago2:{ robe:['#d0605a','#8a2e2a'], sash:'#f2c24a', skin:['#8a5a3a','#6a4028'], hair:'#1a120c', scarf:'#f2c24a', s:1 },
-  mago3:{ robe:['#5fa88a','#2f7a5a'], sash:'#f2c24a', skin:['#f0c39a','#d69b6c'], hair:'#6b4423', beard:true, beardC:'#6b4423', scarf:'#e8e0f4', s:1 },
-};
-function harp(){ ctx.save(); ctx.translate(16,-52); ctx.strokeStyle='#b8782e'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(0,22); ctx.quadraticCurveTo(-4,-6,12,-18); ctx.lineTo(18,20); ctx.closePath(); ctx.stroke(); ctx.restore(); }
-let TALK=null, MOUTH=0; // quem está falando e quanto a boca abre (do áudio)
-function person(id,x,y,o){
-  o=o||{}; const C=CAST[id], s=(o.s||1)*C.s, t=G+(o.ph||0), pose=o.pose||'stand', dir=o.dir||1;
-  const talk = TALK===id ? MOUTH : 0;
-  ctx.save(); ctx.translate(x,y); softShadow(0,2,30*s,.28);
-  ctx.scale(dir*s,s);
-  let by=0, lean=0; if(pose==='pray'||pose==='kneel') by=22; if(pose==='sit') by=26;
-  const breathe=Math.sin(t*2)*1.2; const walk=pose==='walk'? t*7 : 0;
-  // pernas
-  ctx.strokeStyle='#4a3a32'; ctx.lineWidth=8; ctx.lineCap='round';
-  if(pose==='sit'){ ctx.beginPath(); ctx.moveTo(-6,-22); ctx.lineTo(18,-14); ctx.lineTo(20,0); ctx.moveTo(6,-22); ctx.lineTo(26,-16); ctx.lineTo(28,0); ctx.stroke(); }
-  else if(pose==='pray'||pose==='kneel'){ ctx.beginPath(); ctx.moveTo(-6,-14); ctx.lineTo(-14,0); ctx.lineTo(8,0); ctx.stroke(); }
-  else { const sw=Math.sin(walk)*10; ctx.beginPath(); ctx.moveTo(-6,-18); ctx.lineTo(-6+sw,0); ctx.moveTo(6,-18); ctx.lineTo(6-sw,0); ctx.stroke(); }
-  ctx.translate(0,by);
-  // túnica
-  ctx.beginPath(); ctx.moveTo(0,-70+breathe); ctx.quadraticCurveTo(30,-56,24,-14); ctx.quadraticCurveTo(0,-4,-24,-14); ctx.quadraticCurveTo(-30,-56,0,-70+breathe); ctx.closePath();
-  ctx.fillStyle=vgrad(-70,-8,[[0,C.robe[0]],[1,C.robe[1]]]); ctx.fill();
-  ctx.save(); ctx.clip(); ctx.fillStyle='rgba(0,0,0,.12)'; ctx.beginPath(); ctx.ellipse(-dir*LIGHT.dx*20,-30,22,46,0,0,7); ctx.fill(); ctx.restore();
-  if(C.armor){ ctx.save(); ctx.beginPath(); ctx.moveTo(0,-70+breathe); ctx.quadraticCurveTo(30,-56,24,-14); ctx.quadraticCurveTo(0,-4,-24,-14); ctx.quadraticCurveTo(-30,-56,0,-70+breathe); ctx.closePath(); ctx.clip();
-    ctx.strokeStyle='rgba(90,50,12,.45)'; ctx.lineWidth=1.4; for(let yy=-66;yy<-8;yy+=7) for(let xx=-30+((yy/7)%2?4:0);xx<32;xx+=8){ ctx.beginPath(); ctx.arc(xx,yy,4,0,Math.PI); ctx.stroke(); }
-    ctx.fillStyle='rgba(255,240,190,.18)'; ctx.fillRect(4,-70,8,62); ctx.restore(); }
-  ctx.strokeStyle=C.sash; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(-18,-36); ctx.quadraticCurveTo(0,-29,18,-36); ctx.stroke();
-  rim(0,-40,26,32,-1.3,1.3);
-  // braços
-  const sh=[-15,-58], sh2=[15,-58]; let h1=[-22,-30], h2=[22,-30];
-  if(pose==='pray'){ h1=[4,-50]; h2=[8,-50]; }
-  else if(pose==='lookup'||pose==='open'){ h1=[-34,-62]; h2=[34,-62]; }
-  else if(pose==='armsup'){ h1=[-28,-100]; h2=[28,-100]; }
-  else if(pose==='hammer'){ const a=Math.sin(t*6); h2=[30+a*4,-62-a*24]; }
-  else if(pose==='point'){ h2=[44,-70]; }
-  else if(pose==='hold'){ h2=[30,-80]; }
-  else if(pose==='carry'){ h1=[-14,-92]; h2=[14,-92]; }
-  else if(pose==='walk'){ const sw=Math.sin(walk)*8; h1=[-22+sw,-30]; h2=[22-sw,-30]; }
-  else if(pose==='sit'){ h1=[-4,-34]; h2=[22,-34]; }
-  else if(pose==='laugh'){ const b=Math.sin(t*14)*3; h1=[-12,-40+b]; h2=[40,-74]; }
-  else if(pose==='spear'){ h1=[-24,-34]; h2=[30,-48]; }
-  else if(pose==='harp'){ h1=[8,-44]; h2=[22,-52]; }
-  else if(pose==='sling'){ h2=[22,-104]; h1=[-22,-34]; }
-  else if(pose==='kneel'){ h1=[22,-24]; h2=[30,-20]; }
-  ctx.strokeStyle=C.skin[1]; ctx.lineWidth=8;
-  ctx.beginPath(); ctx.moveTo(...sh); ctx.lineTo(...h1); ctx.moveTo(...sh2); ctx.lineTo(...h2); ctx.stroke();
-  ell(h1[0],h1[1],5,5,C.skin[0]); ell(h2[0],h2[1],5,5,C.skin[0]);
-  if(pose==='hammer'){ ctx.save(); ctx.translate(h2[0],h2[1]); ctx.rotate(-.6+Math.sin(t*6)*.9); ctx.fillStyle='#7a5236'; ctx.fillRect(-2,-22,4,24); ctx.fillStyle='#8c8c8c'; ctx.fillRect(-8,-26,16,8); ctx.restore(); }
-  if(pose==='spear'||(id==='golias' && pose==='laugh')){ ctx.strokeStyle='#6b4a2a'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(h2[0],h2[1]+50); ctx.lineTo(h2[0],h2[1]-90); ctx.stroke(); ctx.fillStyle='#d4a052'; ctx.beginPath(); ctx.moveTo(h2[0]-6,h2[1]-88); ctx.lineTo(h2[0],h2[1]-108); ctx.lineTo(h2[0]+6,h2[1]-88); ctx.closePath(); ctx.fill();
-    shade(-30,-40,10,26,'#e0aa58','#94621f'); }
-  if(pose==='harp') harp();
-  if(pose==='sling'){ const sp=o.fast? 16 : 9; const a=t*sp; const px=h2[0]+Math.cos(a)*26, py=h2[1]-12+Math.sin(a)*9; ctx.strokeStyle='#6b4a2a'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(h2[0],h2[1]); ctx.lineTo(px,py); ctx.stroke(); ell(px,py,5,4,'#8a5a34'); if(o.fast){ ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(h2[0],h2[1]-12,26,9,0,0,7); ctx.stroke(); } }
-  if(pose==='carry'){ ctx.fillStyle=vgrad(-104,-92,[[0,'#d9a46c'],[1,'#a8703f']]); rr(-46,-104,92,12,4); ctx.fill(); }
-  // cabeça
-  const hy=-86+breathe+(pose==='lookup'?-2:0), look=(pose==='lookup'||o.up)?-3:0;
-  ctx.save(); ctx.translate(0,hy); if(pose==='lookup') ctx.rotate(-.08*dir); if(pose==='laugh') ctx.rotate(Math.sin(t*14)*.06);
-  if(C.scarf){ shade(0,-4,24,23,C.scarf,'#d9c7a0'); }
-  if(C.longhair){ shade(0,6,22,27,C.hair,mix(C.hair,'#000000',.3)); }
-  shade(0,0,19,18,C.skin[0],C.skin[1]);
-  rim(0,0,19,18,-1.2,.9);
-  if(C.beard){ const bc=C.beardC||'#ffffff'; shade(0,12,15,13,bc,mix(bc,'#000000',.15)); if(!C.helmet) shade(-2,-15,17,7,C.hair,mix(C.hair,'#000000',.15)); }
-  else if(!C.scarf && !C.helmet){ shade(0,-12,18,9,C.hair,mix(C.hair,'#000000',.3)); ell(-14,-6,6,8,C.hair); }
-  if(C.curly){ for(let i=0;i<7;i++) shade(-15+i*5,-15-Math.abs(Math.sin(i*1.3))*4,6,6,C.hair,mix(C.hair,'#000000',.25)); ell(-16,-4,5,7,C.hair); }
-  if(C.cap){ shade(0,-12,19,9,C.cap,mix(C.cap,'#000000',.3)); }
-  if(C.helmet){ shade(0,-9,21,14,'#f0c070','#a87028'); ctx.fillStyle='#9a2a1a'; rr(-3,-36,6,16,3); ctx.fill(); ctx.fillStyle='#c9902e'; rr(2,-6,4,14,2); ctx.fill(); ctx.strokeStyle=rgba('#fff1c8',.5); ctx.lineWidth=2; ctx.beginPath(); ctx.arc(0,-9,18,-2.6,-1.4); ctx.stroke(); }
-  if(C.crown){ ctx.fillStyle='#f2c24a'; ctx.beginPath(); ctx.moveTo(-14,-14); ctx.lineTo(-14,-26); ctx.lineTo(-7,-19); ctx.lineTo(0,-29); ctx.lineTo(7,-19); ctx.lineTo(14,-26); ctx.lineTo(14,-14); ctx.closePath(); ctx.fill(); ell(0,-21,2,2,'#e85d6c'); }
-  // olhos (piscam)
-  const blink = (Math.sin(t*.9+x*.01)>.985)?.15:1;
-  if(pose==='sleep'){ ctx.strokeStyle='#2c2018'; ctx.lineWidth=1.8; ctx.beginPath(); ctx.arc(6,-2,2.6,.1*Math.PI,.9*Math.PI); ctx.moveTo(-1.4,-1.2); ctx.arc(-4,-2,2.6,.1*Math.PI,.9*Math.PI); ctx.stroke(); }
-  else { ctx.fillStyle='#2c2018'; ell(6,-2+look,2.6,2.8*blink,'#2c2018'); ell(-4,-2+look,2.6,2.8*blink,'#2c2018');
-  ell(7,-3+look,.9,.9,'rgba(255,255,255,.9)'); }
-  ctx.fillStyle='rgba(240,120,100,.28)'; ell(11,6,4,2.6,'rgba(240,120,100,.3)'); ell(-9,6,4,2.6,'rgba(240,120,100,.25)');
-  // boca (abre conforme a voz)
-  const mo = Math.max(talk, pose==='laugh'? .5+.5*Math.abs(Math.sin(t*14)) : 0);
-  if(mo>.08){ ell(3,8,4.5,1.5+mo*4.5,'#5a2a22'); }
-  else { ctx.strokeStyle='#7a3a2e'; ctx.lineWidth=1.8; ctx.beginPath(); ctx.arc(3,6,4.5,.2*Math.PI,.8*Math.PI); ctx.stroke(); }
-  ctx.restore();
-  if(id==='noe' && o.staff){ ctx.strokeStyle='#8a5a34'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(-26,0); ctx.lineTo(-26,-104); ctx.arc(-20,-104,6,Math.PI,0); ctx.stroke(); }
-  ctx.restore();
-}
-/* ===== animais ===== */
-function animal(type,x,y,s,dir,ph){
-  s=s||1; dir=dir||1; const t=G+(ph||0), hop=Math.abs(Math.sin(t*6))*3;
-  ctx.save(); ctx.translate(x,y); softShadow(0,2,26*s,.25); ctx.scale(dir*s,s); ctx.translate(0,-hop);
-  if(type==='ovelha'){ for(const [dx,dy] of [[-12,-24],[0,-30],[12,-24],[-6,-18],[8,-18]]) shade(dx,dy,13,12,'#ffffff','#ddd6cb'); shade(18,-30,9,10,'#5b4a46','#3d302d'); ell(21,-32,1.5,1.5,'#fff'); }
-  else if(type==='coelho'){ shade(0,-16,16,14,'#f3ece6','#d4c8bc'); shade(12,-28,10,10,'#f3ece6','#d4c8bc'); ell(9,-46,4,12,'#f3ece6'); ell(16,-46,4,12,'#efe2da'); ell(15,-29,1.6,1.6,'#2c2340'); }
-  else if(type==='leao'){ ctx.strokeStyle='#c98a36'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(-18,-20); ctx.quadraticCurveTo(-34,-30,-30,-40); ctx.stroke(); shade(-2,-20,20,15,'#f0b65c','#c98a36'); shade(16,-34,17,17,'#c77f22','#9a5f18'); shade(18,-33,11,11,'#f2be62','#d79a44'); ell(22,-35,1.8,1.8,'#2c2340'); }
-  else if(type==='elefante'){ shade(0,-30,30,22,'#aeb6c0','#7d8894'); shade(26,-40,16,16,'#aeb6c0','#7d8894'); shade(16,-40,10,14,'#9aa3ae','#7d8894'); ctx.strokeStyle='#8e98a4'; ctx.lineWidth=8; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(38,-36); ctx.quadraticCurveTo(46,-18,40,-8); ctx.stroke(); ell(30,-44,1.8,1.8,'#2c2340');
-    ctx.strokeStyle='#7d8894'; ctx.lineWidth=9; for(const lx of [-16,-4,10,20]){ ctx.beginPath(); ctx.moveTo(lx,-14); ctx.lineTo(lx,0); ctx.stroke(); } }
-  else if(type==='girafa'){ ctx.strokeStyle='#d9a441'; ctx.lineWidth=10; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(14,-34); ctx.lineTo(24,-86); ctx.stroke(); shade(0,-30,24,14,'#f2c25a','#c9952e'); shade(28,-92,10,8,'#f2c25a','#c9952e');
-    for(const [dx,dy] of [[-8,-30],[6,-26],[18,-50],[20,-68]]) ell(dx,dy,3.5,3,'#b0702a'); ctx.lineWidth=5; ctx.strokeStyle='#c9952e'; for(const lx of [-14,-4,8,16]){ ctx.beginPath(); ctx.moveTo(lx,-20); ctx.lineTo(lx,0); ctx.stroke(); } ell(31,-94,1.5,1.5,'#2c2340'); }
-  else if(type==='pomba'){ const f=Math.sin(t*14); shade(0,-8,10,7,'#ffffff','#e0dcd4'); shade(9,-13,6,6,'#ffffff','#e6e2da'); ell(15,-13,3,1.5,'#e6974d'); ell(10,-14,1,1,'#2c2340');
-    ctx.save(); ctx.translate(-2,-10); ctx.rotate(-.4-f*.7); shade(-8,0,12,4,'#ffffff','#e0dcd4'); ctx.restore(); if(o_leaf) { ctx.strokeStyle='#6a8a3a'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(16,-12); ctx.lineTo(24,-8); ctx.stroke(); ell(24,-9,5,2,'#8fb05a',.4); } }
-  else if(type==='tartaruga'){ for(const lx of [-14,12]){ ell(lx,-3,6,4,'#8aa060'); } shade(25,-10,8,6.5,'#b8c98a','#8aa060'); ell(28,-12,1.5,1.5,'#2c2340');
-    shade(0,-14,23,15,'#86b862','#4f7e3a'); ctx.save(); ctx.beginPath(); ctx.ellipse(0,-14,23,15,0,0,7); ctx.clip(); ctx.fillStyle='#4f7e3a'; ctx.fillRect(-30,-3,60,4);
-    for(const [dx,dy] of [[-10,-16],[0,-22],[10,-16],[0,-10]]) ell(dx,dy,5.5,4.5,'rgba(60,100,40,.55)'); ctx.restore(); }
-  else if(type==='macaco'){ ctx.strokeStyle='#7a5032'; ctx.lineWidth=4; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(-10,-16); ctx.quadraticCurveTo(-30,-18,-26,-34); ctx.quadraticCurveTo(-22,-42,-16,-36); ctx.stroke();
-    ctx.lineWidth=6; for(const lx of [-6,6]){ ctx.beginPath(); ctx.moveTo(lx,-12); ctx.lineTo(lx,0); ctx.stroke(); }
-    shade(0,-22,12,14,'#9a6a42','#6e4a2c'); ell(1,-20,7,9,'#d9b083'); ell(-5,-46,5,5,'#9a6a42'); ell(15,-46,5,5,'#9a6a42'); ell(-5,-46,2.6,2.6,'#e8c49a'); ell(15,-46,2.6,2.6,'#e8c49a');
-    shade(5,-44,12,11,'#9a6a42','#6e4a2c'); ell(7,-41,8.5,7,'#ecc99c'); ell(4,-44,1.6,1.8,'#2c2340'); ell(10,-44,1.6,1.8,'#2c2340');
-    ctx.strokeStyle='#8a5a3a'; ctx.lineWidth=1.4; ctx.beginPath(); ctx.arc(7,-40,3.4,.3,Math.PI-.3); ctx.stroke(); }
-  else if(type==='zebra'||type==='cavalo'){ const Z=type==='zebra', c1=Z?'#ffffff':'#c4834a', c2=Z?'#d8d6d2':'#8e5528', mane=Z?'#2c2626':'#4a2c1a';
-    ctx.strokeStyle=c2; ctx.lineWidth=6; ctx.lineCap='round'; for(const lx of [-16,-6,10,18]){ ctx.beginPath(); ctx.moveTo(lx,-22); ctx.lineTo(lx,0); ctx.stroke(); }
-    if(Z){ ctx.strokeStyle='#2c2626'; ctx.lineWidth=2; for(const lx of [-16,-6,10,18]){ for(let yy=-16;yy>-22;yy-=5){ ctx.beginPath(); ctx.moveTo(lx-3,yy); ctx.lineTo(lx+3,yy); ctx.stroke(); } } }
-    ctx.strokeStyle=mane; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(-22,-34); ctx.quadraticCurveTo(-32,-28,-30,-14); ctx.stroke();
-    ctx.save(); ctx.translate(18,-36); ctx.rotate(-.55); shade(0,-8,8,14,c1,c2); ctx.restore();
-    shade(0,-32,24,12,c1,c2); ctx.save(); ctx.translate(30,-52); ctx.rotate(.5); shade(0,0,7,13,c1,c2); ctx.restore();
-    if(Z){ ctx.save(); ctx.beginPath(); ctx.ellipse(0,-32,24,12,0,0,7); ctx.clip(); ctx.strokeStyle='#2c2626'; ctx.lineWidth=3; for(let sx=-20;sx<=20;sx+=7){ ctx.beginPath(); ctx.moveTo(sx,-46); ctx.quadraticCurveTo(sx+4,-32,sx,-20); ctx.stroke(); } ctx.restore(); }
-    ctx.strokeStyle=mane; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(12,-40); ctx.quadraticCurveTo(18,-56,26,-60); ctx.stroke(); ell(25,-64,2.5,4,c2); ell(31,-56,1.6,1.6,'#2c2340'); ell(36,-47,3,2,Z?'#555':'#7a4a2a'); }
-  else if(type==='urso'){ ctx.strokeStyle='#5e3a22'; ctx.lineWidth=9; ctx.lineCap='round'; for(const lx of [-14,-2,10,18]){ ctx.beginPath(); ctx.moveTo(lx,-14); ctx.lineTo(lx,0); ctx.stroke(); }
-    shade(0,-24,24,18,'#94643f','#5e3a22'); ell(17,-50,5,5,'#7a4e30'); ell(31,-50,5,5,'#7a4e30'); shade(24,-38,13,12,'#94643f','#6a4428'); ell(31,-34,7,5.5,'#d4a878'); ell(35,-36,2.6,2,'#2c2340'); ell(26,-42,1.6,1.6,'#2c2340'); }
-  else if(type==='pavao'){ for(let i=0;i<9;i++){ const a=-Math.PI*.95+i*Math.PI*.9/8; ctx.save(); ctx.translate(-4,-14); ctx.rotate(a+Math.PI/2); shade(0,-24,7,24,'#3fa38a','#2a6e7a'); ell(0,-38,4.5,5,'#e8c040'); ell(0,-38,2.6,3,'#2a4ea0'); ctx.restore(); }
-    ctx.strokeStyle='#8a7a5a'; ctx.lineWidth=2.4; for(const lx of [-2,4]){ ctx.beginPath(); ctx.moveTo(lx,-6); ctx.lineTo(lx,0); ctx.stroke(); }
-    shade(2,-14,9,10,'#3a6ed0','#24459a'); ctx.strokeStyle='#3a6ed0'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(6,-20); ctx.quadraticCurveTo(10,-28,10,-32); ctx.stroke(); shade(11,-34,5,5,'#4a7ee0','#2a50a8');
-    ell(15,-34,3,1.4,'#e6974d'); ell(12,-35,1.1,1.1,'#fff'); for(const dx of [-2,1,4]){ ctx.strokeStyle='#2a50a8'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(10,-38); ctx.lineTo(10+dx,-45); ctx.stroke(); ell(10+dx,-46,1.6,1.6,'#3fa38a'); } }
-  ctx.restore();
-}
-let o_leaf=false;
-/* ===== a arca (cresce conforme o capítulo) ===== */
-function ark(x,y,stage,o){
-  o=o||{}; ctx.save(); ctx.translate(x,y); if(o.rock) ctx.rotate(o.rock);
-  const L=360, Ht=150;
-  softShadow(0,4,240,.35);
-  const kS=ss(0,.12,stage), ribS=ss(.08,.38,stage), hullS=ss(.35,.72,stage), houseS=ss(.7,.9,stage), doneS=ss(.9,1,stage);
-  // quilha
-  ctx.fillStyle='#5a3a22'; rr(-L/2*kS,-12,L*kS,12,5); ctx.fill();
-  const hull=()=>{ ctx.beginPath(); ctx.moveTo(-L/2-20,-Ht); ctx.lineTo(L/2+20,-Ht); ctx.quadraticCurveTo(L/2+10,-20,L/2-60,0); ctx.lineTo(-L/2+60,0); ctx.quadraticCurveTo(-L/2-10,-20,-L/2-20,-Ht); ctx.closePath(); };
-  // costelas
-  ctx.strokeStyle='#7a4a2a'; ctx.lineWidth=7; ctx.lineCap='round';
-  const nr=Math.floor(ribS*12); for(let i=0;i<nr;i++){ const rx=-L/2+20+i*(L-40)/11; ctx.beginPath(); ctx.moveTo(rx,0); ctx.quadraticCurveTo(rx+(rx<0?-14:14),-Ht*.5,rx+(rx<0?-22:22),-Ht); ctx.stroke(); }
-  // casco (tábuas de baixo para cima)
-  if(hullS>0){ ctx.save(); hull(); ctx.clip(); const top=lerp(0,-Ht-4,hullS);
-    ctx.fillStyle=vgrad(-Ht,0,[[0,'#c88a52'],[1,'#7a4a28']]); ctx.fillRect(-L,top,L*2,-top+4);
-    ctx.strokeStyle='rgba(60,30,12,.4)'; ctx.lineWidth=2.5; for(let yy=-6;yy>top;yy-=17){ ctx.beginPath(); ctx.moveTo(-L,yy); ctx.lineTo(L,yy); ctx.stroke(); }
-    ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(-L, top, L*2, 8);
-    ctx.restore(); if(hullS>=1){ ctx.strokeStyle=rgba('#fff1c8',.35); ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(-L/2-18,-Ht+2); ctx.lineTo(L/2+18,-Ht+2); ctx.stroke(); } }
-  // casa no convés
-  if(houseS>0){ ctx.save(); ctx.globalAlpha=houseS; const hy=-Ht, hh=90*houseS;
-    ctx.fillStyle=vgrad(hy-hh,hy,[[0,'#d9a46c'],[1,'#a8703f']]); rr(-130,hy-hh,240,hh,8); ctx.fill();
-    ctx.fillStyle=vgrad(hy-hh-60,hy-hh,[[0,'#a5563f'],[1,'#7a3a2a']]); ctx.beginPath(); ctx.moveTo(-152,hy-hh+4); ctx.lineTo(-10,hy-hh-58); ctx.lineTo(132,hy-hh+4); ctx.closePath(); ctx.fill();
-    if(doneS>0){ const lit=o.lit==null?.6:o.lit; for(const wx of [-100,-60,40,80]){ ctx.fillStyle=mix('#4a2f22','#ffd27a',lit); rr(wx,hy-60,24,22,5); ctx.fill(); if(lit>.3) glow(wx+12,hy-49,38,'#ffc060',lit*.45); }
-      ctx.fillStyle=mix('#3a2418','#ffc870',o.doorLit||0); rr(-24,hy-74,38,74,14); ctx.fill(); }
-    ctx.restore(); }
-  // rampa
-  if(o.ramp!=null && o.ramp>0){ ctx.save(); ctx.translate(-5,-Ht+2); ctx.rotate(lerp(Math.PI,.62,o.ramp)); ctx.fillStyle=vgrad(0,10,[[0,'#b97c47'],[1,'#7a4a28']]); rr(-10,0,26,Ht*1.25,4); ctx.fill(); ctx.restore(); }
-  // andaime
-  if(stage<.97 && stage>.2){ ctx.strokeStyle='#8a6a48'; ctx.lineWidth=4; for(const sx of [-L/2-40, L/2+40]){ ctx.beginPath(); ctx.moveTo(sx,0); ctx.lineTo(sx,-Ht-30); ctx.stroke(); for(let k=0;k<4;k++){ ctx.beginPath(); ctx.moveTo(sx-14,-k*44-10); ctx.lineTo(sx+14,-k*44-10); ctx.stroke(); } } }
-  ctx.restore();
-}
-function waves(y,amp,c1,c2,speed,front){ ctx.beginPath(); ctx.moveTo(-1600,700); for(let x=-1600;x<=1600;x+=16){ ctx.lineTo(x, y+Math.sin(x*.012+G*speed)*amp+Math.sin(x*.031-G*speed*1.4)*amp*.4); } ctx.lineTo(1600,700); ctx.closePath();
-  ctx.fillStyle=vgrad(y-amp,y+260,[[0,c1],[1,c2]]); ctx.fill(); ctx.strokeStyle=rgba('#ffffff',front?.45:.25); ctx.lineWidth=front?4:2.5; ctx.stroke(); }
-function rain(a,slant){ if(a<=0) return; ctx.save(); ctx.strokeStyle=`rgba(210,225,245,${.45*a})`; ctx.lineWidth=1.6; ctx.beginPath(); const n=Math.floor(160*a);
-  for(let i=0;i<n;i++){ const x=((i*61.7+G*140*(slant||1))%(W+80))-40, y=((i*113.1+G*900)%(H+60))-30; ctx.moveTo(x,y); ctx.lineTo(x-(slant||1)*6,y+20); } ctx.stroke(); ctx.restore(); }
+<section><div class="wrap">
+  <div class="rot">Como fica no site</div>
+  <h2>A estante, do jeito novo</h2>
+  <div class="tela" style="margin-top:20px">
+    <div class="barra">
+      <div class="logo" style="--t:34px"><span class="nome">Bibli<b>nha</b></span><span class="play"><i></i>Play</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip">🪙 12 moedas</span><span class="chip">🐑 Minha Arca</span></div>
+    </div>
+    <div class="filmes">
+      <div class="filme"><div class="capa"><img src="capa-criacao.jpg" alt=""></div><div class="info"><span class="selo">NOVO</span><h3>A Criação</h3><button class="btn play">▶ Assistir</button></div></div>
+      <div class="filme"><div class="capa"><img src="capa-noe.jpg" alt=""></div><div class="info"><span class="selo" style="background:var(--ceu)">2 min</span><h3>Arca de Noé</h3><button class="btn alt">🎮 Jogar</button></div></div>
+      <div class="filme"><div class="capa"><img src="capa-davi.jpg" alt=""></div><div class="info"><span class="selo" style="background:var(--laranja)">🔒 Assinantes</span><h3>Davi e Golias</h3><button class="btn play">▶ Assistir</button></div></div>
+    </div>
+  </div>
+</div></section>
 
+<section style="background:#fff"><div class="wrap">
+  <div class="rot">Ícone do app e da Kiwify</div>
+  <h2>O que aparece no celular</h2>
+  <div class="icones">
+    <div class="icone"><svg viewBox="30 50 150 140"><use href="#corpo"/><circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/><circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/><path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/></svg><div class="badge"><i></i></div></div>
+    <div class="icone peq"><svg viewBox="30 50 150 140"><use href="#corpo"/><circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/><path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/></svg><div class="badge"><i></i></div></div>
+    <div style="max-width:420px"><p>A Lili aparece "espiando" de baixo, com o botão de play no canto. Funciona pequenininho na tela do celular e também na imagem do produto da Kiwify (300×250).</p></div>
+  </div>
+</div></section>
 
-/* ===== enfeites da "Minha Arca" ===== */
-function decor(id,x,y,s){ ctx.save(); ctx.translate(x,y); ctx.scale(s||1,s||1);
-  if(id==='girassol'){ ctx.strokeStyle='#5f9a4c'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(0,20); ctx.lineTo(0,-2); ctx.stroke(); ell(-7,10,7,3,'#6aa653',-.5); for(let i=0;i<12;i++){ const a=i/12*Math.PI*2; ell(Math.cos(a)*11,-10+Math.sin(a)*11,7,3.2,'#f6c33a',a); } shade(0,-10,7,7,'#7a4a28','#4a2c18'); }
-  else if(id==='florrosa'){ ctx.strokeStyle='#5f9a4c'; ctx.lineWidth=3.5; ctx.beginPath(); ctx.moveTo(0,20); ctx.lineTo(0,-2); ctx.stroke(); ell(6,8,6,2.6,'#6aa653',.5); for(let i=0;i<5;i++){ const a=i/5*Math.PI*2-G*.3; shade(Math.cos(a)*7,-8+Math.sin(a)*7,6.5,6.5,'#f6a8bd','#d9708e'); } ell(0,-8,4,4,'#ffd860'); }
-  else if(id==='bandeirinha'){ ctx.strokeStyle='#7a5a3a'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(-40,-10); ctx.quadraticCurveTo(0,4,40,-10); ctx.stroke(); const C=['#e0605a','#f6c33a','#6aa653','#6fa8e0','#b99be8','#f2a65e'];
-    for(let i=0;i<6;i++){ const bx=-34+i*13.6, by=-10+Math.sin((bx+40)/80*Math.PI)*7; ctx.fillStyle=C[i]; ctx.beginPath(); ctx.moveTo(bx-5,by); ctx.lineTo(bx+5,by); ctx.lineTo(bx,by+11+Math.sin(G*3+i)*1); ctx.closePath(); ctx.fill(); } }
-  else if(id==='arcoiris'){ const C=['#e0605a','#f2a65e','#f6c33a','#6aa653','#6fa8e0','#9a7ad8']; ctx.lineCap='butt'; C.forEach((c,i)=>{ ctx.strokeStyle=rgba(c,.85); ctx.lineWidth=5; ctx.beginPath(); ctx.arc(0,10,34-i*5,Math.PI,0); ctx.stroke(); }); ell(-30,12,10,6,'#fff'); ell(-22,10,8,6,'#fff'); ell(30,12,10,6,'#fff'); ell(22,10,8,6,'#fff'); }
-  else if(id==='lampiao'){ ctx.strokeStyle='#5a3a22'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,-22); ctx.lineTo(0,-14); ctx.stroke(); glow(0,0,26,'#ffc060',.45+Math.sin(G*4)*.08); ctx.fillStyle='#5a3a22'; rr(-9,-15,18,4,2); ctx.fill(); rr(-9,12,18,4,2); ctx.fill(); ctx.fillStyle='#ffd27a'; rr(-7,-11,14,23,4); ctx.fill(); ell(0,2,3,5,'#fff6d8'); ctx.strokeStyle='#5a3a22'; ctx.lineWidth=1.5; ctx.strokeRect(-7,-11,14,23); }
-  else if(id==='coracao'){ const bob=Math.sin(G*2)*3; ctx.strokeStyle='#8a7a6a'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,4+bob); ctx.quadraticCurveTo(4,16,0,24); ctx.stroke(); ctx.translate(0,bob); ctx.fillStyle=vgrad(-22,4,[[0,'#ff8a9a'],[1,'#d9465e']]); ctx.beginPath(); ctx.moveTo(0,4); ctx.bezierCurveTo(-22,-8,-14,-28,0,-16); ctx.bezierCurveTo(14,-28,22,-8,0,4); ctx.fill(); ell(-6,-15,3,4,'rgba(255,255,255,.55)',-.5); }
-  else if(id==='estrela'){ glow(0,0,26,'#ffd860',.4); ctx.rotate(Math.sin(G*1.5)*.15); ctx.fillStyle=vgrad(-16,16,[[0,'#ffe68a'],[1,'#e8a830']]); ctx.beginPath(); for(let i=0;i<10;i++){ const r=i%2?7:17, a=-Math.PI/2+i*Math.PI/5; ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r); } ctx.closePath(); ctx.fill(); }
-  else if(id==='borboleta'){ const f=Math.abs(Math.sin(G*9)); ctx.save(); ctx.scale(.35+.65*f,1); ell(-8,-5,9,8,'#b99be8'); ell(8,-5,9,8,'#b99be8'); ell(-6,6,6,6,'#f2a6c8'); ell(6,6,6,6,'#f2a6c8'); ell(-8,-5,3,3,'#fff6'); ell(8,-5,3,3,'#fff6'); ctx.restore(); ell(0,0,2,9,'#4a3a5a'); ctx.strokeStyle='#4a3a5a'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-4,-14); ctx.moveTo(0,-8); ctx.lineTo(4,-14); ctx.stroke(); }
-  else if(id==='sol'){ ctx.save(); ctx.rotate(G*.3); ctx.strokeStyle='#f6c33a'; ctx.lineWidth=4; ctx.lineCap='round'; for(let i=0;i<10;i++){ const a=i/10*Math.PI*2; ctx.beginPath(); ctx.moveTo(Math.cos(a)*19,Math.sin(a)*19); ctx.lineTo(Math.cos(a)*25,Math.sin(a)*25); ctx.stroke(); } ctx.restore();
-    shade(0,0,15,15,'#ffe27a','#f2b134'); ell(-5,-3,1.8,2.2,'#7a4a28'); ell(5,-3,1.8,2.2,'#7a4a28'); ell(-9,3,3,2,'rgba(240,120,100,.5)'); ell(9,3,3,2,'rgba(240,120,100,.5)'); ctx.strokeStyle='#7a4a28'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.arc(0,2,5,.3,Math.PI-.3); ctx.stroke(); }
-  else if(id==='concha'){ ctx.fillStyle=vgrad(-14,8,[[0,'#ffd8c8'],[1,'#e89a84']]); ctx.beginPath(); ctx.moveTo(0,8); for(let i=0;i<=8;i++){ const a=Math.PI+i*Math.PI/8; ctx.quadraticCurveTo(Math.cos(a-.2)*20,Math.sin(a-.2)*20-2,Math.cos(a)*17,Math.sin(a)*17-2); } ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='rgba(180,100,80,.6)'; ctx.lineWidth=1.3; for(let i=1;i<8;i++){ const a=Math.PI+i*Math.PI/8; ctx.beginPath(); ctx.moveTo(0,6); ctx.lineTo(Math.cos(a)*15,Math.sin(a)*15-2); ctx.stroke(); } ell(0,8,5,3,'#e89a84'); }
-  ctx.restore(); }
+<section><div class="wrap regras">
+  <div class="rot">Regras para a idade</div>
+  <h2>Feito para quem tem 3 a 7 anos</h2>
+  <ul>
+    <li><b>Botões grandes</b> (pelo menos do tamanho de um dedinho) e com desenho, não só palavra.</li>
+    <li><b>Letras redondas e grandes</b> (Baloo 2), poucas palavras por tela.</li>
+    <li><b>A Lili guia</b>: ela aponta o próximo passo, então a criança não precisa ler.</li>
+    <li><b>Cores com sentido</b>: laranja = assistir, amarelo = jogar, verde = acertou.</li>
+    <li><b>Sem sustos</b>: nada de vermelho de erro; quando erra, a Lili diz "quase! tenta de novo".</li>
+  </ul>
+</div></section>
 
-const ANIMAIS=['ovelha','leao','elefante','girafa','pomba','coelho'];
-function portrait(id,size,bg){ const dpr=Math.min(devicePixelRatio||1,2); const c=document.createElement('canvas'); c.width=c.height=Math.round(size*dpr); c.style.width=c.style.height=size+'px';
-  ctx=c.getContext('2d'); ctx.scale(dpr,dpr);
-  const g=ctx.createRadialGradient(size/2,size*.4,size*.1,size/2,size/2,size*.7); g.addColorStop(0,bg?bg[0]:'#fff8e8'); g.addColorStop(1,bg?bg[1]:'#f0dcb8'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(size/2,size/2,size/2,0,7); ctx.fill();
-  ctx.save(); ctx.beginPath(); ctx.arc(size/2,size/2,size/2-1,0,7); ctx.clip();
-  if(id==='arca'){ ctx.translate(size/2,size*.78); const k=size/330; ctx.scale(k,k); ark(0,0,1,{lit:.6,ramp:1,doorLit:.6}); }
-  else if(ANIMAIS.includes(id)){ ctx.translate(size/2,size*(id==='girafa'?.92:.8)); const k=size/(id==='girafa'?120:(id==='elefante'?90:72)); ctx.scale(k,k); animal(id,id==='pomba'?-4:0,id==='pomba'?-20:0,id==='pomba'?1.8:1,1,0); }
-  else { const C=CAST[id]; const k=size/(118*C.s); ctx.translate(size/2,size*1.02); ctx.scale(k,k); person(id,0,0,{pose:'stand',dir:1}); }
-  ctx.restore(); ctx.strokeStyle='rgba(120,90,50,.35)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(size/2,size/2,size/2-1,0,7); ctx.stroke(); return c; }
-
-/* ===== VITRINE: mini-cenas em loop para os cartões (parecem o jogo sendo jogado) =====
-   Cada cena desenha num espaço lógico de 320×200. t = segundos desde o início. */
-const VW=320, VH=200;
-function vSky(c1,c2){ ctx.fillStyle=vgrad(0,VH,[[0,c1],[1,c2]]); ctx.fillRect(0,0,VW,VH); }
-function vGround(y,c1,c2){ ctx.fillStyle=vgrad(y,VH,[[0,c1],[1,c2]]); ctx.fillRect(0,y,VW,VH-y); }
-function vHills(y,c){ ell(70,y+34,160,50,c); ell(270,y+40,170,46,mix(c,'#000000',.08)); }
-function vCloud(x,y,s,a){ ctx.save(); ctx.globalAlpha=a==null?.9:a; ell(x,y,18*s,10*s,'#ffffff'); ell(x+14*s,y-5*s,14*s,11*s,'#ffffff'); ell(x-14*s,y-2*s,12*s,8*s,'#ffffff'); ctx.restore(); }
-function vStar4(x,y,r,a){ ctx.save(); ctx.globalAlpha=a; ctx.fillStyle='#fff6c8'; ctx.beginPath(); ctx.moveTo(x,y-r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.quadraticCurveTo(x,y,x,y+r); ctx.quadraticCurveTo(x,y,x-r,y); ctx.quadraticCurveTo(x,y,x,y-r); ctx.fill(); ctx.restore(); }
-// dedo/toque: círculo branco com anel que pulsa quando "aperta"
-function vTouch(x,y,press){ ctx.save(); if(press>0){ ctx.strokeStyle=`rgba(255,255,255,${.7*(1-press)})`; ctx.lineWidth=2.5; ctx.beginPath(); ctx.arc(x,y,9+press*14,0,7); ctx.stroke(); }
-  softShadow(x+2,y+4,14,.35); ell(x,y,9,9,'rgba(255,255,255,.92)'); ell(x,y,9,9,'rgba(0,0,0,0)'); ctx.strokeStyle='rgba(60,40,30,.35)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y,9,0,7); ctx.stroke(); ctx.restore(); }
-let VCLEAN=false;
-function vChip(txt,x,y,right){ if(VCLEAN) return; ctx.save(); ctx.font='800 11px Nunito,system-ui,sans-serif'; const w=ctx.measureText(txt).width+16; const X=right? x-w : x;
-  ctx.fillStyle='rgba(255,252,242,.92)'; rr(X,y,w,20,10); ctx.fill(); ctx.fillStyle='#33261f'; ctx.textBaseline='middle'; ctx.fillText(txt,X+8,y+10.5); ctx.restore(); }
-function vPop(txt,x,y,k){ if(VCLEAN||k<=0||k>=1) return; ctx.save(); ctx.globalAlpha=Math.min(1,(1-k)*2); ctx.font='800 15px Nunito,system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#ffd860'; ctx.strokeStyle='rgba(80,50,10,.6)'; ctx.lineWidth=3; ctx.strokeText(txt,x,y-k*22); ctx.fillText(txt,x,y-k*22); ctx.restore(); }
-function vFish(x,y,s,c,dir){ ctx.save(); ctx.translate(x,y); ctx.scale((dir||1)*s,s); const w=Math.sin(G*8)*.25; ctx.fillStyle=c; ctx.beginPath(); ctx.moveTo(-10,0); ctx.lineTo(-18,-7+w*8); ctx.lineTo(-18,7+w*8); ctx.closePath(); ctx.fill(); shade(0,0,12,7,mix(c,'#ffffff',.35),c); ell(6,-2,1.6,1.6,'#22202a'); ctx.restore(); }
-function vBird(x,y,s){ const f=Math.sin(G*12)*5; ctx.save(); ctx.translate(x,y); ctx.scale(s,s); ctx.strokeStyle='#3a3550'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(-8,-f*.6); ctx.quadraticCurveTo(-4,-4,0,0); ctx.quadraticCurveTo(4,-4,8,-f*.6); ctx.stroke(); ctx.restore(); }
-function vBoat(rock){ ctx.save(); ctx.rotate(rock); ctx.fillStyle=vgrad(-20,6,[[0,'#b97c47'],[1,'#6e4224']]); ctx.beginPath(); ctx.moveTo(-58,-18); ctx.lineTo(58,-18); ctx.quadraticCurveTo(50,6,30,8); ctx.lineTo(-30,8); ctx.quadraticCurveTo(-50,6,-58,-18); ctx.fill();
-  ctx.strokeStyle='rgba(60,30,12,.45)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(-54,-10); ctx.lineTo(54,-10); ctx.stroke(); ctx.strokeStyle='#6e4224'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(-26,-18); ctx.lineTo(-26,-86); ctx.stroke(); ctx.restore(); }
-const ease2=t=>t<0?0:t>1?1:t*t*(3-2*t);
-
-const SCENES={
-  // A Criação — arrastar cada criação para o céu ou para o mar
-  criacao(t){ const L=7.5, u=t%L; vSky('#8cc8ef','#e7f4f6'); ctx.fillStyle=vgrad(112,VH,[[0,'#4fa2cf'],[1,'#1f5f8e']]); ctx.fillRect(0,112,VW,VH);
-    ctx.save(); ctx.globalAlpha=.35; ctx.fillStyle='#ffffff'; for(let i=0;i<6;i++){ const x=(i*70+G*14)%380-30; ctx.fillRect(x,114+Math.sin(G*2+i)*2,26,2); } ctx.restore();
-    glow(262,40,60,'#fff3b0',.6); ell(262,40,16,16,'#ffe27a'); vCloud(70,38,1,.95); vCloud(200,24,.7,.8);
-    const items=[['pomba',[160,96],[90,64]],['peixe',[160,96],[236,150]],['tartaruga',[160,96],[110,160]]];
-    let done=0; for(let i=0;i<3;i++){ const s=i*2.1+.4, e=s+1.5; const [kind,a,b]=items[i];
-      if(u>=e){ done++; const p=b; if(kind==='pomba') animal('pomba',p[0]+Math.sin(G*1.5)*14,p[1]+Math.sin(G*3)*4,1.1,1,0); else if(kind==='peixe') vFish(p[0]+Math.sin(G*1.2)*16,p[1],1.1,'#f2a65e',Math.cos(G*1.2)>0?1:-1); else { ctx.save(); ctx.globalAlpha=.95; animal('tartaruga',p[0]+Math.sin(G*.8)*8,p[1],.7,1,0); ctx.restore(); } vPop('+1',b[0],b[1]-24,(u-e)/1.1); } }
-    // peça na mão
-    for(let i=0;i<3;i++){ const s=i*2.1+.4, e=s+1.5; if(u<s-.4||u>=e) continue; const [kind,a,b]=items[i]; const k=ease2((u-s-.25)/1.1); const x=lerp(a[0],b[0],k), y=lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*18;
-      ctx.save(); ctx.fillStyle='rgba(255,250,235,.95)'; rr(x-22,y-20,44,40,12); ctx.fill(); ctx.restore();
-      if(kind==='pomba') animal('pomba',x-2,y+6,1,1,0); else if(kind==='peixe') vFish(x,y,1,'#f2a65e',1); else animal('tartaruga',x-2,y+12,.55,1,0);
-      const tx=u<s+.25? lerp(160,x+10,ease2((u-s+.4)/.65)) : x+10, ty=u<s+.25? lerp(190,y+12,ease2((u-s+.4)/.65)) : y+12; vTouch(tx,ty,u>s+.15&&u<s+.5?(u-s-.15)/.35:0); }
-    vChip('☁️ Céu ou mar? · '+done+'/3',8,8); },
-
-  // Noé — os animais entram na arca, de dois em dois, antes da chuva
-  noe(t){ const rainA=.5+.5*Math.sin(t*.4); vSky(mix('#9cc4e4','#6f7f9a',rainA*.6),'#e4eef0'); vCloud(60,30,1.2,.9); vCloud(150,20,1,.8); vCloud(250,34,1.3,.85); vHills(118,'#a9cf86'); vGround(150,'#8fbf6a','#6aa653');
-    ctx.save(); ctx.translate(250,160); ctx.scale(.36,.36); ark(0,0,1,{lit:.55,ramp:1,doorLit:.6}); ctx.restore();
-    const kinds=['ovelha','ovelha','coelho','coelho','elefante','elefante','girafa','girafa','leao','leao']; let inside=0;
-    for(let i=0;i<kinds.length;i++){ const x=((t*34+(kinds.length-i)*36)%400)-60; if(x>232){ inside++; continue; } const y=172+(i%2)*6, a=x>205? 1-(x-205)/27:1; if(x<-40) continue;
-      ctx.save(); ctx.globalAlpha=a; animal(kinds[i],x,y,kinds[i]==='elefante'||kinds[i]==='girafa'?.5:.62,1,i*.4); ctx.restore(); }
-    person('noe',196,174,{pose:'point',s:.34,dir:-1});
-    ctx.save(); ctx.globalAlpha=rainA*.6; rain(1,.2); ctx.restore();
-    vChip('🐾 Todos a salvo! · '+(4+Math.floor(t*1.7)%5)+'/8',8,8); },
-
-  // Davi — gira a funda e acerta o gigante
-  davi(t){ const L=3.6, u=t%L; vSky('#f5d9a4','#f8eedc'); vHills(110,'#d8c08a'); vGround(156,'#cdb47a','#a88a52'); glow(70,40,50,'#fff0c0',.5);
-    const gx=252, gy=176; let fall=0; if(u>2.35) fall=Math.sin(Math.min(1,(u-2.35)/.5)*Math.PI*.5)*.35*(u<3.2?1:1-(u-3.2)/.4);
-    person('davi',70,178,{pose:'sling',fast:u>1.2&&u<1.95,s:.5,dir:1});
-    ctx.save(); ctx.translate(gx,gy); ctx.rotate(fall); person('golias',0,0,{pose:'spear',s:.4,dir:-1}); ctx.restore();
-    if(u>1.95&&u<2.4){ const k=(u-1.95)/.45; const x=lerp(86,gx-4,k), y=lerp(120,96,k)-Math.sin(k*Math.PI)*30; ell(x,y,3.4,3,'#7a6a5a'); ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x-10,y+2); ctx.lineTo(x-2,y); ctx.stroke(); }
-    if(u>2.35&&u<2.7){ glow(gx-2,96,30,'#ffffff',.8*(1-(u-2.35)/.35)); }
-    vPop('+⭐',gx-10,80,(u-2.4)/1.1); vChip('🎯 Funda de Davi · '+(u>2.4?3:2)+'/3',8,8); },
-
-  // Jonas — nadando no fundo do mar, pegando conchinhas
-  jonas(t){ vSky('#4aa0cc','#0f3e66'); ctx.save(); ctx.globalAlpha=.18; ctx.fillStyle='#ffffff'; for(let i=0;i<4;i++){ ctx.beginPath(); const x=40+i*80+Math.sin(G*.5+i)*10; ctx.moveTo(x,0); ctx.lineTo(x+30,0); ctx.lineTo(x+60,VH); ctx.lineTo(x+10,VH); ctx.fill(); } ctx.restore();
-    ctx.save(); ctx.globalAlpha=.35; ctx.fillStyle='#0a2a4a'; ctx.beginPath(); const wx=((t*22)%520)-120; ctx.ellipse(wx,70,90,30,0,0,7); ctx.fill(); ctx.beginPath(); ctx.moveTo(wx-80,70); ctx.lineTo(wx-120,50); ctx.lineTo(wx-118,92); ctx.fill(); ctx.restore();
-    vGround(180,'#d8c08a','#b89a62'); for(let i=0;i<7;i++){ const x=i*50+10; ctx.strokeStyle='#3f8a5a'; ctx.lineWidth=4; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x,186); ctx.quadraticCurveTo(x+Math.sin(G*1.6+i)*8,166,x+Math.sin(G*1.6+i)*12,150); ctx.stroke(); }
-    let got=0; for(let i=0;i<6;i++){ const x=((i*64-t*48)%384+384)%384-30, y=60+((i*53)%90); if(x<92&&x>70){ got=1; continue; } ell(x,y,6,5,'#ffe0d0'); ell(x-1.5,y-1.5,2,1.6,'#ffffff'); }
-    const jy=110+Math.sin(t*1.6)*36; ctx.save(); ctx.translate(86,jy); ctx.rotate(Math.PI/2.15+Math.sin(t*3)*.05); person('jonas',0,40,{pose:'armsup',s:.34,dir:1}); ctx.restore();
-    for(let i=0;i<8;i++){ const y=((VH-(t*30+i*37))%VH+VH)%VH, x=60+i*30+Math.sin(G*2+i)*4; ctx.strokeStyle='rgba(255,255,255,.55)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.arc(x,y,2+(i%3),0,7); ctx.stroke(); }
-    vFish(((t*40)%400)-40,40,.8,'#ffd27a',1); vFish(360-((t*30)%420),150,.7,'#f2a6c8',-1);
-    vChip('🐚 Nade, Jonas! · '+(12+Math.floor(t*1.3)%9),8,8); },
-
-  // Natal — a estrela guia os magos até Belém
-  natal(t){ vSky('#121a48','#4a4a8a'); for(let i=0;i<34;i++){ const x=(i*97)%VW, y=(i*53)%110; vStar4(x,y,1.5+(i%3),.4+.4*Math.sin(G*2+i)); }
-    const sx=150+Math.sin(t*.4)*60, sy=38; glow(sx,sy,60,'#fff3b0',.55); vStar4(sx,sy,12,1); ctx.strokeStyle='rgba(255,243,176,.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(262,120); ctx.stroke();
-    ell(90,190,200,70,'#2c3266'); ell(280,196,160,60,'#252a58'); vGround(176,'#3a3a6a','#2a2a50');
-    ctx.save(); ctx.translate(262,160); ctx.fillStyle='#7a4a2a'; ctx.beginPath(); ctx.moveTo(-40,-34); ctx.lineTo(0,-58); ctx.lineTo(40,-34); ctx.closePath(); ctx.fill(); ctx.fillStyle='#5a3a22'; ctx.fillRect(-34,-34,68,40); glow(0,-14,46,'#ffc870',.55); ctx.fillStyle='#ffcf80'; rr(-26,-28,52,32,6); ctx.fill(); ctx.restore();
-    person('maria',248,182,{pose:'kneel',s:.28,dir:1}); person('jose',280,182,{pose:'stand',s:.3,dir:-1});
-    const mx=((t*22)%240)-50; ['mago1','mago2','mago3'].forEach((m,i)=>{ const x=mx-i*30; if(x>-30&&x<205) person(m,x,184,{pose:'walk',s:.3,dir:1,ph:i}); });
-    vChip('⭐ Siga a estrela!',8,8); },
-
-  // Tempestade — deslize o dedo para acalmar o mar
-  tempestade(t){ const L=7, u=t%L; const calm=u<3.2?0:Math.min(1,(u-3.2)/1.4)*(u<6.4?1:1-(u-6.4)/.6);
-    vSky(mix('#3a4660','#8cc8ef',calm),mix('#6a7690','#e7f4f6',calm)); if(calm<.6){ ctx.save(); ctx.globalAlpha=(1-calm)*.9; vCloud(60,30,1.6,.7); vCloud(200,24,1.8,.65); vCloud(290,40,1.3,.7); ctx.restore(); }
-    if(u>1&&u<1.12) { ctx.fillStyle='rgba(255,255,255,.5)'; ctx.fillRect(0,0,VW,VH); }
-    const amp=lerp(14,2.5,calm); ctx.save(); waves(130,amp,'#4a7aa0','#2a4a70',2.4,false); ctx.restore();
-    const bob=Math.sin(G*2.4)*amp*.5, rock=Math.sin(G*2.1)*lerp(.18,.03,calm);
-    ctx.save(); ctx.translate(160,140+bob); ctx.save(); ctx.rotate(rock); person('pedro',-30,-14,{pose:calm>.5?'stand':'pray',s:.3,dir:1}); person('jesus',14,-16,{pose:u>2.6?'armsup':'sleep',s:.32,dir:-1}); ctx.restore(); vBoat(rock); ctx.restore();
-    ctx.save(); waves(154,amp*.8,'#5a8ab0','#2a4a70',3,true); ctx.restore();
-    if(calm<.4){ ctx.save(); ctx.globalAlpha=.5*(1-calm); rain(1,.4); ctx.restore(); }
-    if(u>2.6&&u<3.6){ const k=ease2((u-2.6)/.9); const x=lerp(40,280,k), y=150+Math.sin(k*Math.PI*2)*8; ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(lerp(40,280,Math.max(0,k-.25)),150); ctx.lineTo(x,y); ctx.stroke(); vTouch(x,y,0); }
-    if(calm>.9) vPop('Silêncio, mar!',160,70,(u-4.6)/1.6);
-    vChip(calm>.5?'🌤️ O mar se acalmou':'🌊 Deslize para acalmar',8,8); },
-
-  // Jogo da memória — cartas virando
-  memoria(t){ vSky('#f4e6c8','#ead6ae'); const ids=['noe','leao','davi','pomba']; const P=VITRINE_PORTRAITS; const deck=[0,1,2,3,1,0,3,2]; const L=8, u=t%L;
-    const order=[[0,5],[1,4],[2,7],[3,6]]; const shown=new Set(); let flipping=null;
-    order.forEach((pr,i)=>{ const s=.6+i*1.6; if(u>s+1.1) pr.forEach(c=>shown.add(c)); else if(u>s){ flipping={pr,k:(u-s)/1.1}; } });
-    for(let c=0;c<8;c++){ const col=c%4, row=Math.floor(c/4), x=44+col*72, y=48+row*88; let sc=1, up=shown.has(c);
-      if(flipping && flipping.pr.includes(c)){ const k=flipping.k, half=flipping.pr.indexOf(c)===0? Math.min(1,k*2.2) : Math.max(0,(k-.35)*2.2); sc=Math.abs(Math.cos(Math.min(1,half)*Math.PI)); up=half>.5; }
-      ctx.save(); ctx.translate(x,y); ctx.scale(Math.max(.04,sc),1); softShadow(0,38,30,.25); if(up){ ctx.fillStyle='#fffaf0'; rr(-28,-36,56,72,9); ctx.fill(); if(shown.has(c)){ ctx.strokeStyle='#5f9a4c'; ctx.lineWidth=3; rr(-28,-36,56,72,9); ctx.stroke(); } const im=P[ids[deck[c]]]; if(im) ctx.drawImage(im,-22,-24,44,44); }
-      else { ctx.fillStyle=vgrad(-36,36,[[0,'#f0cf8a'],[1,'#c98a3a']]); rr(-28,-36,56,72,9); ctx.fill(); ctx.strokeStyle='rgba(255,250,235,.8)'; ctx.lineWidth=1.5; rr(-23,-31,46,62,6); ctx.stroke(); vStar4(0,0,8,.95); } ctx.restore(); }
-    if(flipping){ const c=flipping.k<.5? flipping.pr[0] : flipping.pr[1]; const x=44+(c%4)*72+12, y=48+Math.floor(c/4)*88+20; vTouch(x,y,(flipping.k%.5)*2); }
-    vChip('🃏 Pares: '+shown.size/2+'/4',8,8); },
-
-  // Caça-palavras — a palavra vai sendo marcada
-  cacapalavras(t){ vSky('#fffaf0','#f3e6cc'); const G1=['QARCAZBL','NOEXTPFE','UPOMBAHR','DAVIKLUZ','MESTRELA']; const L=8, u=t%L;
-    const words=[[0,1,4,'#f6c33a'],[2,1,5,'#8fc4e8'],[3,0,4,'#b9df92'],[4,1,7,'#f2a6c8']]; const cw=34, ch=30, ox=24, oy=34;
-    words.forEach(([r,c0,len,col],i)=>{ const s=.4+i*1.8; if(u<s) return; const k=Math.min(1,(u-s)/1); ctx.fillStyle=rgba(col,.75); rr(ox+c0*cw+3,oy+r*ch+3,(len*cw-6)*k+ (k<1?0:0),ch-6,12); ctx.fill();
-      if(k<1){ vTouch(ox+c0*cw+(len*cw)*k,oy+r*ch+ch/2+6,0); } else vPop('✓',ox+(c0+len)*cw,oy+r*ch+10,(u-s-1)/.9); });
-    ctx.font='800 17px Nunito,system-ui,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#33261f';
-    G1.forEach((row,r)=>[...row].forEach((ch2,c)=>ctx.fillText(ch2,ox+c*cw+cw/2,oy+r*ch+ch/2+1)));
-    vChip('🔤 Ache: ARCA · POMBA · DAVI · ESTRELA',8,6); },
-
-  // Quiz — toca na resposta certa
-  quiz(t){ vSky('#2a3270','#1b2152'); for(let i=0;i<20;i++) vStar4((i*67)%VW,(i*41)%VH,1.4,.3+.3*Math.sin(G*2+i));
-    const Q=[['Quem construiu a arca?',['Davi','Noé','Jonas','Pedro'],1],['Quem venceu o gigante?',['Davi','Saul','José','Adão'],0],['Onde Jonas ficou 3 dias?',['Na arca','No barco','No peixe','Na cova'],2]];
-    const L=3.2, qi=Math.floor(t/L)%3, u=t%L, [q,opts,ok]=Q[qi];
-    ctx.font='800 16px Fraunces,Georgia,serif'; ctx.textAlign='center'; ctx.fillStyle='#fff6e0'; ctx.fillText(q,160,40);
-    opts.forEach((o,i)=>{ const x=20+(i%2)*144, y=62+Math.floor(i/2)*58; let bg='rgba(255,250,235,.95)', fg='#33261f'; if(i===ok&&u>1.5){ bg='#6aa653'; fg='#ffffff'; }
-      ctx.fillStyle=bg; rr(x,y,136,46,14); ctx.fill(); ctx.fillStyle=fg; ctx.font='800 14px Nunito,system-ui,sans-serif'; ctx.textBaseline='middle'; ctx.fillText(['A','B','C','D'][i]+'  '+o,x+68,y+24); });
-    const bx=20+(ok%2)*144+100, by=62+Math.floor(ok/2)*58+30; const tx=lerp(160,bx,ease2(u/1.2)), ty=lerp(196,by,ease2(u/1.2)); vTouch(tx,ty,u>1.2&&u<1.7?(u-1.2)/.5:0);
-    vPop('Certo! ⭐',160,186,(u-1.6)/1.4); ctx.textBaseline='alphabetic'; },
-
-  // Minha Arca — os amigos comprados com moedinhas
-  arca(t){ vSky('#9fd0ee','#fdf2da'); ctx.save(); ctx.translate(160,108); ctx.scale(.55,.55); decor('arcoiris',0,-60,3); ctx.restore(); vHills(120,'#a9cf86'); vGround(150,'#8fbf6a','#6aa653');
-    ctx.save(); ctx.translate(160,158); ctx.scale(.34,.34); ark(0,0,1,{lit:.5,ramp:1,doorLit:.4}); ctx.restore();
-    const list=[['ovelha',60],['leao',100],['zebra',214],['pavao',262],['coelho',130],['urso',188]]; const n=2+Math.floor(t/1.6)%5;
-    list.slice(0,n).forEach(([id,x],i)=>animal(id,x,178+(i%2)*4,.52,x>160?-1:1,i));
-    decor('sol',36,34,.7); decor('borboleta',230+Math.sin(G*.8)*30,70+Math.sin(G*1.5)*10,.6);
-    vChip('🪙 '+(30+n*7)+' moedinhas',8,8); vChip('🚢 '+n+' amigos',312,8,true); },
-};
-// figurinhas desenhadas uma vez para o jogo da memória
-const VITRINE_PORTRAITS={};
-function vitrinePrep(){ for(const id of ['noe','leao','davi','pomba']) VITRINE_PORTRAITS[id]=portrait(id,88,['#fffaf0','#f3e2c0']); }
-
-/* motor: um único laço anima só os cartões visíveis (≈30 quadros/s) */
-const VIT=[]; let vitStill=false;
-try{ vitStill=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
-function vitrine(canvas,scene,opt){ const v={c:canvas,x:canvas.getContext('2d'),scene,vis:false,t0:(opt&&opt.offset)||Math.random()*3,cover:!!(opt&&opt.cover),clean:!!(opt&&opt.clean)}; VIT.push(v);
-  if('IntersectionObserver' in window){ new IntersectionObserver(es=>es.forEach(e=>v.vis=e.isIntersecting),{rootMargin:'80px'}).observe(canvas); } else v.vis=true;
-  vitDraw(v,vitStill?2.2:0); return v; }
-function vitDraw(v,t){ const r=v.c.getBoundingClientRect(); if(!r.width) return; const dpr=Math.min(devicePixelRatio||1,1.6), w=Math.round(r.width*dpr), h=Math.round(r.height*dpr);
-  if(v.c.width!==w||v.c.height!==h){ v.c.width=w; v.c.height=h; } ctx=v.x; ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,w,h);
-  const k=Math.max(w/VW,h/VH); ctx.setTransform(k,0,0,k,(w-VW*k)/2,(h-VH*k)/2); VCLEAN=v.clean; ctx.save(); try{ SCENES[v.scene](t+v.t0); }catch(e){} ctx.restore(); VCLEAN=false; }
-let vitLast=0;
-function vitLoop(ts){ requestAnimationFrame(vitLoop); if(vitStill || ts-vitLast<32) return; vitLast=ts; G=ts/1000; for(const v of VIT) if(v.vis) vitDraw(v,G); }
-
-const C=[['noe','Noé'],['davi','Davi'],['golias','Golias'],['jonas','Jonas'],['adao','Adão'],['eva','Eva'],['maria','Maria'],['jose','José'],['anjo','Anjo'],['jesus','Jesus'],['pedro','Pedro'],['ovelha','Ovelha'],['leao','Leão'],['pomba','Pomba']];
-const cast=document.getElementById('cast');
-for(const [id,n] of C){ const f=document.createElement('figure'); f.appendChild(portrait(id,96)); const cap=document.createElement('figcaption'); cap.textContent=n; f.appendChild(cap); cast.appendChild(f); }
-vitrine(document.getElementById('postC'),'tempestade',{offset:4.8,clean:true}); requestAnimationFrame(vitLoop);
-</script>
+<footer>Biblinha Play · identidade visual · <a href="index.html">voltar para a estante</a></footer>
+</body>
+</html>

@@ -5,13 +5,13 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<meta name="theme-color" content="#1d2150">
+<meta name="theme-color" content="#4FB8EE">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Bíblia Play">
-<title>Bíblia Play</title>
+<meta name="apple-mobile-web-app-title" content="Biblinha Play">
+<title>Biblinha Play</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,600&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
 <script src="conta-config.js"></script><script src="conta.js"></script>
 <style>
 /* Layout: "noite de histórias" — barra fixa com a marca; palco noturno (filme em destaque rodando ao vivo);
@@ -141,6 +141,68 @@ footer nav{display:flex;gap:16px;flex-wrap:wrap}
 .stage .copy>*{animation:rise .6s both} .stage .copy>*:nth-child(2){animation-delay:.06s} .stage .copy>*:nth-child(3){animation-delay:.12s} .stage .copy>*:nth-child(4){animation-delay:.18s}
 @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
 </style>
+<style>
+/* ===== Tema Biblinha Play (proposta 1: dia ensolarado, 3 a 7 anos) — por cima do tema antigo ===== */
+:root{
+  --noite:#2B3A55; --noite2:#3A4C6E; --noite3:#22304A;
+  --estrela:#FFC93C; --estrela2:#FFD966; --ouro:#FF8A3D;
+  --papel:#FFFDF6; --papel2:#F4EEDC; --cartao:#FFFFFF;
+  --tinta:#2B3A55; --tinta2:#5B6A86;
+  --oliveira:#62BD45; --ceu:#4FB8EE; --coral:#FF8A3D; --sol:#FFC93C; --grama:#62BD45; --laranja:#FF8A3D;
+  --display:'Baloo 2', Nunito, system-ui, sans-serif;
+}
+body::before{background:#BDE9FF}
+.bar{background:rgba(255,253,246,.94);color:var(--tinta);box-shadow:0 2px 0 #E8F3FA}
+.pill{background:#fff;color:var(--tinta);box-shadow:0 3px 0 #D8E9F3,inset 0 0 0 1.5px #E3EEF5}
+.pill:hover{background:#F3FAFF}
+.gift .dot{box-shadow:0 0 0 2px #fff}
+.av{background:var(--sol);box-shadow:0 3px 0 #E0A21B}
+.word{font:800 26px/1 var(--display);color:var(--tinta);letter-spacing:-.01em;display:inline-flex;align-items:center;gap:6px}
+.word b{color:var(--laranja);font-weight:800}
+.word .pl{display:inline-flex;align-items:center;gap:.2em;background:var(--sol);color:var(--tinta);border-radius:999px;padding:.08em .45em .04em .35em;font-size:.68em;box-shadow:0 .1em 0 #E0A21B;transform:rotate(-4deg)}
+.word .pl::before{content:"";border-left:.5em solid var(--tinta);border-top:.3em solid transparent;border-bottom:.3em solid transparent}
+.brand svg{width:44px;height:44px}
+.stage{background:linear-gradient(#BDE9FF,#E9F8FF 75%);color:var(--tinta)}
+.stage::before{content:"";position:absolute;right:5%;top:22px;width:90px;height:90px;border-radius:50%;background:var(--sol);box-shadow:0 0 0 16px #FFC93C33,0 0 0 34px #FFC93C1a;pointer-events:none}
+.stage::after{height:46px;background:var(--grama);border-radius:50% 50% 0 0 / 100% 100% 0 0;left:-4%;right:-4%}
+.twinkle{display:none}
+.stage .in{position:relative;z-index:1;padding-bottom:clamp(64px,8vw,90px)}
+.hello{color:var(--laranja)}
+.idade{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--tinta);border-radius:999px;padding:7px 14px;font:800 15px var(--body);box-shadow:0 3px 0 #CFE6F2;margin-bottom:10px}
+.stage h1{font:800 clamp(38px,6.5vw,66px)/1 var(--display);color:var(--tinta)}
+.stage .ref{font:700 18px var(--body);color:var(--tinta2)}
+.stage p.lesson{color:var(--tinta);font-size:19px}
+.btn{font:800 18px var(--display);padding:12px 24px}
+.btn.play{background:var(--laranja);color:#fff;box-shadow:0 6px 0 #D96A22}
+.btn.play:active{box-shadow:0 3px 0 #D96A22}
+.btn.alt{background:var(--sol);color:var(--tinta);box-shadow:0 6px 0 #E0A21B}
+.screen{border-radius:28px;box-shadow:0 0 0 6px #fff,0 18px 40px #4FB8EE55;background:#cfe9f7}
+.screen .tag{background:rgba(255,255,255,.92);color:var(--tinta)}
+.dots button{background:#2B3A5522}
+.dots button[aria-current="true"]{background:var(--laranja)}
+.quick a{background:#fff;box-shadow:0 4px 0 #E8E1CF,inset 0 0 0 2px #F1EAD8;font:800 15px var(--body)}
+.quick a:hover{box-shadow:0 4px 0 #E8E1CF,inset 0 0 0 2px var(--sol)}
+.rail-h h2{font:800 clamp(26px,3.8vw,34px)/1.1 var(--display)}
+.card{border-radius:28px;box-shadow:0 6px 0 #E8E1CF,0 0 0 2px #F1EAD8}
+.card:hover{box-shadow:0 10px 0 #E8E1CF,0 0 0 2px var(--sol)}
+.thumb .playo{background:var(--laranja);width:50px;height:50px;box-shadow:0 4px 0 #D96A22}
+.thumb .playo svg path{fill:#fff}
+.badge{font:800 11px var(--body);background:var(--laranja)}
+.badge.ok{background:var(--grama)}
+.badge.lock{background:#fff;color:var(--tinta);box-shadow:0 2px 0 #0002}
+.body h3{font:800 23px/1.1 var(--display)}
+.game-line{border-top:2px dashed #E8E1CF}
+.mini{background:var(--sol);color:var(--tinta);box-shadow:0 3px 0 #E0A21B;font:800 15px var(--display)}
+.soon .card{background:#F7F3E8}
+.soon .thumb::after{background:#fff;color:var(--tinta)}
+.family{background:linear-gradient(#DDF3FF,#C8ECFF);color:var(--tinta);border-radius:32px}
+.family h2{font:800 clamp(28px,4.2vw,40px)/1.05 var(--display)}
+.family h2 i{color:var(--laranja);font-style:normal}
+.feat{background:#fff;box-shadow:0 5px 0 #B9DDF0}
+.feat span{color:var(--tinta2)}
+.family .btn.alt{background:#fff;box-shadow:0 5px 0 #B9DDF0}
+.bau-card b{font:800 28px/1.1 var(--display)}
+</style>
 <style>.bp-hello{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 6px;font:800 18px/1.2 Nunito,system-ui,sans-serif;color:#3a2c24}.bp-hello[hidden]{display:none!important}.bp-hello img{width:54px;height:54px;border-radius:50%;flex:none;animation:bpHop 1.2s ease-in-out infinite alternate}@keyframes bpHop{to{transform:translateY(-5px) rotate(-4deg)}}@media (prefers-reduced-motion:reduce){.bp-hello img{animation:none}}</style>
 <script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
   document.querySelectorAll('.bp-hello').forEach(el=>{ const i=el.querySelector('img'); i.src=img; el.querySelector('span').textContent=a.nome? 'Muito bem, '+a.nome+'!' : 'Muito bem!'; el.hidden=false; }); }catch(e){} })();</script>
@@ -155,19 +217,27 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <symbol id="logo" viewBox="0 0 64 64">
-    <defs><linearGradient id="lgN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f8a"/><stop offset="1" stop-color="#1d2150"/></linearGradient>
-    <linearGradient id="lgS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#f0b94a"/></linearGradient></defs>
-    <rect width="64" height="64" rx="16" fill="url(#lgN)"/>
-    <path d="M8 44 C18 38 26 39 32 44 C38 39 46 38 56 44 L56 50 C46 45 38 46 32 51 C26 46 18 45 8 50 Z" fill="#fbf3e3"/>
-    <path d="M32 44 L32 51" stroke="#d8c39a" stroke-width="1.4"/>
-    <path d="M25 15 L44 27 L25 39 Z" fill="url(#lgS)" stroke="#ffe7a6" stroke-width="1.6" stroke-linejoin="round"/>
-    <path d="M49 9 Q49 14 54 14 Q49 14 49 19 Q49 14 44 14 Q49 14 49 9 Z" fill="#fff3c4"/>
+    <rect width="64" height="64" rx="18" fill="#4FB8EE"/>
+    <g transform="translate(-14 -8) scale(.5)">
+      <g stroke="#2B3A55" stroke-width="12" fill="#2B3A55"><circle cx="78" cy="112" r="34"/><circle cx="112" cy="96" r="36"/><circle cx="142" cy="116" r="30"/><circle cx="96" cy="138" r="30"/><circle cx="130" cy="140" r="28"/></g>
+      <g fill="#fff"><circle cx="78" cy="112" r="34"/><circle cx="112" cy="96" r="36"/><circle cx="142" cy="116" r="30"/><circle cx="96" cy="138" r="30"/><circle cx="130" cy="140" r="28"/></g>
+      <ellipse cx="62" cy="92" rx="14" ry="8" transform="rotate(-30 62 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+      <ellipse cx="124" cy="92" rx="14" ry="8" transform="rotate(30 124 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+      <ellipse cx="93" cy="104" rx="30" ry="33" fill="#8A5A44" stroke="#2B3A55" stroke-width="6"/>
+      <g fill="#fff" stroke="#2B3A55" stroke-width="5"><circle cx="80" cy="74" r="12"/><circle cx="106" cy="72" r="13"/><circle cx="93" cy="64" r="13"/></g>
+      <g fill="#fff"><circle cx="80" cy="74" r="9.5"/><circle cx="106" cy="72" r="10.5"/><circle cx="93" cy="65" r="10"/></g>
+      <circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/>
+      <circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/>
+      <ellipse cx="74" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/><ellipse cx="112" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/>
+      <path d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <circle cx="51" cy="13" r="9" fill="#FFC93C"/><path d="M48 8.5 L56 13 L48 17.5Z" fill="#2B3A55"/>
   </symbol>
-  <symbol id="tri" viewBox="0 0 20 20"><path d="M5 3 L17 10 L5 17 Z" fill="#3a2408"/></symbol>
+  <symbol id="tri" viewBox="0 0 20 20"><path d="M5 3 L17 10 L5 17 Z" fill="#fff"/></symbol>
 </defs></svg>
 
 <header class="bar gut"><div class="in">
-  <a class="brand" href="#topo" aria-label="Bíblia Play, início"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Bíblia <i>Play</i></span></a>
+  <a class="brand" href="#topo" aria-label="Biblinha Play, início"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word"><span>Bibli<b>nha</b></span><span class="pl">Play</span></span></a>
   <a class="pill" href="arca.html" aria-label="Minha Arca e moedinhas">🪙 <b id="purse">0</b><span class="lbl"> · Minha Arca</span></a>
   <button class="pill gift" id="bau" aria-label="Baú do dia">🎁<span class="lbl"> Baú do dia</span><span class="dot" id="bauDot"></span></button>
   <a class="pill" id="acct" href="assinar.html" hidden>⭐<span class="lbl"> Assinar</span></a>
@@ -178,6 +248,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
   <div class="twinkle"></div>
   <div class="in">
     <div class="copy">
+      <div class="idade">🧒 Para crianças de 3 a 7 anos</div>
       <div class="hello" id="hello">Filme em destaque</div>
       <h1 id="hTitle">A Criação</h1>
       <div class="ref" id="hRef">Gênesis 1–2 · 2 minutos</div>
@@ -213,7 +284,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
 </div></div>
 
 <footer class="gut"><div class="in">
-  <a class="brand" href="#topo"><svg aria-hidden="true" width="30" height="30"><use href="#logo"/></svg><span class="word" style="font-size:18px">Bíblia <i style="color:var(--ouro)">Play</i></span></a>
+  <a class="brand" href="#topo"><svg aria-hidden="true" width="30" height="30"><use href="#logo"/></svg><span class="word" style="font-size:20px"><span>Bibli<b>nha</b></span><span class="pl">Play</span></span></a>
   <span>Assista, brinque e aprenda.</span>
   <nav><a href="pais.html">Área dos pais</a><a href="marca.html">Identidade visual</a></nav>
 </div></footer>
@@ -221,7 +292,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
 <div class="bau-ov" id="bauOv" hidden><div class="bau-card" role="dialog" aria-modal="true" aria-labelledby="bauT"><b id="bauT">Baú do dia!</b><button class="chest" id="chest" aria-label="Abrir o baú">🧰</button><p id="bauMsg">Toque no baú para abrir</p><button class="btn play" id="bauOk" hidden>Oba! 🎉</button></div></div>
 
 <script>
-/* arte.js — o mesmo desenho dos personagens dos filmes do Bíblia Play */
+/* arte.js — o mesmo desenho dos personagens dos filmes do Biblinha Play */
 let ctx=null; let G=0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
 const ss=(a,b,x)=>{ const t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };

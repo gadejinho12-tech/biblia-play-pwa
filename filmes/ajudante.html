@@ -66,6 +66,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-
 .sw button:focus-visible,.chips button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 input{width:100%;border:2px solid rgba(120,90,50,.25);border-radius:12px;padding:12px 14px;font:800 18px var(--body);background:#fffdf7;color:var(--ink);-webkit-user-select:text;user-select:text}
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"><link rel="stylesheet" href="tema-biblinha.css"><script src="biblinha.js" defer></script>
 <canvas id="confetti"></canvas>
 <div class="wrap">
   <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Crie seu Ajudante</h1><span style="width:96px"></span></div>
@@ -83,7 +84,7 @@ input{width:100%;border:2px solid rgba(120,90,50,.25);border-radius:12px;padding
 </div>
 <script>
 const REC={};
-/* arte.js — o mesmo desenho dos personagens dos filmes do Bíblia Play */
+/* arte.js — o mesmo desenho dos personagens dos filmes do Biblinha Play */
 let ctx=null; let G=0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
 const ss=(a,b,x)=>{ const t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
