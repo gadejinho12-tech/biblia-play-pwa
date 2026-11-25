@@ -59,7 +59,7 @@ R('🎮 Jogar a Corrida para a Arca','🎮 Jogar Encha o Mundo de Vida')
 R("""    <h3>O que aprendemos com Noé</h3>
     <ul>
       <li><span class="ic">🙏</span><div><b>Obedecer</b>Noé fez tudo o que Deus pediu, mesmo sem entender tudo.</div></li>
-      <li><span class="ic">🔨</span><div><b>Perseverar</b>Riram dele, mas ele não desistiu: terminou o que começou.</div></li>
+      <li><span class="ic">🔨</span><div><b>Perseverar</b>Noé permaneceu obediente a Deus e construiu a arca, mesmo vivendo em uma geração corrompida.</div></li>
       <li><span class="ic">🌈</span><div><b>Confiar</b>Deus cuidou de Noé na tempestade e cumpre as suas promessas.</div></li>
     </ul>
     <div class="verse"><q>Pela fé, Noé construiu a arca.</q><span>Hebreus 11:7</span></div>
@@ -67,8 +67,8 @@ R("""    <h3>O que aprendemos com Noé</h3>
 """    <h3>O que aprendemos com a Criação</h3>
     <ul>
       <li><span class="ic">🌍</span><div><b>Deus é o Criador</b>O céu, o mar, os animais e as estrelas: tudo foi feito por Ele.</div></li>
-      <li><span class="ic">💛</span><div><b>Você é especial</b>Deus fez as pessoas parecidas com Ele, para serem seus amigos.</div></li>
-      <li><span class="ic">🌱</span><div><b>Cuidar do mundo</b>Deus nos deu a natureza de presente, e pediu para cuidarmos bem dela.</div></li>
+      <li><span class="ic">💛</span><div><b>Você é especial</b>Deus criou você à Sua imagem e lhe deu um lugar especial em Sua criação.</div></li>
+      <li><span class="ic">🌱</span><div><b>Cuidar do mundo</b>Deus confiou ao ser humano o cuidado com a Terra, os animais e tudo o que Ele criou.</div></li>
     </ul>
     <div class="verse"><q>E viu Deus tudo quanto tinha feito, e eis que era muito bom.</q><span>Gênesis 1:31</span></div>
     <div class="talk"><b>Para conversar em família</b>Qual parte da criação você mais gosta? O que a gente pode fazer para cuidar dela?</div>""")

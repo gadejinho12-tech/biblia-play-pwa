@@ -59,7 +59,7 @@ R('🎮 Jogar a Corrida para a Arca','🎮 Jogar A Estrela de Belém')
 R("""    <h3>O que aprendemos com Noé</h3>
     <ul>
       <li><span class="ic">🙏</span><div><b>Obedecer</b>Noé fez tudo o que Deus pediu, mesmo sem entender tudo.</div></li>
-      <li><span class="ic">🔨</span><div><b>Perseverar</b>Riram dele, mas ele não desistiu: terminou o que começou.</div></li>
+      <li><span class="ic">🔨</span><div><b>Perseverar</b>Noé permaneceu obediente a Deus e construiu a arca, mesmo vivendo em uma geração corrompida.</div></li>
       <li><span class="ic">🌈</span><div><b>Confiar</b>Deus cuidou de Noé na tempestade e cumpre as suas promessas.</div></li>
     </ul>
     <div class="verse"><q>Pela fé, Noé construiu a arca.</q><span>Hebreus 11:7</span></div>

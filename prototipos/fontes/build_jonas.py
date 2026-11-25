@@ -59,7 +59,7 @@ R('🎮 Jogar a Corrida para a Arca','🎮 Jogar Nade, Jonas!')
 R("""    <h3>O que aprendemos com Noé</h3>
     <ul>
       <li><span class="ic">🙏</span><div><b>Obedecer</b>Noé fez tudo o que Deus pediu, mesmo sem entender tudo.</div></li>
-      <li><span class="ic">🔨</span><div><b>Perseverar</b>Riram dele, mas ele não desistiu: terminou o que começou.</div></li>
+      <li><span class="ic">🔨</span><div><b>Perseverar</b>Noé permaneceu obediente a Deus e construiu a arca, mesmo vivendo em uma geração corrompida.</div></li>
       <li><span class="ic">🌈</span><div><b>Confiar</b>Deus cuidou de Noé na tempestade e cumpre as suas promessas.</div></li>
     </ul>
     <div class="verse"><q>Pela fé, Noé construiu a arca.</q><span>Hebreus 11:7</span></div>
@@ -67,10 +67,10 @@ R("""    <h3>O que aprendemos com Noé</h3>
 """    <h3>O que aprendemos com Jonas</h3>
     <ul>
       <li><span class="ic">🙋</span><div><b>Obedecer de primeira</b>Fugir de Deus só trouxe tempestade. Obedecer é sempre o melhor caminho.</div></li>
-      <li><span class="ic">🔄</span><div><b>Segunda chance</b>Quando Jonas orou e pediu perdão, Deus o ouviu e deu uma nova chance.</div></li>
+      <li><span class="ic">🔄</span><div><b>Uma nova chance</b>Deus ouviu a oração de Jonas e o livrou.</div></li>
       <li><span class="ic">🌍</span><div><b>Deus ama todos</b>Até o povo de Nínive, que Jonas achava muito mau. Deus quer perdoar todo mundo.</div></li>
     </ul>
-    <div class="verse"><q>Na minha angústia clamei ao Senhor, e ele me respondeu.</q><span>Jonas 2:2</span></div>
+    <div class="verse"><q>A salvação vem do Senhor!</q><span>Jonas 2:9</span></div>
     <div class="talk"><b>Para conversar em família</b>Já fugiu de alguma coisa que devia fazer? Como é bom pedir perdão e recomeçar?</div>""")
 R('<div id="ghud" hidden><span class="chip" id="gAn">🐾 0 / 8</span><span class="chip">🌧️ <span class="rbar"><i id="gRain"></i></span></span></div>',
   '<div id="ghud" hidden><span class="chip" id="gAn">Fase 1</span><span class="chip" id="gGol">🫧 0</span></div>')
