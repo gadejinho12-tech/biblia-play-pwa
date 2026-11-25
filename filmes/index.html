@@ -168,6 +168,7 @@ body::before{background:#BDE9FF}
 .twinkle{display:none}
 .stage .in{position:relative;z-index:1;padding-bottom:clamp(64px,8vw,90px)}
 .hello{color:var(--laranja)}
+.idade{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--tinta);border-radius:999px;padding:7px 14px;font:800 15px var(--body);box-shadow:0 3px 0 #CFE6F2;margin-bottom:10px}
 .stage h1{font:800 clamp(38px,6.5vw,66px)/1 var(--display);color:var(--tinta)}
 .stage .ref{font:700 18px var(--body);color:var(--tinta2)}
 .stage p.lesson{color:var(--tinta);font-size:19px}
@@ -247,6 +248,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
   <div class="twinkle"></div>
   <div class="in">
     <div class="copy">
+      <div class="idade">🧒 Para crianças de 3 a 7 anos</div>
       <div class="hello" id="hello">Filme em destaque</div>
       <h1 id="hTitle">A Criação</h1>
       <div class="ref" id="hRef">Gênesis 1–2 · 2 minutos</div>

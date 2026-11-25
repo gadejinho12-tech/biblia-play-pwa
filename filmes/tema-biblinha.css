@@ -59,3 +59,6 @@ input:focus{border-color:var(--ceu)!important}
 /* Entrar: céu no lugar da noite */
 body:has(.wrapc){background:linear-gradient(#BDE9FF,#E9F8FF 70%,#FFFDF6)!important}
 .wrapc .card{box-shadow:0 10px 0 #CFE6F2,0 24px 50px rgba(79,184,238,.25)!important}
+
+/* Faixa de idade bem à vista */
+.idade{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--tinta);border-radius:999px;padding:7px 14px;font:800 15px var(--body);box-shadow:0 3px 0 #CFE6F2}

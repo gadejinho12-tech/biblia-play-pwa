@@ -106,7 +106,7 @@ a.ghost{text-decoration:none;display:inline-block}
     <p>Um profeta que fugiu, uma tempestade no mar, um peixe gigante... e um Deus que sempre dá uma segunda chance. Com narração, para assistir em família.</p>
     <button class="go" id="play">▶ Assistir o filme</button>
     <div class="row" style="margin-top:12px"><a class="ghost" href="index.html">📚 Voltar à estante</a></div>
-    <div class="meta">Cerca de 2 minutos · 4 capítulos · Jonas 1 a 4<br>Depois do filme: o jogo <b>Nade, Jonas!</b>, com 3 fases 🎁</div>
+    <div class="meta">Cerca de 2 minutos · 4 capítulos · Jonas 1 a 4<br>Depois do filme: o jogo <b>Nade, Jonas!</b>, com 3 fases diferentes: no mar, dentro do peixe e rumo a Nínive 🎁</div>
     <div class="row" style="margin-top:10px"><button class="ghost" id="coverGame" hidden>🎮 Jogar Nade, Jonas!</button></div>
   </div>
 </div>
@@ -119,7 +119,7 @@ a.ghost{text-decoration:none;display:inline-block}
   <div class="page cover">
     <div class="bp-hello" hidden><img alt=""><span></span></div>
     <div class="eyebrow">Nade, Jonas!</div>
-    <h1>Chegou na praia! 🏖️</h1>
+    <h1>Chegou em Nínive! 🎉</h1>
     <div class="stars" id="gStars">⭐⭐⭐</div>
     <p id="gRes"></p>
     <div class="verse"><q>E o Senhor falou ao peixe, e este vomitou Jonas na terra seca.</q><span>Jonas 2:10</span></div>
@@ -580,29 +580,42 @@ $('play').onclick=()=>{ if(!AC) audioInit(); if(AC) AC.resume();
 $('again').onclick=()=>{ $('summary').hidden=true; seekChapter(0); };
 
 
-/* ================= JOGO DE RECOMPENSA: Nade, Jonas! (3 fases) =================
-   Segure o dedo (ou espaço) para Jonas nadar para cima; solte para descer.
-   Pegue as bolhas de ar e desvie das águas-vivas. Ninguém perde: encostar numa
-   água-viva só faz Jonas tomar um sustinho e ir mais devagar um pouquinho. */
+/* ================= JOGO DE RECOMPENSA: Nade, Jonas! (3 fases, cada uma de um jeito) =================
+   Fase 1 · No mar: segure o dedo (ou espaço) para Jonas nadar para cima; solte para descer.
+            Pegue as bolhas de ar e desvie das águas-vivas.
+   Fase 2 · Dentro do peixe: está escuro e Jonas ora. Toque nas luzinhas antes que se apaguem
+            para iluminar a barriga do peixe.
+   Fase 3 · Rumo a Nínive: Jonas caminha sozinho. Toque para pular as pedras e os caranguejos
+            e pegue os corações do povo que vai ouvir a mensagem.
+   Ninguém perde: errar só faz Jonas ir mais devagar ou a luzinha voltar depois. */
 let MODE='film';
 const GS={};
 const JPH=[
-  { name:'Fase 1 · Mergulho calmo', speed:150, END:2400, jellies:7, bubbles:12, move:0, voice:['j7','Fase um: mergulho calmo.'] },
-  { name:'Fase 2 · Correnteza forte', speed:200, END:3400, jellies:13, bubbles:16, move:40, voice:['j2','Fase dois: a corrente está mais forte! Cuidado com as águas-vivas.'] },
-  { name:'Fase 3 · Siga a luz', speed:240, END:4400, jellies:20, bubbles:20, move:70, voice:['j3','Fase três: siga a luz até a praia!'] },
+  { kind:'nado', name:'Fase 1 · No mar', speed:150, END:2400, jellies:6, bubbles:12, move:20, icon:'🫧', meta:'🏖️', hint:'👆 Segure para subir',
+    voice:['j7','Fase um: no mar. Segure o dedo para Jonas nadar, pegue as bolhas e desvie das águas-vivas.'] },
+  { kind:'luz', name:'Fase 2 · Dentro do peixe', goal:8, life:2.6, icon:'✨', meta:'🙏', hint:'👆 Toque nas luzinhas',
+    voice:['j8','Fase dois: dentro do peixe estava escuro. Jonas orou a Deus. Toque nas luzinhas para iluminar!'] },
+  { kind:'caminho', name:'Fase 3 · Rumo a Nínive', speed:190, END:3000, rocks:9, hearts:10, icon:'❤️', meta:'🏙️', hint:'👆 Toque para pular',
+    voice:['j9','Fase três: rumo a Nínive! Toque para Jonas pular as pedras, e pegue os corações.'] },
 ];
 const SURF=-400, FLOOR=40;
 function rnd(seed){ let s=seed; return ()=>{ s=(s*16807)%2147483647; return s/2147483647; }; }
 function buildLevel(n){ const L=JPH[n-1], r=rnd(7+n*13); const obj=[];
-  for(let i=0;i<L.jellies;i++){ const x=500+i*(L.END-700)/L.jellies+r()*80; obj.push({k:'jelly',x,y:lerp(SURF+70,FLOOR-70,r()),ph:r()*6,amp:L.move*(r()<.5?1:-1)}); }
-  for(let i=0;i<L.bubbles;i++){ const x=380+i*(L.END-500)/L.bubbles+r()*60; obj.push({k:'bub',x,y:lerp(SURF+60,FLOOR-60,r()),ph:r()*6,got:false}); }
+  if(L.kind==='nado'){
+    for(let i=0;i<L.jellies;i++){ const x=500+i*(L.END-700)/L.jellies+r()*80; obj.push({k:'jelly',x,y:lerp(SURF+70,FLOOR-70,r()),ph:r()*6,amp:L.move*(r()<.5?1:-1)}); }
+    for(let i=0;i<L.bubbles;i++){ const x=380+i*(L.END-500)/L.bubbles+r()*60; obj.push({k:'bub',x,y:lerp(SURF+60,FLOOR-60,r()),ph:r()*6,got:false}); }
+  } else if(L.kind==='caminho'){
+    for(let i=0;i<L.rocks;i++){ const x=600+i*(L.END-900)/L.rocks+r()*90; obj.push({k: r()<.5?'pedra':'carangueijo',x,ph:r()*6,hit:false}); }
+    for(let i=0;i<L.hearts;i++){ const x=520+i*(L.END-700)/L.hearts+r()*60; obj.push({k:'coracao',x,y: r()<.45? -150 : -60,ph:r()*6,got:false}); }
+  }
   return obj; }
 function gameReset(){ GS.hitsBy=[0,0,0]; loadPhase(1,false); }
 function loadPhase(n,talk){ const L=JPH[n-1];
-  Object.assign(GS,{ phase:n, x:0, y:-200, vy:0, hold:false, objs:buildLevel(n), hurt:0, slow:0, got:0, done:false, doneT:0, banner:2.8, ended:false, cool:GS.cool||0 });
-  cam.x=W/2; cam.y=-180; cam.z=1; $('gAn').textContent=L.name.split(' · ')[0]; $('gGol').textContent='🫧 0'; if(talk!==false) gsay(L.voice[0],L.voice[1],true); }
+  Object.assign(GS,{ phase:n, x:0, y: L.kind==='nado'? -200 : 0, vy:0, hold:false, objs:buildLevel(n), hurt:0, slow:0, got:0, done:false, doneT:0, banner:2.8, ended:false, cool:GS.cool||0,
+    luzes:[], lit:0, nextLuz:1.2, chao:true });
+  cam.x=W/2; cam.y=-180; cam.z=1; $('gAn').textContent=L.name.split(' · ')[0]; $('gGol').textContent=L.icon+' 0'+(L.goal? ' / '+L.goal : ''); if(talk!==false) gsay(L.voice[0],L.voice[1],true); }
 let gsubT=0;
-function gsay(key,text,force){ if(!force && GS.cool>0) return; GS.cool=1.2; speak({rec:key,text}); whoEl.textContent='Narradora'; txtEl.textContent=text; subEl.classList.add('on'); gsubT=Math.max(2.2,(REC_DUR[key]||2)+.6); }
+function gsay(key,text,force){ if(!force && GS.cool>0) return; GS.cool=1.2; speak({rec:key,text}); whoEl.textContent='Narradora'; txtEl.textContent=text; subEl.classList.add('on'); gsubT=Math.max(2.2,(REC_DUR[key]||text.length/14)+.6); }
 function startGame(){
   MODE='game'; document.body.classList.add('game'); stopVoice(); P.playing=false; gameReset();
   ['summary','gwin','cover'].forEach(id=>$(id).hidden=true); $('ctrl').hidden=true; $('top').hidden=true; $('chapter').classList.remove('on'); $('ghud').hidden=false;
@@ -610,49 +623,116 @@ function startGame(){
   gsay('j1','Agora é a sua vez! Segure o dedo para Jonas nadar para cima, e solte para descer. Pegue as bolhas, e desvie das águas-vivas!',true);
 }
 function leaveGame(){ MODE='film'; document.body.classList.remove('game'); stopVoice(); $('ghud').hidden=true; $('gwin').hidden=true; subEl.classList.remove('on'); $('ctrl').hidden=false; $('top').hidden=false; }
-function gameTap(e){ if(AC) AC.resume(); GS.hold=true; }
+// posição do toque na tela, nas mesmas medidas do desenho
+function telaXY(e){ const dpr=Math.min(devicePixelRatio||1,2); return [ (e.clientX*dpr-(cv.width-W*K)/2)/K, e.clientY*dpr/K ]; }
+function pular(){ const g=GS; if(g.chao && !g.done){ g.vy=-640; g.chao=false; pluck(79,.05); } }
+function gameTap(e){ if(AC) AC.resume(); const g=GS, L=JPH[g.phase-1]; if(!L) return;
+  if(L.kind==='nado'){ g.hold=true; return; }
+  if(L.kind==='caminho'){ pular(); return; }
+  if(L.kind==='luz' && !g.done){ const [x,y]=telaXY(e); let best=null, bd=1e9;
+    for(const l of g.luzes){ if(l.ok) continue; const d=Math.hypot(l.x-x,l.y-y); if(d<bd){ bd=d; best=l; } }
+    if(best && bd<Math.max(70,best.r*2.2)){ best.ok=true; best.t=0; g.lit++; $('gGol').textContent=L.icon+' '+g.lit+' / '+L.goal; pluck(84+(g.lit%5)*2,.06); pluck(91,.04,.07);
+      if(g.lit===4) gsay('j10','Isso! Deus ouve a oração de Jonas.'); } }
+}
 addEventListener('pointerup',()=>{ if(MODE==='game') GS.hold=false; });
-addEventListener('keydown',e=>{ if(MODE==='game' && (e.key===' '||e.key==='ArrowUp')){ e.preventDefault(); GS.hold=true; } });
+addEventListener('keydown',e=>{ if(MODE==='game' && (e.key===' '||e.key==='ArrowUp')){ e.preventDefault(); if(JPH[GS.phase-1].kind==='caminho') pular(); else GS.hold=true; } });
 addEventListener('keyup',e=>{ if(MODE==='game' && (e.key===' '||e.key==='ArrowUp')) GS.hold=false; });
+function faseCompleta(){ const g=GS; g.done=true; g.doneT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
+  if(g.phase<3){ setTimeout(()=>{ if(MODE==='game') loadPhase(g.phase+1); },2600); gsay('j5','Muito bem!',true); }
+  else gsay('j6','Parabéns! Jonas chegou em Nínive, e o povo ouviu a mensagem. Deus dá uma segunda chance!',true); }
+function fimDoJogo(){ const g=GS; g.ended=true; const per=g.hitsBy.map(h=>h===0?3:(h<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
+  $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=JPH.map((P2,i)=>P2.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  '); $('gwin').hidden=false;
+  try{ const k='bp_jonas_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), st)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(st),'pelo jogo!'),900); }
 function gameUpdate(dt){
   const g=GS, L=JPH[g.phase-1]; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); }
   if(g.banner>0) g.banner-=dt; if(g.hurt>0) g.hurt-=dt; if(g.slow>0) g.slow-=dt;
-  if(!g.done){
-    const sp = L.speed*(g.slow>0? .5 : 1)*(g.banner>1.6? .3 : 1);
-    g.x+=sp*dt; g.vy += (g.hold? -900 : 520)*dt; g.vy=clamp(g.vy,-320,300); g.y+=g.vy*dt;
-    if(g.y<SURF+30){ g.y=SURF+30; g.vy=Math.max(0,g.vy); } if(g.y>FLOOR-30){ g.y=FLOOR-30; g.vy=Math.min(0,g.vy); }
-    for(const o of g.objs){ const oy=o.k==='jelly'? o.y+Math.sin(G*1.4+o.ph)*o.amp : o.y;
-      if(o.k==='bub' && !o.got && Math.hypot(o.x-g.x,oy-g.y)<46){ o.got=true; g.got++; $('gGol').textContent='🫧 '+g.got; pluck(84,.06); pluck(91,.04,.06); if(g.got%5===0) gsay('j5','Muito bem!'); }
-      if(o.k==='jelly' && g.hurt<=0 && Math.abs(o.x-g.x)<30 && Math.abs(oy-g.y)<34){ g.hurt=1.4; g.slow=.9; g.hitsBy[g.phase-1]++; g.vy=g.y<oy? -200 : 200; pluck(50,.08); pluck(47,.06,.1); gsay('j4','Ai! Cuidado com a água-viva!'); } }
-    if(g.x>=L.END){ g.done=true; g.doneT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
-      if(g.phase<3){ const nx=JPH[g.phase]; setTimeout(()=>{ if(MODE==='game') loadPhase(g.phase+1); },2600); gsay('j5','Muito bem!',true); }
-      else gsay('j6','Parabéns! Jonas chegou na praia. Deus dá uma segunda chance!',true); }
-  } else { g.doneT+=dt; g.y=lerp(g.y, g.phase===3? SURF-30 : g.y, .03); g.x+=60*dt;
-    if(g.phase===3 && g.doneT>4.6 && !g.ended){ g.ended=true; const per=g.hitsBy.map(h=>h===0?3:(h<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
-      $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=JPH.map((P2,i)=>P2.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  '); $('gwin').hidden=false; try{ const k='bp_jonas_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), st)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(st),'pelo jogo!'),900); } }
-  const narrow=W<700; cam.z = narrow? .9 : 1; cam.x = g.x + (narrow? 120 : 260); cam.y = -180;
+  const narrow=W<700;
+  if(L.kind==='nado'){
+    if(!g.done){
+      const sp = L.speed*(g.slow>0? .5 : 1)*(g.banner>1.6? .3 : 1);
+      g.x+=sp*dt; g.vy += (g.hold? -900 : 520)*dt; g.vy=clamp(g.vy,-320,300); g.y+=g.vy*dt;
+      if(g.y<SURF+30){ g.y=SURF+30; g.vy=Math.max(0,g.vy); } if(g.y>FLOOR-30){ g.y=FLOOR-30; g.vy=Math.min(0,g.vy); }
+      for(const o of g.objs){ const oy=o.k==='jelly'? o.y+Math.sin(G*1.4+o.ph)*o.amp : o.y;
+        if(o.k==='bub' && !o.got && Math.hypot(o.x-g.x,oy-g.y)<46){ o.got=true; g.got++; $('gGol').textContent='🫧 '+g.got; pluck(84,.06); pluck(91,.04,.06); if(g.got%5===0) gsay('j5','Muito bem!'); }
+        if(o.k==='jelly' && g.hurt<=0 && Math.abs(o.x-g.x)<30 && Math.abs(oy-g.y)<34){ g.hurt=1.4; g.slow=.9; g.hitsBy[0]++; g.vy=g.y<oy? -200 : 200; pluck(50,.08); pluck(47,.06,.1); gsay('j4','Ai! Cuidado com a água-viva!'); } }
+      if(g.x>=L.END) faseCompleta();
+    } else { g.doneT+=dt; g.x+=60*dt; }
+    cam.z = narrow? .9 : 1; cam.x = g.x + (narrow? 120 : 260); cam.y = -180;
+  }
+  else if(L.kind==='luz'){
+    if(!g.done && g.banner<1.2){
+      g.nextLuz-=dt;
+      const ativas=g.luzes.filter(l=>!l.ok).length;
+      if(g.nextLuz<=0 && ativas<3 && g.lit+ativas<L.goal){ const m=90; g.luzes.push({x:lerp(m,W-m,Math.random()), y:lerp(H*.2,H*.6,Math.random()), r:36+Math.random()*10, t:0, ok:false, ph:Math.random()*6}); g.nextLuz=.75+Math.random()*.6; }
+      for(const l of g.luzes){ l.t+=dt; if(!l.ok && l.t>L.life){ l.gone=true; g.hitsBy[1]+=.5; } }
+      g.luzes=g.luzes.filter(l=>!l.gone && !(l.ok && l.t>1.2));
+      if(g.lit>=L.goal) faseCompleta();
+    } else if(g.done) g.doneT+=dt;
+  }
+  else if(L.kind==='caminho'){
+    if(!g.done){
+      const sp = L.speed*(g.slow>0? .55 : 1)*(g.banner>1.6? .3 : 1);
+      g.x+=sp*dt; g.vy+=1500*dt; g.y+=g.vy*dt; if(g.y>=0){ g.y=0; g.vy=0; g.chao=true; }
+      for(const o of g.objs){
+        if((o.k==='pedra'||o.k==='carangueijo') && !o.hit && g.hurt<=0 && Math.abs(o.x-g.x)<34 && g.y>-46){ o.hit=true; g.hurt=1.2; g.slow=.9; g.hitsBy[2]++; pluck(50,.08); pluck(47,.06,.1); gsay('j11','Opa! Pule!'); }
+        if(o.k==='coracao' && !o.got && Math.abs(o.x-g.x)<40 && Math.abs((g.y-70)-o.y)<60){ o.got=true; g.got++; $('gGol').textContent='❤️ '+g.got; pluck(86,.06); pluck(93,.04,.06); if(g.got%4===0) gsay('j5','Muito bem!'); }
+      }
+      if(g.x>=L.END) faseCompleta();
+    } else { g.doneT+=dt; }
+    cam.z = narrow? .95 : 1.05; cam.x = g.done? L.END+300 : g.x + (narrow? 140 : 280); cam.y = -170;
+  }
+  if(g.phase===3 && g.done && g.doneT>4.6 && !g.ended) fimDoJogo();
 }
+function heartPath(x,y,s){ ctx.beginPath(); ctx.moveTo(x,y+s*.35); ctx.bezierCurveTo(x-s*1.1,y-s*.4,x-s*.45,y-s*1.15,x,y-s*.45); ctx.bezierCurveTo(x+s*.45,y-s*1.15,x+s*1.1,y-s*.4,x,y+s*.35); ctx.closePath(); }
+function crab(x,y,ph){ const w=Math.sin(G*6+ph)*3; ell(x,y-14,24,15,'#e5674f'); ell(x-9,y-30+w,4,6,'#e5674f'); ell(x+9,y-30-w,4,6,'#e5674f'); ell(x-9,y-34+w,3.2,3.2,'#fff'); ell(x+9,y-34-w,3.2,3.2,'#fff'); ell(x-9,y-34+w,1.6,1.6,'#2B3A55'); ell(x+9,y-34-w,1.6,1.6,'#2B3A55'); ell(x-30,y-20+w,9,7,'#d4553f'); ell(x+30,y-20-w,9,7,'#d4553f'); }
+function stone(x,y){ ell(x,y-16,30,20,'#9aa3ad'); ell(x-8,y-24,12,7,'#b8c0c8'); }
 function gameDraw(){
-  const g=GS, L=JPH[g.phase-1], prog=clamp(g.x/L.END,0,1);
-  LIGHT.dx=1; LIGHT.rim='#bfe8ff'; LIGHT.rimA=.45;
-  layer(0,()=>{ underwater(.35-prog*.3); });
-  layer(.4,()=>{ for(let i=-2;i<40;i++) seaweed(i*180,240,90+(i%3)*50,i%2?'#3f8a5a':'#2f7a6a'); for(let i=0;i<8;i++) smallFish(((i*260+G*30)%2200)-400+cam.x*.4,-120+(i%3)*80,.9,['#f2a65e','#ffd75e','#7fd0c8'][i%3],1,i); });
-  layer(1,()=>{ ctx.fillStyle=vgrad(FLOOR,FLOOR+200,[[0,'#d8c08a'],[1,'#a8905a']]); ctx.fillRect(cam.x-2000,FLOOR,4000,600);
-    ctx.fillStyle='rgba(255,255,255,.18)'; ctx.fillRect(cam.x-2000,SURF-600,4000,600); ctx.strokeStyle='rgba(255,255,255,.55)'; ctx.lineWidth=3; ctx.beginPath(); for(let x=cam.x-1400;x<cam.x+1400;x+=24) ctx.lineTo(x,SURF+Math.sin(x*.02+G*2)*5); ctx.stroke();
-    // luz no fim da fase (a praia / o caminho)
-    glow(L.END+300,SURF+80,420,'#fff3c8',.55); godRays(L.END+300,SURF-200,700,.25,G,'#fff3c8');
-    if(g.phase===3){ ctx.fillStyle=vgrad(SURF-120,SURF+40,[[0,'#f2dca8'],[1,'#d8b878']]); ctx.beginPath(); ctx.moveTo(L.END+150,SURF+30); ctx.quadraticCurveTo(L.END+400,SURF-60,L.END+1400,SURF-80); ctx.lineTo(L.END+1400,SURF+60); ctx.fill(); }
-    for(const o of g.objs){ if(Math.abs(o.x-cam.x)>W/(ZOOM*cam.z*PZ())) continue; const oy=o.k==='jelly'? o.y+Math.sin(G*1.4+o.ph)*o.amp : o.y;
-      if(o.k==='jelly') jelly(o.x,oy,1.1,o.ph); else if(!o.got){ glow(o.x,oy,30,'#dff6ff',.3); bubble(o.x,oy+Math.sin(G*2+o.ph)*5,13,1); } }
-    // Jonas nadando (deitado, braços para frente)
-    ctx.save(); ctx.translate(g.x,g.y); ctx.rotate(1.25+clamp(g.vy/600,-.35,.35)); if(g.hurt>0 && Math.floor(G*12)%2) ctx.globalAlpha=.5; person('jonas',0,50,{pose:'armsup',dir:1,walk:G*8}); ctx.restore();
-    if(g.hold) for(let i=0;i<3;i++) bubble(g.x-40-i*14,g.y+10-((G*80+i*20)%40),3+i,.7);
-  });
+  const g=GS, L=JPH[g.phase-1]; let prog=0;
+  if(L.kind==='nado'){ prog=clamp(g.x/L.END,0,1);
+    LIGHT.dx=1; LIGHT.rim='#bfe8ff'; LIGHT.rimA=.45;
+    layer(0,()=>{ underwater(.35-prog*.3); });
+    layer(.4,()=>{ for(let i=-2;i<40;i++) seaweed(i*180,240,90+(i%3)*50,i%2?'#3f8a5a':'#2f7a6a'); for(let i=0;i<8;i++) smallFish(((i*260+G*30)%2200)-400+cam.x*.4,-120+(i%3)*80,.9,['#f2a65e','#ffd75e','#7fd0c8'][i%3],1,i); });
+    layer(1,()=>{ ctx.fillStyle=vgrad(FLOOR,FLOOR+200,[[0,'#d8c08a'],[1,'#a8905a']]); ctx.fillRect(cam.x-2000,FLOOR,4000,600);
+      ctx.fillStyle='rgba(255,255,255,.18)'; ctx.fillRect(cam.x-2000,SURF-600,4000,600); ctx.strokeStyle='rgba(255,255,255,.55)'; ctx.lineWidth=3; ctx.beginPath(); for(let x=cam.x-1400;x<cam.x+1400;x+=24) ctx.lineTo(x,SURF+Math.sin(x*.02+G*2)*5); ctx.stroke();
+      // no fim da fase, o grande peixe abre a boca
+      bigFish(L.END+420,-160,1.1,.6+.4*Math.sin(G*2),-1);
+      for(const o of g.objs){ if(Math.abs(o.x-cam.x)>W/(ZOOM*cam.z*PZ())) continue; const oy=o.k==='jelly'? o.y+Math.sin(G*1.4+o.ph)*o.amp : o.y;
+        if(o.k==='jelly') jelly(o.x,oy,1.1,o.ph); else if(!o.got){ glow(o.x,oy,30,'#dff6ff',.3); bubble(o.x,oy+Math.sin(G*2+o.ph)*5,13,1); } }
+      ctx.save(); ctx.translate(g.x,g.y); ctx.rotate(1.25+clamp(g.vy/600,-.35,.35)); if(g.hurt>0 && Math.floor(G*12)%2) ctx.globalAlpha=.5; person('jonas',0,50,{pose:'armsup',dir:1,walk:G*8}); ctx.restore();
+      if(g.hold) for(let i=0;i<3;i++) bubble(g.x-40-i*14,g.y+10-((G*80+i*20)%40),3+i,.7);
+    });
+  }
+  else if(L.kind==='luz'){ prog=clamp(g.lit/L.goal,0,1);
+    SC.barriga(1+prog*5); // a barriga do peixe vai clareando com as orações
+    ctx.save(); ctx.fillStyle='rgba(20,8,14,'+(.62*(1-prog)).toFixed(3)+')'; ctx.fillRect(0,0,W,H); ctx.restore();
+    for(const l of g.luzes){ const k=l.ok? 1-clamp(l.t/1.2,0,1) : 1, fade=l.ok? 1 : clamp((L.life-l.t)/.6,0,1)*clamp(l.t/.25,0,1);
+      const r=l.ok? l.r*(1+l.t*2) : l.r*(1+.08*Math.sin(G*6+l.ph));
+      ctx.save(); ctx.globalAlpha=fade*k; glow(l.x,l.y,r*3,'#fff0c0',.7);
+      ctx.fillStyle='#fff6d8'; ctx.beginPath(); for(let i=0;i<10;i++){ const a=i*Math.PI/5-Math.PI/2, rr2=i%2? r*.45 : r; ctx.lineTo(l.x+Math.cos(a)*rr2,l.y+Math.sin(a)*rr2); } ctx.closePath(); ctx.fill();
+      ctx.restore(); }
+  }
+  else if(L.kind==='caminho'){ prog=clamp(g.x/L.END,0,1);
+    if(g.done && g.doneT>1.2){ SC.ninive_festa(Math.min(9,(g.doneT-1.2)*2)); }
+    else {
+      LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6;
+      layer(0,()=>{ sky('#7cc6ec','#cfeaf4','#fff0d0'); sunDisk2(cam.x*.0+380,-240); for(let i=0;i<5;i++) cloud(((i*340+G*8)%1800)-900,-270+(i%2)*40,.9,'#ffffff','#dfe6ee',.9); });
+      layer(.3,()=>{ ridge(-10,60,.006,6,'#a8c8a0','#c8e0c0',4000); });
+      layer(1,()=>{ ctx.fillStyle=vgrad(-20,240,[[0,'#f2dca8'],[1,'#d8b878']]); ctx.fillRect(cam.x-2200,0,4400,700);
+        // a cidade de Nínive aparece no fim do caminho
+        ctx.save(); ctx.translate(L.END+700,0); ctx.scale(.6,.6); cityWall(-900,900,-20,120); for(const [hx,hw,hh,c] of [[-600,140,200,'#e8d0a8'],[-300,140,240,'#d8b88a'],[0,160,220,'#8fb0c8'],[300,140,250,'#e8d0a8'],[580,120,200,'#d8b88a']]) townHouse(hx,-120,hw,hh,c); ctx.restore();
+        for(const o of g.objs){ if(Math.abs(o.x-cam.x)>W/(ZOOM*cam.z*PZ())+100) continue;
+          if(o.k==='pedra') stone(o.x,0); else if(o.k==='carangueijo') crab(o.x+Math.sin(G*2+o.ph)*14,0,o.ph);
+          else if(!o.got){ const y=o.y+Math.sin(G*3+o.ph)*6; glow(o.x,y,46,'#ffd0d8',.45); heartPath(o.x,y,24); ctx.fillStyle='#ff6f8f'; ctx.fill(); } }
+        ctx.save(); if(g.hurt>0 && Math.floor(G*12)%2) ctx.globalAlpha=.5; person('jonas',g.x,g.y,{pose: g.chao? 'walk' : 'armsup',dir:1}); ctx.restore();
+      });
+    }
+  }
   // barra de progresso
-  const bw=Math.min(320,W-140), bx=W/2-bw/2, by=74; ctx.fillStyle='rgba(251,243,227,.85)'; rr(bx,by,bw,12,6); ctx.fill(); ctx.fillStyle='#e8b65a'; rr(bx,by,Math.max(12,bw*prog),12,6); ctx.fill(); ctx.font='16px sans-serif'; ctx.textAlign='left'; ctx.fillText('🏖️',bx+bw+6,by+12);
-  if(!g.done && g.banner<=0 && !g.hold && g.x<300){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 20px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText('👆 Segure para subir',W/2,H*.92); ctx.fillText('👆 Segure para subir',W/2,H*.92); ctx.restore(); }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(440,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw2/2,H*.24-36,bw2,64,14); ctx.fill();
-    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(L.name,W/2,H*.24+6); ctx.restore(); }
+  const bw=Math.min(320,W-140), bx=W/2-bw/2, by=74; ctx.fillStyle='rgba(255,253,246,.9)'; rr(bx,by,bw,12,6); ctx.fill(); ctx.fillStyle='#FF8A3D'; rr(bx,by,Math.max(12,bw*prog),12,6); ctx.fill(); ctx.font='16px sans-serif'; ctx.textAlign='left'; ctx.fillText(L.meta,bx+bw+6,by+12);
+  const quieto = L.kind==='nado'? (!g.hold && g.x<300) : L.kind==='caminho'? g.x<420 : g.lit<2;
+  if(!g.done && g.banner<=0 && quieto){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(L.hint,W/2,H*.92); ctx.fillText(L.hint,W/2,H*.92); ctx.restore(); }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,H*.24-36,bw2,64,32); ctx.fill();
+    ctx.font='800 26px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(L.name,W/2,H*.24+8); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };
@@ -676,7 +756,7 @@ function frame(ts){
   ctx.setTransform(1,0,0,1,0,0);
   if(grainPat){ ctx.fillStyle=grainPat; ctx.fillRect(0,0,cv.width,cv.height); }
   if(vign) ctx.drawImage(vign,0,0);
-  if(MODE==='game'){ music(dt, GS.done&&GS.phase===3?'praia':'mergulho'); }
+  if(MODE==='game'){ music(dt, ['mergulho','barriga','ninive'][GS.phase-1]||'mergulho'); }
   else if(P.started){ music(dt,scName); updateBar(); idle+=dt; if(idle>3.5 && P.playing) ctrl.classList.add('hide'); }
   requestAnimationFrame(frame);
 }
