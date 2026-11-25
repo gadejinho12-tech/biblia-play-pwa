@@ -500,7 +500,7 @@ const chapterStarts=SCRIPT.map((l,i)=>l.card!=null?i:-1).filter(i=>i>=0);
 /* ================= VOZ (gravada + voz do aparelho) com boca sincronizada ================= */
 const voice=new Audio(); voice.preload='auto';
 let AC=null, analyser=null, aData=null, master=null, musicGain=null, verb=null, noiseBuf=null, voiceOn=true, ttsVoice=null;
-function pickVoice(){ try{ const vs=speechSynthesis.getVoices(); ttsVoice=vs.find(v=>/pt-BR/i.test(v.lang)&&/google|luciana|francisca/i.test(v.name))||vs.find(v=>/pt-BR/i.test(v.lang))||vs.find(v=>/^pt/i.test(v.lang))||null; }catch(e){} }
+function pickVoice(){ try{ const vs=speechSynthesis.getVoices(); ttsVoice=vs.find(v=>/pt-BR/i.test(v.lang)&&/francisca|thalita|natural|google|luciana/i.test(v.name))||vs.find(v=>/pt-BR/i.test(v.lang))||vs.find(v=>/^pt/i.test(v.lang))||null; }catch(e){} }
 if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
 function audioInit(){
   try{ AC=new (window.AudioContext||window.webkitAudioContext)(); master=AC.createGain(); master.gain.value=.9; master.connect(AC.destination);
@@ -514,7 +514,7 @@ let ttsSpeaking=false, curLine=-1;
 function speak(l){
   stopVoice(); if(!voiceOn || (!l.text && !l.rec)) return;
   if(l.rec && REC[l.rec]){ voice.src=REC[l.rec]; voice.currentTime=0; if(AC&&AC.state==='suspended') AC.resume(); voice.play().catch(()=>{}); return; }
-  try{ const u=new SpeechSynthesisUtterance(l.text.replace(/\(.*?\)/g,'').replace(/"/g,'')); u.lang='pt-BR'; if(ttsVoice) u.voice=ttsVoice; u.rate=1.02; u.pitch=1.05;
+  try{ const u=new SpeechSynthesisUtterance(l.text.replace(/\(.*?\)/g,'').replace(/"/g,'')); u.lang='pt-BR'; if(ttsVoice) u.voice=ttsVoice; u.rate=0.9; u.pitch=1.0;
     u.onstart=()=>ttsSpeaking=true; u.onend=u.onerror=()=>ttsSpeaking=false; ttsSpeaking=true; speechSynthesis.speak(u); }catch(e){}
 }
 function stopVoice(){ try{ voice.pause(); }catch(e){} try{ speechSynthesis.cancel(); }catch(e){} ttsSpeaking=false; }
