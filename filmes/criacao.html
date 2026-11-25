@@ -510,7 +510,7 @@ function enterLine(i){
   $('summary').hidden = !l.summary; if(l.summary){ try{ if(!localStorage.getItem('bp_criacao_moeda')){ localStorage.setItem('bp_criacao_moeda','1'); window.bpAddCoins&&bpAddCoins(10,'por assistir!'); } localStorage.setItem('bp_criacao_visto','1'); }catch(e){} }
   TALK = l.talk || null;
   const ref=(l.text.match(/\(([^)]*)\)\s*$/)||[])[1]; const body=l.text.replace(/\s*\([^)]*\)\s*$/,'');
-  whoEl.textContent=l.who; txtEl.innerHTML=body.split(' ').map(w=>'<span class="w">'+w+'</span>').join(' ')+(ref?'<span class="ref">'+ref+'</span>':'');
+  whoEl.textContent=(l.who==='Narrador'?'Narradora':l.who); txtEl.innerHTML=body.split(' ').map(w=>'<span class="w">'+w+'</span>').join(' ')+(ref?'<span class="ref">'+ref+'</span>':'');
   words=[...txtEl.querySelectorAll('.w')]; subEl.classList.toggle('on', !l.summary);
   speak(l);
 }
