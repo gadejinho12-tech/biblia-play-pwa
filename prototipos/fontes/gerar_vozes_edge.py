@@ -57,6 +57,7 @@ def main(falas_json, html):
         dur[chave] = round(duracao(arq), 2)
         feitos += 1
         print(chave, quem, dur[chave], 's')
+    m = re.search(r'const REC_DUR\s*=\s*(\{[^}]*\})', s)  # procura de novo: as posições mudaram com os áudios novos
     s = s[:m.start(1)] + json.dumps(dur) + s[m.end(1):]
     open(html, 'w', encoding='utf-8').write(s)
     print('regravadas:', feitos)
