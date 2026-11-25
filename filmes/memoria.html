@@ -55,9 +55,9 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-
 .card .in{position:absolute;inset:0;transition:transform .45s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
 .card.up .in,.card.done .in{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;box-shadow:0 8px 18px rgba(90,60,30,.16), 0 0 0 1px rgba(120,90,50,.15)}
-.back{background:linear-gradient(160deg,#f6e3bc,#e3c38a);}
+.back{background:linear-gradient(160deg,#8ED6FA,#3FA9E6);}
 .back::before{content:"";position:absolute;inset:7px;border:2px solid rgba(255,250,235,.8);border-radius:8px}
-.back span{font:800 clamp(20px,5vw,30px) var(--display);color:#fff8e8;text-shadow:0 2px 0 rgba(150,100,40,.35)}
+.back span{display:grid;place-items:center;width:100%;height:100%}.back span img{width:72%;height:auto;filter:drop-shadow(0 3px 0 rgba(43,58,85,.18))}
 .front{background:var(--card);transform:rotateY(180deg);grid-template-rows:1fr auto;padding:8px 6px 6px;gap:2px}
 .front canvas{max-width:100%;height:auto}
 .front em{font:800 clamp(11px,2.6vw,14px)/1.1 var(--body);font-style:normal;text-align:center}
@@ -359,7 +359,7 @@ function start(l){ L=l; first=null; lock=false; moves=0; found=0; $('pick').hidd
   const cols = innerWidth<520? Math.min(l.cols,4) : (l.pairs===10? 5 : l.cols);
   const bd=$('board'); bd.innerHTML=''; bd.style.gridTemplateColumns=`repeat(${cols},1fr)`; bd.style.maxWidth = (cols*128)+'px';
   deck.forEach((id,i)=>{ const c=document.createElement('button'); c.className='card'; c.dataset.id=id; c.setAttribute('aria-label','Carta '+(i+1));
-    c.innerHTML='<div class="in"><div class="face back"><span>✦</span></div><div class="face front"><em>'+NAME[id]+'</em></div></div>';
+    c.innerHTML='<div class="in"><div class="face back"><span><img src="lili.svg" alt=""></span></div><div class="face front"><em>'+NAME[id]+'</em></div></div>';
     const cv=portrait(id,110,['#fffaf0','#f3e2c0']); cv.style.width='100%'; cv.style.height='auto'; c.querySelector('.front').prepend(cv);
     c.onclick=()=>flip(c); bd.appendChild(c); });
   upd(); say('mi'); }
@@ -380,7 +380,7 @@ window.__mem={start,LEVELS};
 <script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
   document.querySelectorAll('.bp-hello').forEach(el=>{ const i=el.querySelector('img'); i.src=img; el.querySelector('span').textContent=a.nome? 'Muito bem, '+a.nome+'!' : 'Muito bem!'; el.hidden=false; }); }catch(e){} })();</script>
 <style>.bp-toast{position:fixed;left:50%;top:14px;transform:translate(-50%,-80px);z-index:9999;background:linear-gradient(180deg,#fff6d8,#ffe7a8);color:#5a3a10;font:800 18px/1 Nunito,system-ui,sans-serif;padding:10px 18px;border-radius:999px;box-shadow:0 8px 20px rgba(90,60,30,.25),0 0 0 2px #e8b65a;transition:transform .45s cubic-bezier(.3,1.5,.5,1);pointer-events:none;white-space:nowrap}.bp-toast.on{transform:translate(-50%,0)}</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"><link rel="stylesheet" href="tema-biblinha.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"><link rel="stylesheet" href="tema-biblinha.css"><script src="biblinha.js" defer></script>
 <script>
 /* moedinhas: ganhas nos filmes, jogos e no baú do dia; gastas na "Minha Arca" */
 function bpCoins(){ try{ return +(localStorage.getItem('bp_moedas')||0); }catch(e){ return 0; } }

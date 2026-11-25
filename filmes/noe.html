@@ -745,7 +745,7 @@ window.__P=P; window.__GS=GS; window.__startGame=startGame; window.__SCRIPT=SCRI
 <script>(function(){ try{ const a=JSON.parse(localStorage.getItem('bp_ajudante')||'null'), img=localStorage.getItem('bp_ajudante_img'); if(!a||!img) return;
   document.querySelectorAll('.bp-hello').forEach(el=>{ const i=el.querySelector('img'); i.src=img; el.querySelector('span').textContent=a.nome? 'Muito bem, '+a.nome+'!' : 'Muito bem!'; el.hidden=false; }); }catch(e){} })();</script>
 <style>.bp-toast{position:fixed;left:50%;top:14px;transform:translate(-50%,-80px);z-index:9999;background:linear-gradient(180deg,#fff6d8,#ffe7a8);color:#5a3a10;font:800 18px/1 Nunito,system-ui,sans-serif;padding:10px 18px;border-radius:999px;box-shadow:0 8px 20px rgba(90,60,30,.25),0 0 0 2px #e8b65a;transition:transform .45s cubic-bezier(.3,1.5,.5,1);pointer-events:none;white-space:nowrap}.bp-toast.on{transform:translate(-50%,0)}</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"><link rel="stylesheet" href="tema-biblinha.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"><link rel="stylesheet" href="tema-biblinha.css"><script src="biblinha.js" defer></script>
 <script>
 /* moedinhas: ganhas nos filmes, jogos e no baú do dia; gastas na "Minha Arca" */
 function bpCoins(){ try{ return +(localStorage.getItem('bp_moedas')||0); }catch(e){ return 0; } }
