@@ -62,3 +62,6 @@ body:has(.wrapc){background:linear-gradient(#BDE9FF,#E9F8FF 70%,#FFFDF6)!importa
 
 /* Faixa de idade bem à vista */
 .idade{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--tinta);border-radius:999px;padding:7px 14px;font:800 15px var(--body);box-shadow:0 3px 0 #CFE6F2}
+
+/* Jogos em tela baixa (celular deitado): a legenda sobe para não cobrir a brincadeira */
+@media (max-height:520px){ body.game #sub{bottom:auto!important;top:calc(48px + env(safe-area-inset-top,0px))!important} body.game #sub .txt{font-size:16px!important} }

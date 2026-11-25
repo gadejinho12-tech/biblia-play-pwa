@@ -53,13 +53,13 @@ R("function layer(f,fn){ ctx.save(); const z=1+(cam.z*ZOOM-1)*f;","const PZ=()=>
 R('<title>Noé e a Arca</title>','<title>Davi e Golias</title>')
 R('aria-label="Filme ilustrado: Noé e a Arca"','aria-label="Filme ilustrado: Davi e Golias"')
 R('<h1>Noé e a Arca</h1>\n    <p>Uma história de fé, coragem e de uma promessa colorida no céu. Com narração, para assistir em família.</p>',
-  '<h1>Davi e Golias</h1>\n    <p>Um menino pastor, um gigante de bronze e uma coragem que vem de Deus. Com narração, para assistir em família.</p>')
+  '<h1>Davi e Golias</h1>\n    <p>Um menino pastor, um gigante com armadura de bronze e uma coragem que vem de Deus. Com narração, para assistir em família.</p>')
 R('Cerca de 2 minutos · 4 capítulos · Gênesis 6 a 9<br>Depois do filme: o jogo <b>Corrida para a Arca</b> 🎁','Cerca de 2 minutos · 4 capítulos · 1 Samuel 17<br>Depois do filme: o jogo <b>A Funda de Davi</b> 🎁')
 R('🎮 Jogar a Corrida para a Arca','🎮 Jogar A Funda de Davi')
 R("""    <h3>O que aprendemos com Noé</h3>
     <ul>
       <li><span class="ic">🙏</span><div><b>Obedecer</b>Noé fez tudo o que Deus pediu, mesmo sem entender tudo.</div></li>
-      <li><span class="ic">🔨</span><div><b>Perseverar</b>Riram dele, mas ele não desistiu: terminou o que começou.</div></li>
+      <li><span class="ic">🔨</span><div><b>Perseverar</b>Noé permaneceu obediente a Deus e construiu a arca, mesmo vivendo em uma geração corrompida.</div></li>
       <li><span class="ic">🌈</span><div><b>Confiar</b>Deus cuidou de Noé na tempestade e cumpre as suas promessas.</div></li>
     </ul>
     <div class="verse"><q>Pela fé, Noé construiu a arca.</q><span>Hebreus 11:7</span></div>

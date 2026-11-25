@@ -133,8 +133,8 @@ a.ghost{text-decoration:none;display:inline-block}
     <h3>O que aprendemos com a Criação</h3>
     <ul>
       <li><span class="ic">🌍</span><div><b>Deus é o Criador</b>O céu, o mar, os animais e as estrelas: tudo foi feito por Ele.</div></li>
-      <li><span class="ic">💛</span><div><b>Você é especial</b>Deus fez as pessoas parecidas com Ele, para serem seus amigos.</div></li>
-      <li><span class="ic">🌱</span><div><b>Cuidar do mundo</b>Deus nos deu a natureza de presente, e pediu para cuidarmos bem dela.</div></li>
+      <li><span class="ic">💛</span><div><b>Você é especial</b>Deus criou você à Sua imagem e lhe deu um lugar especial em Sua criação.</div></li>
+      <li><span class="ic">🌱</span><div><b>Cuidar do mundo</b>Deus confiou ao ser humano o cuidado com a Terra, os animais e tudo o que Ele criou.</div></li>
     </ul>
     <div class="verse"><q>E viu Deus tudo quanto tinha feito, e eis que era muito bom.</q><span>Gênesis 1:31</span></div>
     <div class="talk"><b>Para conversar em família</b>Qual parte da criação você mais gosta? O que a gente pode fazer para cuidar dela?</div>
@@ -510,7 +510,7 @@ function enterLine(i){
   $('summary').hidden = !l.summary; if(l.summary){ try{ if(!localStorage.getItem('bp_criacao_moeda')){ localStorage.setItem('bp_criacao_moeda','1'); window.bpAddCoins&&bpAddCoins(10,'por assistir!'); } localStorage.setItem('bp_criacao_visto','1'); }catch(e){} }
   TALK = l.talk || null;
   const ref=(l.text.match(/\(([^)]*)\)\s*$/)||[])[1]; const body=l.text.replace(/\s*\([^)]*\)\s*$/,'');
-  whoEl.textContent=l.who; txtEl.innerHTML=body.split(' ').map(w=>'<span class="w">'+w+'</span>').join(' ')+(ref?'<span class="ref">'+ref+'</span>':'');
+  whoEl.textContent=(l.who==='Narrador'?'Narradora':l.who); txtEl.innerHTML=body.split(' ').map(w=>'<span class="w">'+w+'</span>').join(' ')+(ref?'<span class="ref">'+ref+'</span>':'');
   words=[...txtEl.querySelectorAll('.w')]; subEl.classList.toggle('on', !l.summary);
   speak(l);
 }
