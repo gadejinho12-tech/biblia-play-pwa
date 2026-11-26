@@ -14,7 +14,7 @@ SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=
   const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 '''
-ENTRA = """  if(l.intro){ $('chapter').classList.remove('on'); subEl.classList.remove('on'); $('summary').hidden=true; TALK=null; words=[]; $('top').textContent='Biblinha Play';
+ENTRA = """  if(l.intro){ $('chapter').classList.remove('on'); subEl.classList.remove('on'); $('summary').hidden=true; TALK=null; words=[]; $('top').textContent='Clubinho do Reino';
     [[72,0],[76,.35],[79,.7],[84,1.05],[81,1.6],[79,1.95],[76,2.3],[79,2.65],[84,3.3],[88,3.7]].forEach(([n,d])=>pluck(n,.07,d)); return; }
 """
 
