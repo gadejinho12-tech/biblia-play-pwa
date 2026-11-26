@@ -1,0 +1,57 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;box-sizing:border-box}
+body{width:720px;height:1280px;overflow:hidden;font-family:'Baloo 2',Nunito,sans-serif;color:#2B3A55;background:linear-gradient(#BDE9FF,#E9F8FF 62%,#FFFDF6)}
+.sol{position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:#FFC93C;box-shadow:0 0 0 30px #FFC93C33,0 0 0 64px #FFC93C1a}
+.nv{position:absolute;background:#fff;border-radius:40px;height:34px;animation:nuv 30s linear infinite}
+.nv:before,.nv:after{content:"";position:absolute;background:#fff;border-radius:50%}.nv:before{width:46px;height:46px;left:18px;top:-24px}.nv:after{width:34px;height:34px;left:52px;top:-14px}
+@keyframes nuv{from{transform:translateX(0)}to{transform:translateX(160px)}}
+.morro{position:absolute;left:-80px;right:-80px;bottom:-170px;height:400px;background:#62BD45;border-radius:50% 50% 0 0}
+.morro2{position:absolute;right:-160px;width:560px;bottom:-190px;height:330px;background:#7DCB5E;border-radius:50% 50% 0 0}
+.marca{position:absolute;left:28px;top:30px;background:#fff;border-radius:999px;padding:8px 20px 8px 10px;font-size:28px;font-weight:800;display:flex;align-items:center;gap:10px;box-shadow:0 4px 0 #CFE6F2}
+.marca img{width:46px;border-radius:12px}.marca b{color:#FF8A3D}
+#lili{position:absolute;left:50%;bottom:150px;width:430px;margin-left:-215px;transform-origin:50% 100%}
+.card{position:absolute;left:50px;right:50px;top:150px;height:400px;background:#fff;border-radius:44px;box-shadow:0 12px 0 #D8E9F3;display:grid;place-items:center;text-align:center;padding:20px 30px;opacity:0;transform:scale(.6) rotate(-3deg);transition:all .45s cubic-bezier(.3,1.5,.5,1)}
+.card.on{opacity:1;transform:none}
+.card .em{font-size:120px;line-height:1}.card .big{font-size:110px;font-weight:800;line-height:1;color:#FF8A3D}.card .tx{font-size:46px;font-weight:800;line-height:1.1;margin-top:8px}
+.leg{position:absolute;left:30px;right:30px;bottom:40px;text-align:center;font:800 34px/1.25 Nunito,sans-serif;color:#2B3A55;background:rgba(255,255,255,.92);border-radius:28px;padding:16px 22px;min-height:70px}
+.fim{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:linear-gradient(#9fdcff,#e4f6ff 64%,#62BD45 64%);opacity:0;transition:opacity .6s}
+.fim.on{opacity:1}.fim img{width:330px}.fim h1{font-size:104px;line-height:.92;margin-top:6px}.fim h1 b{color:#FF8A3D}
+.fim p{font:800 34px/1.25 Nunito,sans-serif;margin:18px 50px}.fim .cta{display:inline-block;background:#FF8A3D;color:#fff;border-radius:999px;padding:18px 46px;font-size:46px;font-weight:800;box-shadow:0 8px 0 #D96A22}
+</style></head><body>
+<div class="sol"></div><div class="nv" style="width:110px;left:40px;top:200px"></div><div class="nv" style="width:90px;left:380px;top:120px;animation-duration:40s"></div>
+<div class="morro2"></div><div class="morro"></div>
+<div class="marca"><img src="../../../filmes/icons/icon-192.png">Clubinho <b>do Reino</b></div>
+<div class="card" id="card"></div>
+<svg id="lili" viewBox="30 48 150 140"><rect x="78" y="146" width="14" height="34" rx="7" fill="#2B3A55"/><rect x="126" y="146" width="14" height="34" rx="7" fill="#2B3A55"/>
+<g stroke="#2B3A55" stroke-width="12" fill="#2B3A55"><circle cx="78" cy="112" r="34"/><circle cx="112" cy="96" r="36"/><circle cx="142" cy="116" r="30"/><circle cx="96" cy="138" r="30"/><circle cx="130" cy="140" r="28"/><circle cx="60" cy="132" r="22"/></g>
+<g fill="#fff"><circle cx="78" cy="112" r="34"/><circle cx="112" cy="96" r="36"/><circle cx="142" cy="116" r="30"/><circle cx="96" cy="138" r="30"/><circle cx="130" cy="140" r="28"/><circle cx="60" cy="132" r="22"/></g>
+<g id="cab"><ellipse cx="62" cy="92" rx="14" ry="8" transform="rotate(-30 62 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+<ellipse cx="124" cy="92" rx="14" ry="8" transform="rotate(30 124 92)" fill="#8A5A44" stroke="#2B3A55" stroke-width="5"/>
+<ellipse cx="93" cy="104" rx="30" ry="33" fill="#8A5A44" stroke="#2B3A55" stroke-width="6"/>
+<g fill="#fff" stroke="#2B3A55" stroke-width="5"><circle cx="80" cy="74" r="12"/><circle cx="106" cy="72" r="13"/><circle cx="93" cy="64" r="13"/></g>
+<g fill="#fff"><circle cx="80" cy="74" r="9.5"/><circle cx="106" cy="72" r="10.5"/><circle cx="93" cy="65" r="10"/></g>
+<ellipse cx="74" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/><ellipse cx="112" cy="118" rx="7" ry="4.5" fill="#FF9DB0"/>
+<g id="olhos"><circle cx="82" cy="100" r="6" fill="#2B3A55"/><circle cx="104" cy="100" r="6" fill="#2B3A55"/><circle cx="84" cy="98" r="2" fill="#fff"/><circle cx="106" cy="98" r="2" fill="#fff"/></g>
+<path id="sorriso" d="M84 116 q9 9 18 0" fill="none" stroke="#2B3A55" stroke-width="4" stroke-linecap="round"/>
+<ellipse id="boca" cx="93" cy="118" rx="7" ry="0" fill="#5a2030" stroke="#2B3A55" stroke-width="3"/></g></svg>
+<div class="leg" id="leg"></div>
+<div class="fim" id="fim"><div><img src="../../../filmes/lili-festa.svg"><h1>Clubinho<br><b>do Reino</b></h1><p>Histórias da Bíblia em desenho animado e joguinhos para crianças de 3 a 7 anos</p><span class="cta">▶ Comece grátis</span></div></div>
+<script>
+let D=null,T0=0,cur=-1;
+window.comecar=(d)=>{D=d;T0=performance.now();requestAnimationFrame(loop);};
+function loop(){ const t=(performance.now()-T0)/1000, L=D.falas;
+  let i=-1; for(let k=0;k<L.length;k++) if(t>=L[k].ini-0.15) i=k;
+  if(i!==cur && i>=0){ cur=i; const f=L[i];
+    if(f.fim){ document.getElementById('fim').classList.add('on'); }
+    else { document.getElementById('leg').textContent=f.t;
+      const c=document.getElementById('card'); c.classList.remove('on');
+      setTimeout(()=>{ c.innerHTML='<div><div class="em">'+f.card.emoji+'</div>'+(f.card.big?'<div class="big">'+f.card.big+'</div>':'')+'<div class="tx">'+f.card.txt+'</div></div>'; c.classList.add('on'); },120); } }
+  const b=D.boca[Math.min(D.boca.length-1,Math.floor(t*30))]||0, aberto=b>.12;
+  document.getElementById('boca').setAttribute('ry', aberto? (2+b*7).toFixed(1):0);
+  document.getElementById('sorriso').style.opacity=aberto?0:1;
+  const li=document.getElementById('lili'); li.style.transform='translateY('+(Math.sin(t*3)*6 - b*8).toFixed(1)+'px) rotate('+(Math.sin(t*1.7)*2.5).toFixed(2)+'deg)';
+  document.getElementById('olhos').style.transform=(t%3.4<.12)?'scaleY(.1)':''; document.getElementById('olhos').style.transformOrigin='93px 100px';
+  if(t<D.total+1) requestAnimationFrame(loop); }
+</script></body></html>
