@@ -6,7 +6,7 @@ Regra combinada com o dono: o que custa dinheiro fica para depois. Fazemos prime
 Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jogo com 3 fases diferentes → teste → publicar.
 
 ### Novo Testamento
-- [ ] **A Ovelha Perdida** (Lucas 15:3-7) — roteiro em aprovação (prototipos/roteiros/ovelha-perdida.md)
+- [x] **A Ovelha Perdida** (Lucas 15:3-7) — pronta (filmes/ovelha.html), aguardando publicação
 - [ ] **Pães e Peixes** (João 6:1-14)
 - [ ] **Zaqueu** (Lucas 19:1-10)
 - [ ] Ideias depois: O Bom Samaritano, Jesus e as crianças, O filho que voltou (filho pródigo), A pesca maravilhosa
