@@ -20,6 +20,11 @@ function mesa(x,y,s){ ctx.save(); ctx.translate(x,y); ctx.scale(s,s); ctx.fillSt
 function jerico(dayK){ layer(0,()=>{ meadowSky(dayK); sunDisk2(380,-250); for(let i=0;i<4;i++) cloud(((i*340+G*8)%1600)-800,-270+(i%2)*40,.9,'#ffffff','#dfe6ee',.9); });
   layer(.5,()=>{ ridge(0,50,.008,4,'#d8c898','#e8d8a8',3000); townBelem(0); for(let i=0;i<5;i++) tree(-1000+i*500,10,.7,'#7a9a58','#4a6a38'); }); }
 function chaoRua(){ ground('#d8c08a','#a8905a'); }
+SC.abertura = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6; const k=ss(0,6.2,t); cam.x=lerp(0,-200,k); cam.y=lerp(-420,-160,k); cam.z=lerp(.45,1.0,ease(k)); jerico(1);
+  layer(.15,()=>{ for(let i=0;i<4;i++){ const bx=((i*260+G*40)%1600)-800, by=-380+(i%2)*30+Math.sin(G*3+i)*6; ctx.strokeStyle='#4a5a6a'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(bx-10,by); ctx.quadraticCurveTo(bx-5,by-6+Math.sin(G*9+i)*4,bx,by); ctx.quadraticCurveTo(bx+5,by-6+Math.sin(G*9+i)*4,bx+10,by); ctx.stroke(); } });
+  layer(1,()=>{ chaoRua(); mesa(0,0,1); for(let i=0;i<9;i++) moeda(-60+(i%5)*26,-66-Math.floor(i/5)*8,1); person('zaqueu',-130,2,{pose:'hold',dir:1}); person('povo1',220,4,{pose:'stand',dir:-1}); person('mulher',300,4,{pose:'stand',dir:-1,ph:2}); });
+  const a=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(a>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=a; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText('Jericó',W/2,H*.3); ctx.fillText('Jericó',W/2,H*.3); ctx.restore(); }
+};
 SC.jerico = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6; setCam([-200,-160,1.0],[0,-150,1.3],t/9); jerico(1);
   layer(1,()=>{ chaoRua(); mesa(0,0,1); for(let i=0;i<9;i++) moeda(-60+(i%5)*26,-66-Math.floor(i/5)*8,1); person('zaqueu',-130,2,{pose:'hold',dir:1}); person('povo1',220,4,{pose:'stand',dir:-1}); person('mulher',300,4,{pose:'stand',dir:-1,ph:2}); });
 };
@@ -63,6 +68,7 @@ SC.final = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.8; setCam([0,-160,
 const CH=[ 'Um homem baixinho', 'Lá em cima da árvore', 'Jesus na casa de Zaqueu', 'Um coração novo' ];
 const N=(t)=>({who:'Narrador',text:t}), JES=t=>({who:'Jesus',text:t,talk:'jesus'}), ZAQ=t=>({who:'Zaqueu',text:t,talk:'zaqueu'}), POV=t=>({who:'Povo',text:t,talk:'povo1'});
 const SCRIPT=[
+  {intro:true, sc:'abertura', who:'', text:'', dur:6.6},
   {card:0},
   {sc:'jerico', ...N('Na cidade de Jericó, morava um homem chamado Zaqueu. Ele era chefe dos cobradores de impostos, e era muito rico. (Lucas 19:1-2)')},
   {sc:'cobra', ...N('Mas Zaqueu não era amigo de ninguém, porque cobrava mais do que devia.')},
@@ -83,7 +89,7 @@ const SCRIPT=[
   {summary:true, sc:'final', ...N('Hoje aprendemos: Jesus conhece você pelo nome, e o amor dele muda o nosso coração.')},
 ];
 //@@MOOD
-const MOOD={ jerico:[[60,64,67],[65,69,72],[62,65,69],[67,71,74]], cobra:[[57,60,64],[53,57,60],[55,59,62],[52,55,59]], rua:[[60,64,67],[65,69,72],[67,71,74],[60,64,67]],
+const MOOD={ abertura:[[60,64,67,72],[65,69,72,76],[67,71,74,79],[72,76,79,84]], jerico:[[60,64,67],[65,69,72],[62,65,69],[67,71,74]], cobra:[[57,60,64],[53,57,60],[55,59,62],[52,55,59]], rua:[[60,64,67],[65,69,72],[67,71,74],[60,64,67]],
   sobe:[[62,66,69],[67,71,74],[64,67,71],[62,66,69]], olha:[[60,64,67,72],[65,69,72,76],[67,71,74,79],[60,64,67,72]], chama:[[60,64,67,72],[65,69,72,77],[67,71,74,79],[72,76,79,84]],
   desce:[[62,66,69,74],[67,71,74,79],[64,67,71,76],[62,66,69,74]], murmura:[[57,60,64],[52,55,59],[53,57,60],[55,59,62]], casa:[[60,64,67,72],[65,69,72,76],[67,71,74,79],[60,64,67,72]],
   coracao:[[62,66,69,74],[67,71,74,79],[64,67,71,76],[62,66,69,74]], final:[[60,64,67,72],[65,69,72,77],[67,71,74,79],[72,76,79,84]], obra:[[60,64,67],[65,69,72],[67,71,74],[60,64,67]] };
