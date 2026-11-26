@@ -1,6 +1,6 @@
 // Biblinha Play Filmes — funciona sem internet depois do primeiro acesso.
 // IMPORTANTE: ao publicar uma versão nova, aumente a VERSAO para os aparelhos baixarem tudo de novo.
-const VERSAO='filmes-v12';
+const VERSAO='filmes-v13';
 const ARQUIVOS=[
   './',
   './ajudante.html',
@@ -29,9 +29,11 @@ const ARQUIVOS=[
   './natal.html',
   './noe.html',
   './ovelha.html',
+  './paes.html',
   './pais.html',
   './quiz.html',
   './tempestade.html',
+  './zaqueu.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'

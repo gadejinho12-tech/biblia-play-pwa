@@ -266,7 +266,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
   </nav>
   <main>
     <section id="at"><div class="rail-h"><h2>Antigo Testamento</h2><small>Assista e ganhe o jogo da história</small></div><div class="rail four" data-t="AT"></div></section>
-    <section id="nt"><div class="rail-h"><h2>Novo Testamento</h2><small>A vida de Jesus</small></div><div class="rail" data-t="NT"></div></section>
+    <section id="nt"><div class="rail-h"><h2>Novo Testamento</h2><small>A vida de Jesus</small></div><div class="rail four" data-t="NT"></div></section>
     <section id="jogos"><div class="rail-h"><h2>Jogos clássicos</h2><small>Para brincar a qualquer hora</small></div><div class="rail four" id="games"></div></section>
     <section class="soon"><div class="rail-h"><h2>Chegando por aí</h2><small>Novas histórias toda temporada</small></div><div class="rail" id="soon"></div></section>
 
@@ -336,6 +336,7 @@ jonas:{ robe:['#e3b27a','#a8703f'], sash:'#5f9a4c', skin:['#e8b48a','#c98f62'], 
   povo3:{ robe:['#ec9fa6','#b8687a'], sash:'#c98a3a', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', longhair:true, s:.84 },
   crianca:{ robe:['#ffd27a','#d9a441'], sash:'#c0503a', skin:['#f6cfa6','#e2ab7c'], hair:'#6b4423', s:.62 },
 jesus:{ robe:['#f6f0e0','#d2c6a6'], sash:'#c0483a', skin:['#e3ad79','#c48a5a'], hair:'#6b4423', beard:true, beardC:'#6b4423', longhair:true, s:1 },
+zaqueu:{ robe:['#a86ac8','#6a3a8a'], sash:'#f2c24a', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', cap:'#f2c24a', s:.72 },
   pedro:{ robe:['#6f9ac8','#3e6a98'], sash:'#7a5a3a', skin:['#e2ab7c','#c48a5a'], hair:'#6a5a4a', beard:true, beardC:'#7a6a5a', s:1 },
   joao:{ robe:['#9cc77a','#5f9a4c'], sash:'#7a5a3a', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', s:.9 },
   andre:{ robe:['#eeb07a','#b96f3e'], sash:'#5a3a22', skin:['#d8a07a','#b07850'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', s:.96 },
@@ -607,6 +608,19 @@ const SCENES={
     const x=((t*24)%260)-20; person('pastor1',x,184,{pose:'walk',s:.34,dir:1}); ctx.save(); ctx.translate(x-6,152); ctx.rotate(-.25); animal('ovelha',0,0,.26,1,5); ctx.restore();
     vChip('🐑 Ache a Ovelhinha!',8,8); },
 
+  // Pães e Peixes — o lanche do menino vira muito
+  paes(t){ vSky('#9fd6f4','#e9f8ff'); vCloud(80,28,1.2,.9); vCloud(260,22,1.3,.85); ctx.fillStyle='#8fd0f2'; ctx.fillRect(0,104,VW,12); vHills(118,'#a8c878'); vGround(150,'#b8d07a','#8ab060');
+    person('jesus',160,176,{pose:'armsup',s:.36,dir:1}); const n=1+Math.floor((t*1.5)%8);
+    for(let i=0;i<n;i++){ const x=40+(i%4)*34+(i>3?190:0), y=172+Math.floor((i%8)/4)*4; ctx.save(); ctx.translate(x,y); ctx.fillStyle='#d8a050'; ctx.beginPath(); ctx.ellipse(0,0,10,6,0,0,7); ctx.fill(); ctx.restore(); }
+    person('crianca',112,180,{pose:'open',s:.3,dir:1}); vChip('🥖 O Lanche que Não Acaba',8,8); },
+
+  // Zaqueu — sobe na árvore para ver Jesus
+  zaqueu(t){ vSky('#9fd6f4','#f4ecd8'); vCloud(70,26,1.2,.9); vCloud(250,22,1.3,.85); ctx.fillStyle='#e0cca0'; ctx.fillRect(10,96,60,60); ctx.fillRect(270,90,70,66); vGround(150,'#e0c890','#c0a060');
+    ctx.fillStyle='#6a4a2a'; ctx.fillRect(152,80,14,80); ctx.strokeStyle='#6a4a2a'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(159,110); ctx.lineTo(195,98); ctx.stroke();
+    const k=(Math.sin(t*1.2)+1)/2; person('zaqueu',172,150-k*40,{pose:'armsup',s:.26,dir:1});
+    for(const [cx,cy,r] of [[130,60,30],[160,46,36],[192,60,30]]) ell(cx,cy,r,r*.8,'#6aa84a');
+    person('jesus',250,182,{pose:'lookup',s:.32,dir:-1,up:true}); vChip('🌳 Suba, Zaqueu!',8,8); },
+
   // Tempestade — deslize o dedo para acalmar o mar
   tempestade(t){ const L=7, u=t%L; const calm=u<3.2?0:Math.min(1,(u-3.2)/1.4)*(u<6.4?1:1-(u-6.4)/.6);
     vSky(mix('#3a4660','#8cc8ef',calm),mix('#6a7690','#e7f4f6',calm)); if(calm<.6){ ctx.save(); ctx.globalAlpha=(1-calm)*.9; vCloud(60,30,1.6,.7); vCloud(200,24,1.8,.65); vCloud(290,40,1.3,.7); ctx.restore(); }
@@ -684,6 +698,8 @@ const FILMS=[
   { id:'natal', t:'NT', title:'O Nascimento de Jesus', ref:'Lucas 2 · Mateus 2', lesson:'Jesus é o maior presente de Deus para o mundo, porque Deus ama você.', game:'A Estrela de Belém' },
   { id:'tempestade', t:'NT', title:'Jesus Acalma a Tempestade', ref:'Marcos 4', lesson:'Jesus tem poder sobre tudo: quando temos medo, podemos chamar por Ele.', game:'Silêncio, Mar!' },
   { id:'ovelha', t:'NT', title:'A Ovelha Perdida', ref:'Lucas 15', lesson:'Para Deus, você é muito importante. Ele nunca desiste de você.', game:'Ache a Ovelhinha!' },
+  { id:'paes', t:'NT', title:'Pães e Peixes', ref:'João 6', lesson:'O pouquinho que damos a Jesus vira muito nas mãos dele. Deus cuida de nós.', game:'O Lanche que Não Acaba' },
+  { id:'zaqueu', t:'NT', title:'Zaqueu', ref:'Lucas 19', lesson:'Jesus conhece você pelo nome, e o amor dele muda o nosso coração.', game:'Suba, Zaqueu!' },
 ];
 const GAMES=[
   { id:'memoria', name:'Jogo da memória', desc:'Ache os pares de personagens e animais.' },
@@ -691,7 +707,7 @@ const GAMES=[
   { id:'quiz', name:'Quiz bíblico', desc:'Perguntas sobre os filmes, com narração.' },
   { id:'arca', name:'Minha Arca', desc:'Troque moedinhas por animais e enfeites.', href:'arca.html', noStars:true },
 ];
-const SOON=[['Daniel na Cova dos Leões','Daniel 6','leao'],['Pães e Peixes','João 6','paes'],['Moisés e o Mar Aberto','Êxodo 14','mar'],['Ester, a Rainha Corajosa','Ester 4–7','ester'],['Zaqueu','Lucas 19','zaqueu']];
+const SOON=[['Daniel na Cova dos Leões','Daniel 6','leao'],['Moisés e o Mar Aberto','Êxodo 14','mar'],['Ester, a Rainha Corajosa','Ester 4–7','ester']];
 const starTxt=n=>'★'.repeat(n)+'☆'.repeat(3-n);
 const TRI='<svg aria-hidden="true"><use href="#tri"/></svg>';
 
