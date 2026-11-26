@@ -4,7 +4,7 @@
 import os, re, sys
 F = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'filmes')
 TITULOS = {'criacao': 'No princípio', 'noe': 'Muito tempo atrás...', 'davi': 'Os campos de Belém', 'jonas': 'A terra de Israel',
-           'natal': 'Nazaré', 'tempestade': 'O mar da Galileia', 'ovelha': 'Jesus ensinava o povo', 'paes': 'O mar da Galileia'}
+           'natal': 'Nazaré', 'tempestade': 'O mar da Galileia', 'ovelha': 'Jesus ensinava o povo', 'paes': 'O mar da Galileia', 'zaqueu': 'Jericó'}
 
 CENA = r'''/* ===== abertura: a primeira cena, vista de longe, com a câmera chegando perto ===== */
 const ABERTURA_TITULO=%s;
