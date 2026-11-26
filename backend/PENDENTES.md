@@ -24,16 +24,17 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [ ] Criação, Noé, Davi e Tempestade: trocar por fases com brincadeiras diferentes (como já feito no Jonas e no Natal)
 - [ ] Mais fases por jogo e filmes mais longos
 
-## Pente fino (26/11) — feito
+## Pente fino (26/11) — feito e publicado
 - Todas as 27 fases dos 9 jogos e os 3 jogos clássicos testados com toque de verdade em 6 telas (celular deitado/em pé, tablet deitado/em pé, computador, Android pequeno): todos chegam ao fim
 - Corrigido: Natal fase 2 (arbustos fora da tela), arrastar com o dedo (Criação, Natal, Tempestade, Davi), Noé com um dedo só, pedras e Golias fora da tela no tablet, ondas fora da tela, Pães e Ovelha com itens fora da tela, caça-palavras/memória/quiz sem rolar, botões de 44px, legenda dos filmes no alto no celular deitado, título da abertura cortado, abertura do Zaqueu dizia "Nazaré"
 - Testes guardados em prototipos/pente-fino/
 
 ### Decisões do dono (pendentes)
-- [ ] Quiz tem 7 perguntas do Daniel, mas o filme ainda é "em breve": deixar ou esconder?
-- [ ] assinar.html diz "2 meses grátis" no anual (R$ 119); a conta dá quase 4 meses
-- [ ] Pontos bíblicos discutíveis (deixados como estão): magos no estábulo (Mt 2:11 diz "casa"); dono oferecendo o estábulo; "Mestre! Acorda!" dito por Pedro; motivo da fuga de Jonas; Davi "espanta" o leão; Pães cita detalhes de Marcos/Mateus
-- [ ] Tempestade fase 3: a voz não diz para tocar nas poças
+- [x] Nome: o dono decidiu manter **Clubinho do Reino** (26/11)
+- [x] Quiz do Daniel: fica como está até o filme ficar pronto
+- [x] Plano anual passa a ser R$ 149,90 (R$ 12,49 por mês; 12 × 14,90 = 178,80 → economia de R$ 28,90 ≈ 2 meses grátis). Falta o dono mudar o preço na Kiwify.
+- [x] Pontos bíblicos discutíveis: o dono decidiu deixar como estão: magos no estábulo (Mt 2:11 diz "casa"); dono oferecendo o estábulo; "Mestre! Acorda!" dito por Pedro; motivo da fuga de Jonas; Davi "espanta" o leão; Pães cita detalhes de Marcos/Mateus
+- [x] Tempestade fase 3: o dono decidiu não gravar fala nova
 - Atenção: os build_*.py antigos (criacao, noe, davi, jonas, natal, tempestade, jogos) não funcionam mais; o HTML em filmes/ é a fonte de verdade. Ovelha, Pães e Zaqueu ainda são gerados pelos build_*.py (fontes sincronizadas).
 
 ## 2. De graça, quando der
@@ -43,17 +44,17 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [x] Imagem do produto na Kiwify feita com o nome novo (prototipos/kiwify/clubinho-produto-600x500.png)
 - [x] Webhook "Lino - Clube MEI 100%" limitado ao produto Club MEI 100% (26/11); não recebe mais vendas do Biblinha
 - [ ] (Voxia/Clube MEI, quando voltar a vender) marcar também "Reembolso" e "Chargeback" nesse webhook
-- [ ] Pesquisa da marca "Biblinha Play" no INPI
 
 ## 3. Quando tiver dinheiro
 - [ ] NÃO pagar o pedido 32696872 (biblinhaplay.com.br). Registrar o domínio do nome novo (ex.: clubinhodoreino.com.br) → DNS para o GitHub Pages → página de vendas na Kiwify
-- [ ] Na Kiwify: renomear o produto para "Clubinho do Reino" e trocar a imagem (prototipos/kiwify/clubinho-produto-600x500.png); fatura do cartão com até 10 letras (ex.: "CLUBINHO")
+- [ ] (De graça, o dono faz no painel; o Claude não tem acesso à Kiwify) Na Kiwify: mudar o preço do plano anual para R$ 149,90, renomear o produto para "Clubinho do Reino" e trocar a imagem (prototipos/kiwify/clubinho-produto-600x500.png); fatura do cartão com até 10 letras (ex.: "CLUBINHO")
 - [ ] Ligar o login no site (ramo `assinatura-supabase`: conta-config.js com Supabase + links da Kiwify)
 - [ ] Compra real do plano mensal → entrar com o e-mail da compra → reembolso em 7 dias
 - [ ] (Opcional) ElevenLabs para vozes ainda mais naturais (a chave precisa ir no cabeçalho `xi-api-key`)
 
 ## Já feito
-- Identidade Biblinha Play (Lili, cores de dia ensolarado, ícone), publicada
+- Pente fino em todos os filmes e jogos (26/11)
+- Identidade visual (Lili, cores de dia ensolarado, ícone), publicada
 - Vozes novas em todos os filmes e jogos (Francisca, Brian, Antônio; Deus e Golias com efeito), volume igualado
 - Jonas e Natal com 3 fases diferentes; aviso para deitar o celular; faixa 3 a 7 anos
 - Correções bíblicas (Criação, Noé, Davi, Jonas)
