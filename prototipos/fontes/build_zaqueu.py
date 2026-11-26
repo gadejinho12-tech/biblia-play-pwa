@@ -28,8 +28,8 @@ R("(l.sc==='viagem'||l.sc==='magos'||l.sc==='estabulo')", "(l.sc==='sobe'||l.sc=
 entre('const MOOD=', '\nlet chordT', P['MOOD'].rstrip('\n'))
 entre('/* ================= JOGO DE RECOMPENSA', '/* ================= LOOP', P['GAME'])
 # abertura (teste): a primeira cena começa de longe, com musiquinha, sem fala nem legenda
-R("let vi=0; SCRIPT.forEach(l=>{ if(l.card==null){", "let vi=0; SCRIPT.forEach(l=>{ if(l.intro){ l.rec=null; } else if(l.card==null){")
-R("  $('chapter').classList.toggle('on', l.card!=null);", """  if(l.intro){ $('chapter').classList.remove('on'); subEl.classList.remove('on'); $('summary').hidden=true; TALK=null; words=[]; $('top').textContent='Biblinha Play';
+if "if(l.intro){ l.rec=null; }" not in s: R("let vi=0; SCRIPT.forEach(l=>{ if(l.card==null){", "let vi=0; SCRIPT.forEach(l=>{ if(l.intro){ l.rec=null; } else if(l.card==null){")
+if "if(l.intro){ $('chapter')" not in s: R("  $('chapter').classList.toggle('on', l.card!=null);", """  if(l.intro){ $('chapter').classList.remove('on'); subEl.classList.remove('on'); $('summary').hidden=true; TALK=null; words=[]; $('top').textContent='Biblinha Play';
     [[72,0],[76,.35],[79,.7],[84,1.05],[81,1.6],[79,1.95],[76,2.3],[79,2.65],[84,3.3],[88,3.7]].forEach(([n,d])=>pluck(n,.07,d)); return; }
   $('chapter').classList.toggle('on', l.card!=null);""")
 R("const scName=P.started? l.sc : 'estabulo';", "const scName=P.started? l.sc : 'jerico';")

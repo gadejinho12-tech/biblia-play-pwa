@@ -89,3 +89,6 @@ for m in re.finditer(r"\{card:(\d)\}|\.\.\.(N|JES|PAS)\('((?:[^'\\]|\\.)*)'\)", 
         vi += 1; falas.append(['v%02d' % vi, QUEM[m.group(2)], m.group(3)])
 json.dump(falas, open(os.path.join(AQUI, 'falas_ovelha.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
 print('ok:', len(falas), 'falas')
+
+# abertura do filme (câmera de longe chegando perto + musiquinha)
+import abertura; abertura.aplicar('ovelha')

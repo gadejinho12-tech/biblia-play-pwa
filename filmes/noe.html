@@ -461,10 +461,18 @@ SC.arcoiris = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.7;
     for(let i=0;i<5;i++){ const bx=Math.sin(G*.7+i*1.7)*300, by=-240+Math.sin(G*1.3+i)*40; ctx.fillStyle=['#ffb0d0','#ffe08a','#b0e0ff'][i%3]; const f=Math.abs(Math.sin(G*10+i)); ell(bx-5,by,6*f+1,5,ctx.fillStyle); ell(bx+5,by,6*f+1,5,ctx.fillStyle); } });
 };
 
+/* ===== abertura: a primeira cena, vista de longe, com a câmera chegando perto ===== */
+const ABERTURA_TITULO='Muito tempo atrás...';
+SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
+  setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
+  try{ cena(0); } finally{ setCam=orig; }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+};
 /* ================= ROTEIRO ================= */
 const CH=[ 'Um homem que ouvia Deus', 'Obedecer e não desistir', 'Todos a salvo', 'A promessa no céu' ];
 const N=(t)=>({who:'Narrador',text:t}), DEUS=(t,r)=>({who:'Deus',text:t,rec:r}), NOE=(t,r)=>({who:'Noé',text:t,rec:r,talk:'noe'});
 const SCRIPT=[
+  {intro:true, sc:'abertura', who:'', text:'', dur:6.6},
   {card:0},
   {sc:'noite', ...N('Há muito tempo, o mundo estava cheio de maldade. Mas havia um homem que amava a Deus de todo o coração: Noé.')},
   {sc:'chamado', ...DEUS('Noé! A terra está cheia de maldade, mas você andou comigo e foi fiel.','01_deus')},
@@ -491,8 +499,8 @@ const SCRIPT=[
   {summary:true, sc:'arcoiris', ...N('Hoje aprendemos com Noé: obedecer, não desistir e confiar nas promessas de Deus.')},
 ];
 // elenco fixo: todas as falas usam as vozes geradas (narradora sempre a mesma)
-let vi=0; SCRIPT.forEach(l=>{ if(l.card==null){ vi++; l.rec='v'+String(vi).padStart(2,'0'); } else l.rec='c'+(l.card+1); });
-function lineDur(l){ if(l.card!=null) return Math.max(3.4,(REC_DUR[l.rec]||2)+1.2); if(l.rec && REC_DUR[l.rec]) return REC_DUR[l.rec]+.7; return Math.max(4, l.text.replace(/\(.*?\)/g,'').length*.068)+.8; }
+let vi=0; SCRIPT.forEach(l=>{ if(l.intro){ l.rec=null; } else if(l.card==null){ vi++; l.rec='v'+String(vi).padStart(2,'0'); } else l.rec='c'+(l.card+1); });
+function lineDur(l){ if(l.intro) return 6.6; if(l.card!=null) return Math.max(3.4,(REC_DUR[l.rec]||2)+1.2); if(l.rec && REC_DUR[l.rec]) return REC_DUR[l.rec]+.7; return Math.max(4, l.text.replace(/\(.*?\)/g,'').length*.068)+.8; }
 let T0=0; SCRIPT.forEach(l=>{ l.start=T0; l.dur=lineDur(l); T0+=l.dur; }); const TOTAL=T0;
 SCRIPT.forEach((l,i)=>{ if(l.card!=null){ const nx=SCRIPT[i+1]; l.sc=nx.sc; } });
 const chapterStarts=SCRIPT.map((l,i)=>l.card!=null?i:-1).filter(i=>i>=0);
@@ -545,6 +553,8 @@ function enterLine(i){
   P.idx=i; P.lt=0; P.hold=0; const l=SCRIPT[i]; curLine=i;
   // tempo da cena continua quando a cena é a mesma
   const prev=SCRIPT[i-1]; if(!prev || prev.sc!==l.sc || prev.card!=null || l.card!=null) P.scT=0;
+  if(l.intro){ $('chapter').classList.remove('on'); subEl.classList.remove('on'); $('summary').hidden=true; TALK=null; words=[]; $('top').textContent='Biblinha Play';
+    [[72,0],[76,.35],[79,.7],[84,1.05],[81,1.6],[79,1.95],[76,2.3],[79,2.65],[84,3.3],[88,3.7]].forEach(([n,d])=>pluck(n,.07,d)); return; }
   $('chapter').classList.toggle('on', l.card!=null);
   if(l.card!=null){ $('chapter').querySelector('.num').textContent='Capítulo '+(l.card+1); $('chapter').querySelector('h2').textContent=CH[l.card]; $('top').textContent='Cap. '+(l.card+1)+' · '+CH[l.card]; subEl.classList.remove('on'); speak(l); pluck(72,.06); pluck(76,.05,.2); pluck(79,.05,.4); return; }
   $('summary').hidden = !l.summary; if(l.summary){ try{ if(!localStorage.getItem('bp_noe_moeda')){ localStorage.setItem('bp_noe_moeda','1'); window.bpAddCoins&&bpAddCoins(10,'por assistir!'); } localStorage.setItem('bp_noe_visto','1'); }catch(e){} }

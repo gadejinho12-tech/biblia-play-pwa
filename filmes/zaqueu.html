@@ -454,6 +454,13 @@ SC.presentes = t=>{ LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; const tx = T
     const gifts=[['mago1',80,'#f2c24a'],['mago2',170,'#c0a0e8'],['mago3',260,'#a8d8a0']];
     gifts.forEach(([id,x,c],i)=>{ person(id,x,0,{pose:'kneel',dir:-1,ph:i}); ctx.fillStyle=vgrad(-30,-6,[[0,c],[1,mix(c,'#000000',.3)]]); rr(x-44,-30,24,22,5); ctx.fill(); glow(x-32,-20,26,'#fff2c0',.5); }); });
 };
+/* ===== abertura: a primeira cena, vista de longe, com a câmera chegando perto ===== */
+const ABERTURA_TITULO='Nazaré';
+SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
+  setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
+  try{ cena(0); } finally{ setCam=orig; }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+};
 /* ===== Zaqueu: cenário ===== */
 function arvore(x,y,s){ ctx.save(); ctx.translate(x,y); ctx.scale(s,s); softShadow(0,4,120,.25); ctx.fillStyle=vgrad(-300,0,[[0,'#8a6a44'],[1,'#5a3e24']]); ctx.beginPath(); ctx.moveTo(-34,0); ctx.quadraticCurveTo(-20,-150,-30,-300); ctx.lineTo(30,-300); ctx.quadraticCurveTo(20,-150,34,0); ctx.fill();
   for(const [bx,by] of [[-1,-120],[1,-170],[-1,-220],[1,-260]]){ ctx.strokeStyle='#6a4a2a'; ctx.lineWidth=14; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(0,by); ctx.lineTo(bx*110,by-40); ctx.stroke(); }
@@ -534,7 +541,7 @@ const SCRIPT=[
   {summary:true, sc:'final', ...N('Hoje aprendemos: Jesus conhece você pelo nome, e o amor dele muda o nosso coração.')},
 ];
 let vi=0; SCRIPT.forEach(l=>{ if(l.intro){ l.rec=null; } else if(l.card==null){ vi++; l.rec='v'+String(vi).padStart(2,'0'); } else l.rec='c'+(l.card+1); });
-function lineDur(l){ if(l.card!=null) return Math.max(3.4,(REC_DUR[l.rec]||2)+1.2); if(l.rec && REC_DUR[l.rec]) return REC_DUR[l.rec]+.7; return Math.max(4, l.text.replace(/\(.*?\)/g,'').length*.068)+.8; }
+function lineDur(l){ if(l.intro) return 6.6; if(l.card!=null) return Math.max(3.4,(REC_DUR[l.rec]||2)+1.2); if(l.rec && REC_DUR[l.rec]) return REC_DUR[l.rec]+.7; return Math.max(4, l.text.replace(/\(.*?\)/g,'').length*.068)+.8; }
 SCRIPT.forEach(l=>{ if(l.card==null && (l.sc==='sobe'||l.sc==='olha'||l.sc==='coracao')) l.dur=Math.max(lineDur(l),7.4); });
 let T0=0; SCRIPT.forEach(l=>{ l.start=T0; if(!l.dur) l.dur=lineDur(l); T0+=l.dur; }); const TOTAL=T0;
 SCRIPT.forEach((l,i)=>{ if(l.card!=null){ const nx=SCRIPT[i+1]; l.sc=nx.sc; } });

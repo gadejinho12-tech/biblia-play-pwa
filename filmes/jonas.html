@@ -453,10 +453,18 @@ function ninive(t,party){
 }
 SC.ninive = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.55; setCam([0,-200,.85],[0,-160,1.2],t/7); ninive(t,false); };
 SC.ninive_festa = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.8; setCam([0,-150,1.4],[0,-190,.9],t/9); ninive(t,true); };
+/* ===== abertura: a primeira cena, vista de longe, com a câmera chegando perto ===== */
+const ABERTURA_TITULO='A terra de Israel';
+SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
+  setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
+  try{ cena(0); } finally{ setCam=orig; }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+};
 /* ================= ROTEIRO ================= */
 const CH=[ 'Fugindo de Deus', 'A tempestade', 'Dentro do grande peixe', 'Uma segunda chance' ];
 const N=(t)=>({who:'Narrador',text:t}), DEUS=t=>({who:'Deus',text:t}), JON=t=>({who:'Jonas',text:t,talk:'jonas'}), MAR=t=>({who:'Marinheiro',text:t,talk:'marinheiro'});
 const SCRIPT=[
+  {intro:true, sc:'abertura', who:'', text:'', dur:6.6},
   {card:0},
   {sc:'chamado_j', ...N('Jonas era um profeta. Um dia, Deus falou com ele.')},
   {sc:'chamado_j', ...DEUS('Jonas, vá até a grande cidade de Nínive, e avise o povo para deixar o mal. (Jonas 1:2)')},
@@ -477,8 +485,8 @@ const SCRIPT=[
   {sc:'ninive_festa', ...N('E Deus perdoou a cidade inteira, porque Ele ama todas as pessoas. (Jonas 4:11)')},
   {summary:true, sc:'ninive_festa', ...N('Hoje aprendemos com Jonas: Deus dá uma segunda chance, e ama todas as pessoas.')},
 ];
-let vi=0; SCRIPT.forEach(l=>{ if(l.card==null){ vi++; l.rec='v'+String(vi).padStart(2,'0'); } else l.rec='c'+(l.card+1); });
-function lineDur(l){ if(l.card!=null) return Math.max(3.4,(REC_DUR[l.rec]||2)+1.2); if(l.rec && REC_DUR[l.rec]) return REC_DUR[l.rec]+.7; return Math.max(4, l.text.replace(/\(.*?\)/g,'').length*.068)+.8; }
+let vi=0; SCRIPT.forEach(l=>{ if(l.intro){ l.rec=null; } else if(l.card==null){ vi++; l.rec='v'+String(vi).padStart(2,'0'); } else l.rec='c'+(l.card+1); });
+function lineDur(l){ if(l.intro) return 6.6; if(l.card!=null) return Math.max(3.4,(REC_DUR[l.rec]||2)+1.2); if(l.rec && REC_DUR[l.rec]) return REC_DUR[l.rec]+.7; return Math.max(4, l.text.replace(/\(.*?\)/g,'').length*.068)+.8; }
 SCRIPT.forEach(l=>{ if(l.card==null && (l.sc==='porto'||l.sc==='mergulho'||l.sc==='peixe'||l.sc==='barriga')) l.dur=Math.max(lineDur(l),6.2); });
 let T0=0; SCRIPT.forEach(l=>{ l.start=T0; if(!l.dur) l.dur=lineDur(l); T0+=l.dur; }); const TOTAL=T0;
 SCRIPT.forEach((l,i)=>{ if(l.card!=null){ const nx=SCRIPT[i+1]; l.sc=nx.sc; } });
@@ -531,6 +539,8 @@ function enterLine(i){
   P.idx=i; P.lt=0; P.hold=0; const l=SCRIPT[i]; curLine=i;
   // tempo da cena continua quando a cena é a mesma
   const prev=SCRIPT[i-1]; if(!prev || prev.sc!==l.sc || prev.card!=null || l.card!=null) P.scT=0;
+  if(l.intro){ $('chapter').classList.remove('on'); subEl.classList.remove('on'); $('summary').hidden=true; TALK=null; words=[]; $('top').textContent='Biblinha Play';
+    [[72,0],[76,.35],[79,.7],[84,1.05],[81,1.6],[79,1.95],[76,2.3],[79,2.65],[84,3.3],[88,3.7]].forEach(([n,d])=>pluck(n,.07,d)); return; }
   $('chapter').classList.toggle('on', l.card!=null);
   if(l.card!=null){ $('chapter').querySelector('.num').textContent='Capítulo '+(l.card+1); $('chapter').querySelector('h2').textContent=CH[l.card]; $('top').textContent='Cap. '+(l.card+1)+' · '+CH[l.card]; subEl.classList.remove('on'); speak(l); pluck(72,.06); pluck(76,.05,.2); pluck(79,.05,.4); return; }
   $('summary').hidden = !l.summary; if(l.summary){ try{ if(!localStorage.getItem('bp_jonas_moeda')){ localStorage.setItem('bp_jonas_moeda','1'); window.bpAddCoins&&bpAddCoins(10,'por assistir!'); } localStorage.setItem('bp_jonas_visto','1'); }catch(e){} }
