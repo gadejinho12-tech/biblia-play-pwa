@@ -692,7 +692,7 @@ function gameUpdate(dt){
   // Davi (x≈-250) e o alvo (potes / leão / Golias) sempre cabem na largura VISÍVEL (iPad deitado cortava o Golias)
   const vw=Math.min(W,720*innerWidth/innerHeight), rgt=(n===1? 560 : (n===2? Math.min(g.lionX,560)+70 : g.golX+90)), half=(rgt+250)/2;
   const z0=narrow? (n===3? .44 : .45) : (n===3? .82 : 1.05), zfit=(vw/2-12)/(half*ZOOM*PZ()), zz=Math.min(z0,zfit);
-  cam.x=lerp(cam.x, flyHit&&n===3? lerp(-182,g.golX,g.stone.t) : (zz<z0? rgt-half : (narrow? (right-240)/2 : (n===3? 0 : 150))), .06);
+  cam.x=lerp(cam.x, flyHit&&n===3? lerp(-182,g.golX,g.stone.t) : (zz<z0? rgt-half : (()=>{ const hv=(vw/2-12)/(zz*ZOOM*PZ()); return clamp(narrow? (right-240)/2 : (n===3? 0 : 150), rgt-hv, -250+hv); })()), .06);
   cam.y=lerp(cam.y, narrow? (n===3?-300:-200) : (n===3?-200:-150), .05);
   cam.z=lerp(cam.z, flyHit&&n===3? (narrow? .9 : 1.2) : zz, .05);
   if(n===3 && !g.hit && !flyHit){ if(g.golX>360) g.golX-=dt*14; }
