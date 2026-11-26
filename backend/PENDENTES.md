@@ -46,9 +46,11 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [ ] (Voxia/Clube MEI, quando voltar a vender) marcar também "Reembolso" e "Chargeback" nesse webhook
 
 ## 3. Quando tiver dinheiro
-- [ ] NÃO pagar o pedido 32696872 (biblinhaplay.com.br). Registrar o domínio do nome novo (ex.: clubinhodoreino.com.br) → DNS para o GitHub Pages → página de vendas na Kiwify
-- [ ] (De graça, o dono faz no painel; o Claude não tem acesso à Kiwify) Na Kiwify: mudar o preço do plano anual para R$ 149,90, renomear o produto para "Clubinho do Reino" e trocar a imagem (prototipos/kiwify/clubinho-produto-600x500.png); fatura do cartão com até 10 letras (ex.: "CLUBINHO")
-- [ ] Ligar o login no site (ramo `assinatura-supabase`: conta-config.js com Supabase + links da Kiwify)
+- [ ] NÃO pagar o pedido 32696872 (biblinhaplay.com.br) — o nome agora é Clubinho do Reino. Registrar o domínio do nome novo (ex.: clubinhodoreino.com.br) → DNS para o GitHub Pages → página de vendas na Kiwify
+- [x] Kiwify (26/11, feito pelo dono via Cowork): produto e produtor "Clubinho do Reino", fatura KIWIFY*CLUBINHO, imagem nova, descrição nova, suporte bennetfour@gmail.com
+- [x] Plano anual NOVO R$ 149,90 → https://pay.kiwify.com.br/5AaelZx (até 12x). Mensal R$ 14,90 → https://pay.kiwify.com.br/vMYkAzH (igual). O anual antigo de R$ 119 (jBVV1nl) virou "Anual antigo" com o link desativado (não excluído)
+- [ ] Página de vendas da Kiwify aponta para o endereço provisório do GitHub Pages: trocar quando o domínio estiver no ar
+- [ ] Ligar o login no site: refazer em cima do main atual (o ramo `assinatura-supabase` está velho e ainda tem o link anual antigo jBVV1nl). Usar os links novos que estão anotados em filmes/conta-config.js
 - [ ] Compra real do plano mensal → entrar com o e-mail da compra → reembolso em 7 dias
 - [ ] (Opcional) ElevenLabs para vozes ainda mais naturais (a chave precisa ir no cabeçalho `xi-api-key`)
 
@@ -64,3 +66,7 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 ## Como regravar vozes
 `cd prototipos/fontes && SSL_CERT_FILE=/root/.ccr/ca-bundle.crt python3 regravar_filme.py <filme>`
 (precisa de edge-tts e do site speech.platform.bing.com liberado na rede)
+
+## Webhook e planos (conferido 26/11)
+- A função kiwify-webhook descobre mensal/anual pela frequência da assinatura (não pelo nome, código ou preço do plano), então o plano anual novo funciona sem mudar nada.
+- Webhooks "Gamaliel Mensal" e "Lino - Clube MEI 100%" na Kiwify: o Gamaliel ignora produtos que não são dele (filtro PRODUTOS_GAMALIEL, já publicado). O do Clube MEI foi limitado ao produto Club MEI 100% em 26/11; conferir se ficou salvo (o relatório do Cowork diz "Todos que sou produtor").
