@@ -16,6 +16,7 @@
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;overflow:hidden;background:#1d1712;color:var(--ink);font-family:var(--body);-webkit-user-select:none;user-select:none}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+body.game #cv{touch-action:none} /* no jogo o dedo arrasta: sem isso o navegador cancela o arrasto (pointercancel) */
 #sub{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:5;width:min(720px, calc(100% - 32px));
   text-align:center;opacity:0;transition:opacity .45s;pointer-events:none}
 #sub.on{opacity:1}
@@ -391,7 +392,7 @@ SC.nazare = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6; setCam([-200,-1
     person('maria',-80,0,{pose:'stand',dir:1}); person('jose',90,0,{pose:'hammer',dir:-1}); ctx.fillStyle=vgrad(-30,0,[[0,'#c8915a'],[1,'#8a5a30']]); rr(130,-24,100,20,6); ctx.fill(); });
 };
 SC.anjo_maria = t=>{ const k=ss(0,2,t); LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.75;
-  const tx = TALK==='maria'? -80 : 40, tz = 1.45; cam.x=lerp(cam.x,tx,.04); cam.y=lerp(cam.y,-160,.04); cam.z=lerp(cam.z,tz,.04);
+  const ep=W<700, tx = ep? 10 : (TALK==='maria'? -80 : 40), tz = ep? 1.15 : 1.45; cam.x=lerp(cam.x,tx,.04); // em pé: Maria e o anjo juntos na tela cam.y=lerp(cam.y,-160,.04); cam.z=lerp(cam.z,tz,.04);
   layer(0,()=>{ ctx.fillStyle=vgrad(-H,H,[[0,'#e8d8b8'],[1,'#c8a878']]); ctx.fillRect(-W,-H,W*2,H*2); ctx.fillStyle='rgba(255,240,200,.25)'; rr(-180,-320,120,170,60); ctx.fill(); godRays(80,-700,800,.3*k,G,'#fff0c0'); });
   layer(1,()=>{ ctx.fillStyle=vgrad(0,300,[[0,'#b89870'],[1,'#7a5a3a']]); ctx.fillRect(-2000,0,4000,800);
     person('maria',-110,0,{pose: TALK==='maria'? 'pray' : 'lookup', dir:1, up:true});
@@ -434,12 +435,12 @@ SC.estabulo2 = t=>{ LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; setCam([0,-1
   layer(1,()=>{ ground('#4a5070','#2a3048'); stable(0,0,1); ox(-230,0,.9,1); donkey(240,0,.9,-1,false); manger(0,0,1.1,true); person('maria',-90,0,{pose:'kneel',dir:1}); person('jose',90,0,{pose:'stand',dir:-1});
     const q=ss(0,3,t); person('pastor1',lerp(-420,-170,q),0,{pose: q<1? 'walk':'kneel',dir:1}); person('pastor2',lerp(420,170,q),0,{pose: q<1? 'walk':'kneel',dir:-1,ph:1}); animal('ovelha',lerp(-500,-240,q),14,.8,1,3); });
 };
-SC.magos = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.6; setCam([-300,-220,.9],[200,-220,.95],t/7);
-  layer(0,()=>{ nightSky(.85); bigStar(380,-380,1.2); });
+SC.magos = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.6; setCam([-300,-220,.9],[200,-220,.95],t/7); if(W<700){ cam.x=lerp(-600,240,t/7.5)-60; cam.z=.75; } // em pé: a câmera acompanha os 3 camelos
+  layer(0,()=>{ nightSky(.85); bigStar(W<700? 110 : 380,-380,1.2); });
   layer(.2,()=>ridge(-30,110,.004,2,'#3a3a6a','#4a4a7a')); layer(.5,()=>{ ridge(0,40,.008,5,'#4a4060','#5a5070'); });
   layer(1,()=>{ ground('#7a6a5a','#4a3e34'); const x=lerp(-600,240,t/7.5); camel(x-200,0,1,1,true,'mago3'); camel(x-60,0,1,1,true,'mago2'); camel(x+80,0,1,1,true,'mago1'); });
 };
-SC.presentes = t=>{ LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; const tx = TALK==='maria'? -90 : 40; cam.x=lerp(cam.x,tx,.03); cam.y=lerp(cam.y,-140,.03); cam.z=lerp(cam.z,TALK?1.5:1.1,.03);
+SC.presentes = t=>{ LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; const ep=W<700, tx = ep? 30 : (TALK==='maria'? -90 : 40); cam.x=lerp(cam.x,tx,.03); cam.y=lerp(cam.y,-140,.03); cam.z=lerp(cam.z,ep? .9 : (TALK?1.5:1.1),.03); // em pé: José, Maria e os 3 sábios na tela
   layer(0,()=>{ nightSky(1); bigStar(0,-420,1); });
   layer(1,()=>{ ground('#4a5070','#2a3048'); stable(0,0,1); manger(-20,0,1.05,true); person('maria',-110,0,{pose: TALK==='maria'?'open':'kneel',dir:1}); person('jose',-200,0,{pose:'stand',dir:1});
     const gifts=[['mago1',80,'#f2c24a'],['mago2',170,'#c0a0e8'],['mago3',260,'#a8d8a0']];
@@ -595,16 +596,25 @@ const NPH=[
   { name:'Fase 3 · Siga a estrela', voice:['n3','Fase três: os magos seguiram a estrela! Toque nas estrelas na ordem: um, dois, três, para mostrar o caminho.'] },
 ];
 const SLOTS=[ {id:'manjedoura',x:0,y:0}, {id:'maria',x:-100,y:0}, {id:'jose',x:100,y:0}, {id:'boi',x:-230,y:0}, {id:'burro',x:235,y:0}, {id:'ovelha',x:-150,y:16}, {id:'estrela',x:0,y:-370} ];
-const BUSHES=[[-460,-6],[-330,10],[-200,-4],[-70,12],[60,-2],[190,10],[320,-4],[450,8]];
+const BUSH_S=1.35, BUSH_R=90; // arbustos maiores e toque generoso (dedinho de 3 anos)
+// o pasto se ajusta à tela: deitado = pastor + fogueira + 1 fileira de 8; em pé = 2 fileiras de 4
+function pastoLayout(){ if(W<760) return { pastor:[-150,0], fogo:[-20,2], hw:335, bush:[...Array(8).keys()].map(i=>[-240+(i%4)*160, i<4? 110 : 245]) };
+  const x0=-575; return { pastor:[x0,0], fogo:[x0+80,4], hw:645, bush:[...Array(8).keys()].map(i=>[x0+188+i*133, i%2? 34 : 20]) }; }
+function pasto(){ const L=pastoLayout(); GS.pasto=L; GS.bush.forEach((b,i)=>{ b.x=L.bush[i][0]; b.y=L.bush[i][1]; b.hy=b.y-38; }); camFor(); }
+const fitZ=(hw,max)=>Math.min(max,(W/2)/hw); // zoom (já com ZOOM e PZ) para caber hw unidades de cada lado
 function gameReset(){ GS.badBy=[0,0,0]; loadPhase(1); }
 function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, cool:GS.cool||0,
     queue: [], placed:[], cur:null, mx:0, hay:[], hayT:1.2, caught:0, GOAL:10, drag:false, px:0, py:0, wrongT:0,
-    bush: n===2? (()=>{ const ix=[...Array(8).keys()].sort(()=>Math.random()-.5).slice(0,5); return BUSHES.map((b,i)=>({x:b[0],y:b[1],has:ix.includes(i),open:false,t:0})); })() : [], got:0,
+    bush: n===2? (()=>{ const ix=[...Array(8).keys()].sort(()=>Math.random()-.5).slice(0,5); return [...Array(8).keys()].map(i=>({x:0,y:0,hy:0,has:ix.includes(i),open:false,t:0})); })() : [], got:0, askT:0, lw:W,
     cx:0, cy:0, vy:0, ground:true, rocks:[], sparks:[], hurt:0, slow:0, dist:0, END:2600, items:0 });
-  camFor(); if(n===3){ GS.seq=1; GS.N=7; GS.cx=-640; GS.estrelas=[...Array(GS.N).keys()].map(i=>({n:i+1, fx:.12+i*.76/(GS.N-1), fy: i%2? .47 : .31, wob:0, ok:false, t:0})); }
+  if(n===2){ pasto(); GS.askT=(REC_DUR[NPH[1].voice[0]]||5); } else camFor(); if(n===3){ GS.seq=1; GS.N=7; GS.cx=-640; const baixa=innerHeight<=520; GS.estR=clamp(22*720/innerHeight,34,50); GS.estrelas=[...Array(GS.N).keys()].map(i=>({n:i+1, fx:.12+i*.76/(GS.N-1), fy: baixa? (i%2? .555 : .43) : W<700? (i%2? .37 : .23) : (i%2? .47 : .31), wob:0, ok:false, t:0})); }
   $('gAn').textContent=NPH[n-1].name.split(' · ')[0]; hud(); gsay(NPH[n-1].voice[0],NPH[n-1].voice[1],true); }
 function hud(){ const n=GS.phase; $('gGol').textContent = n===1? ('🌾 '+GS.caught+' / '+GS.GOAL) : (n===2? ('🐑 '+GS.got+' / 5') : ('⭐ '+(GS.seq-1)+' / '+GS.N)); }
-function camFor(){ const narrow=W<700; if(GS.phase===1){ cam.x=0; cam.y=-150; cam.z=narrow? .95 : 1.05; } else if(GS.phase===2){ cam.x=0; cam.y=-120; cam.z=narrow? .7 : 1.05; } }
+function camFor(){ const narrow=W<700, zz=ZOOM*PZ();
+  // fase 1: o estábulo inteiro (boi e burrinho) cabe na tela
+  if(GS.phase===1){ cam.x=0; cam.y=-150; cam.z=fitZ(345,(narrow? .95 : 1.05)*zz)/zz; }
+  // fase 2: o pastor, a fogueira e todos os arbustos cabem na tela, com folga
+  else if(GS.phase===2){ const L=GS.pasto, z=fitZ(L.hw,1.05*ZOOM); cam.z=z/zz; cam.x=0; cam.y= W<760? -190+70/z : -165; } }
 function nextItem(){ GS.cur=GS.queue.shift()||null; GS.idle=0; const sp=spawnWorld(); GS.px=sp.x; GS.py=sp.y; }
 function spawnWorld(){ return { x:cam.x, y: cam.y+ (H*(.70-CY))/(ZOOM*cam.z*PZ()) }; }
 let gsubT=0;
@@ -617,21 +627,22 @@ function toWorld(e){ const dpr=cv.width/innerWidth, offX=(cv.width-W*K)/2; const
 function slotOf(id){ return SLOTS.find(s=>s.id===id); }
 function gameTap(e){ if(AC) AC.resume(); const w=toWorld(e); const g=GS; if(g.banner>1.6||g.finished) return;
   if(g.phase===1){ g.drag=true; g.mx=clamp(w.x,-400,400); }
-  else if(g.phase===2){ for(const b of g.bush){ if(b.open) continue; if(Math.hypot(w.x-b.x,w.y-(b.y-30))<70){ b.open=true; b.t=0;
+  else if(g.phase===2){ let near=null, nd=BUSH_R; for(const b of g.bush){ if(b.open) continue; const d=Math.hypot(w.x-b.x,w.y-b.hy); if(d<nd){ nd=d; near=b; } }
+    if(near){ const b=near; b.open=true; b.t=0;
         if(b.has){ g.got++; hud(); pluck(79,.07); pluck(84,.06,.08); if(g.got>=5){ finishPhase(); } else gsay('n6','Achou uma ovelhinha!'); }
-        else { g.badBy[1]++; pluck(52,.07); gsay('n7','Aqui não tem nada... tente outro arbusto.'); } return; } } }
+        else { pluck(52,.07); gsay('n7','Aqui não tem nada... tente outro arbusto.'); } return; } }
   else if(g.phase===3){ const dpr=cv.width/innerWidth, lx=(e.clientX*dpr-(cv.width-W*K)/2)/K, ly=e.clientY*dpr/K; let best=null, bd=1e9;
     for(const st of g.estrelas){ const d=Math.hypot(st.fx*W-lx, st.fy*H-ly); if(d<bd){ bd=d; best=st; } }
-    if(!best || bd>70) return;
+    if(!best || bd>Math.max(70,g.estR*2)) return;
     if(best.ok) return;
     if(best.n===g.seq){ best.ok=true; best.t=0; g.seq++; hud(); pluck(76+best.n*2,.07); pluck(88,.04,.08); if(g.seq>g.N) finishPhase(); else if(g.seq===4) gsay('n4','Muito bem!'); }
     else { best.wob=.5; g.badBy[2]+=.5; pluck(52,.07); gsay('n9','Ops! Procure a próxima estrela.'); } } }
 cv.addEventListener('pointermove',e=>{ if(MODE!=='game'||!GS.drag||GS.phase!==1) return; const w=toWorld(e); GS.mx=clamp(w.x,-400,400); });
-addEventListener('pointerup',()=>{ if(MODE==='game') GS.drag=false; });
+addEventListener('pointerup',()=>{ if(MODE==='game') GS.drag=false; }); addEventListener('pointercancel',()=>{ if(MODE==='game') GS.drag=false; });
 addEventListener('keydown',e=>{ if(MODE==='game' && GS.phase===1 && (e.key==='ArrowLeft'||e.key==='ArrowRight')){ GS.mx=clamp(GS.mx+(e.key==='ArrowLeft'?-60:60),-400,400); } });
 function finishPhase(){ const g=GS; g.finished=true; g.finT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
   if(g.phase<3) gsay('n4','Muito bem!',true); else gsay('n8','Parabéns! Vocês chegaram até Jesus, o maior presente de Deus!',true); }
-function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt; if(g.wrongT>0) g.wrongT-=dt;
+function gameUpdate(dt){ const g=GS; if(g.lw!==W){ g.lw=W; if(g.phase===2) pasto(); else camFor(); } if(g.askT>0) g.askT-=dt; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt; if(g.wrongT>0) g.wrongT-=dt;
   for(const b of g.bush) if(b.open) b.t+=dt;
   if(g.finished){ g.finT+=dt; if(g.phase<3 && g.finT>3){ loadPhase(g.phase+1); return; }
     if(g.phase===3 && g.finT>5 && !g.ended){ g.ended=true; const per=g.badBy.map(b=>b===0?3:(b<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
@@ -639,7 +650,7 @@ function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT
   if(g.phase===1){
     if(g.finished){ g.mx=lerp(g.mx,0,.06); }
     else if(g.banner<1.4){
-      g.hayT-=dt; if(g.hayT<=0){ g.hay.push({x:lerp(-360,360,Math.random()), y:-430, vy:150+Math.random()*60, rot:Math.random()*6, spin:(Math.random()-.5)*3}); g.hayT=1+Math.random()*.5; }
+      g.hayT-=dt; if(g.hayT<=0){ const zv=ZOOM*cam.z*PZ(), hx=Math.min(360,(W/2)/zv-75); g.hay.push({x:lerp(-hx,hx,Math.random()), y:Math.min(-430,cam.y-H*CY/zv-30), vy:150+Math.random()*60, rot:Math.random()*6, spin:(Math.random()-.5)*3}); g.hayT=1+Math.random()*.5; }
       for(const h of g.hay){ h.y+=h.vy*dt; h.rot+=h.spin*dt; h.x+=Math.sin(G*2+h.rot)*20*dt;
         if(!h.got && h.y>-70 && h.y<-20 && Math.abs(h.x-g.mx)<85){ h.got=true; g.caught++; hud(); pluck(79+(g.caught%4)*2,.06); if(g.caught===5) gsay('n4','Muito bem!'); if(g.caught>=g.GOAL) finishPhase(); }
         if(!h.got && h.y>10){ h.gone=true; g.badBy[0]+=.34; } }
@@ -648,7 +659,7 @@ function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT
   if(g.phase===3){ const narrow=W<700;
     for(const st of g.estrelas){ st.t+=dt; if(st.wob>0) st.wob-=dt; }
     const alvo=-640+(g.seq-1)/g.N*1080; g.cx=lerp(g.cx, g.finished? 470 : alvo, .03);
-    cam.z=narrow? .7 : .9; cam.x=0; cam.y=-190; }
+    cam.z=narrow? .7 : .9; cam.x=g.cx-85; cam.y=innerHeight<=520? -235 : -190; }
 }
 function drawSlotItem(id,x,y,a){ ctx.save(); ctx.globalAlpha=a;
   if(id==='manjedoura') manger(x,y,1.1,true); else if(id==='maria') person('maria',x,y,{pose:'kneel',dir:1}); else if(id==='jose') person('jose',x,y,{pose:'stand',dir:-1});
@@ -668,12 +679,16 @@ function gameDraw(){ const g=GS; LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.7;
       if(g.drag && !pronto) glow(g.mx,-40,110,'#fff2c0',.25);
     }); }
   else if(g.phase===2){
-    layer(0,()=>{ nightSky(1); glow(-330,-260,140,'#e8eeff',.3); ell(-330,-260,28,28,'#f4f1e2'); });
-    layer(.5,()=>{ ridge(0,60,.008,4,'#2a3a48','#3a4a58'); });
-    layer(1,()=>{ ground('#3a5a48','#1e3020'); person('pastor1',-560,0,{pose:'stand',dir:1}); ell(-470,6,26,6,'#3a2a1a'); glow(-470,-14,120,'#ffb050',.4);
-      for(const b of g.bush){ const sh=b.open? 0 : Math.sin(G*1.4+b.x)*2; if(b.open && b.has){ const k=Math.min(1,b.t*3); animal('ovelha',b.x,b.y+4-k*20,.9*k,1,b.x); }
-        ctx.save(); if(b.open) ctx.globalAlpha=b.has? .45 : .6; shade(b.x-24+sh,b.y-18,26,22,'#3f7a48','#264a2e'); shade(b.x+24+sh,b.y-16,24,20,'#3f7a48','#264a2e'); shade(b.x+sh,b.y-34,30,26,'#4f8a58','#2f5a38'); ctx.restore();
-        if(b.open && !b.has) txt2('🍃',b.x+30,b.y-60,18,'#fff'); } }); }
+    const L=g.pasto, pf=L.fogo;
+    layer(0,()=>{ nightSky(.8); glow(W<760? 120 : -330,-260,190,'#e8eeff',.4); ell(W<760? 120 : -330,-260,30,30,'#f4f1e2'); });
+    layer(.5,()=>{ ridge(0,60,.008,4,'#34485a','#46596a'); });
+    layer(1,()=>{ ground('#4e7a5a','#2c4a36'); glow(0,60,700,'#dfe8ff',.10);
+      // o pastor (que perdeu as ovelhinhas) pede ajuda enquanto a narradora explica; comemora no fim
+      person('pastor1',L.pastor[0],L.pastor[1],{pose: g.finished? 'laugh' : (g.askT>0? 'open' : 'stand'),dir:1});
+      campfire(pf[0],pf[1]);
+      for(const b of g.bush){ const sh=b.open? 0 : Math.sin(G*1.4+b.x)*2; if(b.open && b.has){ const k=Math.min(1,b.t*3); animal('ovelha',b.x,b.y+6-k*34,1.2*k,1,b.x); }
+        ctx.save(); ctx.translate(b.x+sh,b.y); ctx.scale(BUSH_S,BUSH_S); if(b.open) ctx.globalAlpha=b.has? .45 : .6; shade(-24,-18,26,22,'#529a5c','#2e5c38'); shade(24,-16,24,20,'#529a5c','#2e5c38'); shade(0,-34,30,26,'#66b06e','#3a6e46'); ctx.restore();
+        if(b.open && !b.has) txt2('🍃',b.x+36,b.y-80,24,'#fff'); } }); }
   else {
     layer(0,()=>{ nightSky(.9); });
     layer(.2,()=>ridge(-30,110,.004,2,'#3a3a6a','#4a4a7a',3000)); layer(.5,()=>{ ridge(0,40,.008,5,'#4a4060','#5a5070',3000); });
@@ -685,15 +700,17 @@ function gameDraw(){ const g=GS; LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.7;
     const E=g.estrelas; ctx.save(); ctx.lineWidth=4; ctx.strokeStyle='rgba(255,232,138,.75)'; ctx.setLineDash([10,8]); ctx.beginPath();
     for(const st of E){ if(!st.ok) break; const x=st.fx*W, y=st.fy*H; if(st.n===1) ctx.moveTo(x,y); else ctx.lineTo(x,y); } ctx.stroke(); ctx.setLineDash([]); ctx.restore();
     for(const st of E){ const x=st.fx*W+(st.wob>0? Math.sin(G*50)*6 : 0), y=st.fy*H, prox=st.n===g.seq && !g.finished;
-      const r=(st.ok? 30 : 34)*(prox? 1+.12*Math.sin(G*6) : 1);
+      const r=g.estR*(st.ok? .88 : 1)*(prox? 1+.12*Math.sin(G*6) : 1);
       glow(x,y,r*2.4,st.ok? '#fff2c0' : '#cfd8ff', st.ok? .6 : (prox? .45 : .25));
       starShape(x,y,r, st.ok? '#ffe066' : '#f4f1e2');
       ctx.save(); ctx.font='800 '+Math.round(r*.9)+'px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#2B3A55'; ctx.fillText(st.n,x,y+2); ctx.restore(); }
   }
-  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Arraste a manjedoura' : (g.phase===2? '👆 Toque nos arbustos' : '👆 Toque na estrela '+g.seq); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 20px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.94); ctx.fillText(msg,W/2,H*.94); ctx.restore(); } }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw2/2,H*.24-36,bw2,64,14); ctx.fill();
-    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,H*.24+6); ctx.restore(); }
+  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Arraste a manjedoura' : (g.phase===2? '👆 Toque nos arbustos' : '👆 Toque na estrela '+g.seq); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(Math.max(20,14*720/innerHeight))+'px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.94); ctx.fillText(msg,W/2,H*.94); ctx.restore(); } }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; const bY=innerHeight<=520? H*.56 : H*.24; rr(W/2-bw2/2,bY-36,bw2,64,14); ctx.fill(); // tela baixa: a legenda fica no alto, a faixa desce
+    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,bY+6); ctx.restore(); }
 }
+function campfire(x,y){ glow(x,y-26,190,'#ffb050',.5); ell(x,y+4,32,8,'#3a2a1a'); ctx.save(); ctx.strokeStyle='#6b4a2a'; ctx.lineWidth=7; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x-24,y+2); ctx.lineTo(x+18,y-8); ctx.moveTo(x+24,y+2); ctx.lineTo(x-18,y-8); ctx.stroke(); ctx.restore();
+  const f=Math.sin(G*9)*3, f2=Math.sin(G*13+1)*2; ell(x,y-18,15,24+f,'#ff8a2a'); ell(x+2,y-13,9,15+f2,'#ffd45a'); ell(x+1,y-9,4,7,'#fff2b0'); }
 function txt2(t,x,y,size,c){ ctx.save(); ctx.font='800 '+size+'px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=c; ctx.fillText(t,x,y); ctx.restore(); }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };
