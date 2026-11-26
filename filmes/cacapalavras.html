@@ -26,6 +26,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding:6px 0;background:var(--paper)}
 .top h1{font:800 clamp(22px,5.4vw,32px)/1 var(--display);margin:0;text-align:center;flex:1;text-wrap:balance}
 .pill{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink);font:800 14px var(--body);border-radius:999px;padding:9px 14px;background:var(--card);box-shadow:0 0 0 1px rgba(120,90,50,.15);border:0;cursor:pointer}
+.pill,.seg button{min-height:44px;min-width:44px;justify-content:center} /* alvo de toque bom para dedinhos */
 .pill:focus-visible,.btn:focus-visible,.opt:focus-visible,.choice:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .btn{border:0;border-radius:999px;padding:13px 24px;font:800 17px var(--body);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;justify-content:center}
 .btn.go{color:#fff;background:linear-gradient(180deg,var(--gold2),var(--gold));box-shadow:0 8px 20px rgba(201,138,58,.3)}
@@ -63,12 +64,22 @@ svg.marks{position:absolute;inset:10px;z-index:2;pointer-events:none;overflow:vi
 .bar{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;align-items:center;font:800 15px var(--body);color:var(--muted)}
 .bar b{color:var(--ink);font-variant-numeric:tabular-nums}
 .levelrow{display:flex;justify-content:center}
+/* Tela baixa (celular deitado): a grade usa a altura toda da tela; placar e palavras ficam ao lado */
+@media (max-height:520px) and (min-width:560px){
+  body{padding-block:4px 8px}
+  .top{position:static;padding:2px 0}
+  #game{grid-template-columns:minmax(0,1fr) minmax(170px,240px);align-items:start;column-gap:14px;row-gap:10px}
+  #game .play{display:contents}
+  #game .bar{grid-column:2;grid-row:1;justify-content:flex-start;gap:6px 10px}
+  #game .gridbox{grid-column:1;grid-row:1 / span 2}
+  #game .words{grid-column:2;grid-row:2;padding:10px 12px}
+}
 </style>
 <canvas id="confetti"></canvas>
 <div class="wrap">
   <div class="top"><a class="pill" href="index.html">📚 Estante</a><h1>Caça-Palavras</h1><button class="pill" id="vo" aria-label="Narração ligada">🔊</button></div>
   <section id="pick" class="wrap">
-    <p class="lead">Escolha o nível e a história. As palavras escondidas são da própria história!</p>
+    <p class="lead">Escolha o nível e a história. As palavras escondidas são da própria história! Na grade, as letras não têm acento.</p>
     <div class="levelrow"><div class="seg" id="lvl" role="group" aria-label="Nível"></div></div>
     <div class="choices" id="stories"></div>
   </section>
@@ -366,9 +377,11 @@ const WORDS={
   paes:['PAES','PEIXES','MENINO','LANCHE','CESTOS','DOZE','JESUS','GRAMA','REPARTIR','POVO'],
   zaqueu:['ZAQUEU','ARVORE','JERICO','JESUS','CASA','MOEDAS','DEVOLVER','ALEGRIA','CORACAO','POBRES'],
 };
+// como a palavra aparece na lista (na grade, as letras vão sem acento)
+const ACENTO={ADAO:'ADÃO',CEU:'CÉU',NOE:'NOÉ',AGUA:'ÁGUA',FAMILIA:'FAMÍLIA',ARCOIRIS:'ARCO-ÍRIS',NINIVE:'NÍNIVE',PERDAO:'PERDÃO',ORACAO:'ORAÇÃO',JOSE:'JOSÉ',BELEM:'BELÉM',FE:'FÉ',PAES:'PÃES',ARVORE:'ÁRVORE',JERICO:'JERICÓ',CORACAO:'CORAÇÃO'};
 const LV=[ {id:'f',name:'Fácil',size:8,n:5,dirs:[[0,1],[1,0]],max:7,t:[90,180]}, {id:'m',name:'Médio',size:10,n:7,dirs:[[0,1],[1,0],[1,1]],max:9,t:[150,300]}, {id:'d',name:'Difícil',size:12,n:9,dirs:[[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]],max:12,t:[240,480]} ];
 const COLORS=['#f2a65e','#7fb6e8','#8fd07a','#e88a9a','#b99be8','#ffd75e','#7fd0c8','#f0a0c0','#a8c860'];
-let lv=LV[0], story=null, grid=[], placed=[], found=new Set(), t0=0, timer=null, drag=null;
+let lv=LV[0], story=null, grid=[], placed=[], found=new Set(), t0=0, timer=null, drag=null, anchor=null;
 const seg=$('lvl'); LV.forEach((l,i)=>{ const b=document.createElement('button'); b.textContent=l.name; b.setAttribute('aria-pressed',i===0); b.onclick=()=>{ lv=l; [...seg.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); sfx.tap(); }; seg.appendChild(b); });
 const st=$('stories'); STORIES.forEach(s=>{ const b=document.createElement('button'); b.className='choice'; b.appendChild(portrait(s.who,96)); b.insertAdjacentHTML('beforeend',`<span>${s.name}</span><small>${s.ref}</small>`); b.onclick=()=>{ sfx.tap(); start(s); }; st.appendChild(b); });
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
@@ -384,11 +397,15 @@ function build(){ const N=lv.size; for(let tries=0;tries<60;tries++){
   if(ok) break; }
   const A='ABCDEFGHIJLMNOPRSTUVZ'; for(let r=0;r<N;r++) for(let c=0;c<N;c++) if(!grid[r][c]) grid[r][c]=A[Math.floor(Math.random()*A.length)]; }
 function start(s){ story=s; found=new Set(); build(); $('pick').hidden=true; $('game').hidden=false; $('win').hidden=true;
-  const N=lv.size, g=$('grid'); g.innerHTML=''; g.style.gridTemplateColumns=`repeat(${N},1fr)`; $('gbox').style.maxWidth=(N*54+20)+'px';
+  const N=lv.size, g=$('grid'); g.innerHTML=''; g.style.gridTemplateColumns=`repeat(${N},1fr)`; anchor=null;
   for(let r=0;r<N;r++) for(let c=0;c<N;c++){ const d=document.createElement('div'); d.className='cell'; d.textContent=grid[r][c]; d.dataset.r=r; d.dataset.c=c; g.appendChild(d); }
   $('marks').innerHTML=''; const who=$('who'); who.innerHTML=''; who.appendChild(portrait(s.who,56)); who.insertAdjacentHTML('beforeend','<span>'+s.name+'</span>');
-  const ul=$('list'); ul.innerHTML=''; placed.map(p=>p.w).sort().forEach(w=>{ const li=document.createElement('li'); li.textContent=w; li.dataset.w=w; ul.appendChild(li); });
-  t0=Date.now(); clearInterval(timer); timer=setInterval(tick,500); tick(); upd(); say('ci'); }
+  const ul=$('list'); ul.innerHTML=''; placed.map(p=>p.w).sort().forEach(w=>{ const li=document.createElement('li'); li.textContent=ACENTO[w]||w; li.dataset.w=w; ul.appendChild(li); });
+  fitGrid(); t0=Date.now(); clearInterval(timer); timer=setInterval(tick,500); tick(); upd(); say('ci'); }
+// a grade inteira cabe na tela, para dar para arrastar o dedo de uma ponta à outra da palavra sem rolar
+function fitGrid(){ const gb=$('gbox'), N=lv.size, low=matchMedia('(max-height:520px) and (min-width:560px)').matches; scrollTo(0,0);
+  const H=innerHeight-(low? 8 : gb.getBoundingClientRect().top+scrollY+12); gb.style.maxWidth=Math.max(220,Math.min(N*54+20,H))+'px';
+  if(low) gb.scrollIntoView({block:'start'}); }
 function tick(){ const s=Math.floor((Date.now()-t0)/1000); $('time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function upd(){ $('cnt').textContent=found.size+' / '+placed.length; }
 function cellAt(x,y){ const el=document.elementFromPoint(x,y); return el && el.classList.contains('cell')? el : null; }
@@ -397,18 +414,25 @@ function path(a,b){ const r0=+a.dataset.r,c0=+a.dataset.c,r1=+b.dataset.r,c1=+b.
 function cellsOf(p){ const g=$('grid'); return p.map(([r,c])=>g.children[r*lv.size+c]); }
 function clearSel(){ document.querySelectorAll('.cell.sel').forEach(e=>e.classList.remove('sel')); }
 const gb=$('gbox');
-gb.addEventListener('pointerdown',e=>{ const c=cellAt(e.clientX,e.clientY); if(!c) return; ac(); drag={a:c,p:[[+c.dataset.r,+c.dataset.c]]}; clearSel(); c.classList.add('sel'); gb.setPointerCapture(e.pointerId); });
+gb.addEventListener('pointerdown',e=>{ const c=cellAt(e.clientX,e.clientY); if(!c) return; ac();
+  // também dá para tocar na primeira letra e depois na última
+  if(anchor && anchor!==c){ const p=path(anchor,c); if(p){ anchor=null; clearSel(); check(p); return; } }
+  drag={a:c,p:[[+c.dataset.r,+c.dataset.c]],prev:anchor}; anchor=null; clearSel(); c.classList.add('sel'); gb.setPointerCapture(e.pointerId); });
 gb.addEventListener('pointermove',e=>{ if(!drag) return; const c=cellAt(e.clientX,e.clientY); if(!c) return; const p=path(drag.a,c); if(!p) return; drag.p=p; clearSel(); cellsOf(p).forEach(x=>x.classList.add('sel')); });
-gb.addEventListener('pointerup',()=>{ if(!drag) return; const p=drag.p; drag=null; clearSel(); if(p.length<2) return;
+gb.addEventListener('pointercancel',()=>{ drag=null; anchor=null; clearSel(); });
+gb.addEventListener('pointerup',()=>{ if(!drag) return; const p=drag.p, a=drag.a, prev=drag.prev; drag=null;
+  if(p.length<2){ if(prev===a){ clearSel(); } else { anchor=a; a.classList.add('sel'); } return; }
+  clearSel(); check(p); });
+function check(p){
   const word=p.map(([r,c])=>grid[r][c]).join(''), rev=[...word].reverse().join('');
   const hit=placed.find(q=>!found.has(q.w) && (q.w===word||q.w===rev) && ((q.r0===p[0][0]&&q.c0===p[0][1])||(q.r1===p[0][0]&&q.c1===p[0][1])));
   if(hit){ found.add(hit.w); mark(hit,found.size-1); document.querySelector('li[data-w="'+hit.w+'"]').classList.add('got'); sfx.good(); upd();
-    if(found.size===placed.length) setTimeout(win,600); else say('ca'); } else sfx.bad(); });
+    if(found.size===placed.length) setTimeout(win,600); else say('ca'); } else sfx.bad(); }
 function mark(q,i){ const g=$('grid'), a=g.children[q.r0*lv.size+q.c0], b=g.children[q.r1*lv.size+q.c1], gr=g.getBoundingClientRect(), ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect();
   const x1=ra.left+ra.width/2-gr.left, y1=ra.top+ra.height/2-gr.top, x2=rb.left+rb.width/2-gr.left, y2=rb.top+rb.height/2-gr.top;
   const ln=document.createElementNS('http://www.w3.org/2000/svg','line'); ln.setAttribute('x1',x1); ln.setAttribute('y1',y1); ln.setAttribute('x2',x2); ln.setAttribute('y2',y2);
   ln.setAttribute('stroke',COLORS[i%COLORS.length]); ln.setAttribute('stroke-width',ra.width*.78); ln.setAttribute('stroke-linecap','round'); ln.setAttribute('opacity','.55'); $('marks').appendChild(ln); }
-addEventListener('resize',()=>{ if(!$('game').hidden){ $('marks').innerHTML=''; [...found].forEach((w,i)=>mark(placed.find(q=>q.w===w),i)); } });
+addEventListener('resize',()=>{ if(!$('game').hidden){ fitGrid(); $('marks').innerHTML=''; [...found].forEach((w,i)=>mark(placed.find(q=>q.w===w),i)); } });
 $('hint').onclick=()=>{ const q=placed.find(q=>!found.has(q.w)); if(!q) return; const c=$('grid').children[q.r0*lv.size+q.c0]; c.classList.add('sel'); setTimeout(()=>c.classList.remove('sel'),1200); sfx.tap(); t0-=15000; };
 function win(){ clearInterval(timer); const s=Math.floor((Date.now()-t0)/1000); const stars = s<=lv.t[0]? 3 : (s<=lv.t[1]? 2 : 1); saveStars('bp_cacapalavras_estrelas',stars);
   $('wStars').textContent=starText(stars); $('wRes').textContent=story.name+' · nível '+lv.name+' · '+$('time').textContent; $('win').hidden=false; sfx.win(); confetti(); setTimeout(()=>say('cf'),300); }

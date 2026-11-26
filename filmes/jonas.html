@@ -16,6 +16,7 @@
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;overflow:hidden;background:#1d1712;color:var(--ink);font-family:var(--body);-webkit-user-select:none;user-select:none}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+body.game #cv{touch-action:none} /* no jogo o dedo arrasta: sem isso o navegador cancela o arrasto (pointercancel) */
 #sub{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:5;width:min(720px, calc(100% - 32px));
   text-align:center;opacity:0;transition:opacity .45s;pointer-events:none}
 #sub.on{opacity:1}
@@ -458,7 +459,7 @@ const ABERTURA_TITULO='A terra de Israel';
 SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
   setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
   try{ cena(0); } finally{ setCam=orig; }
-  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; { const vw=Math.min(W,720*innerWidth/innerHeight), tw=ctx.measureText(ABERTURA_TITULO).width+16; if(tw>vw-32) ctx.font='800 '+Math.floor(52*(vw-32)/tw)+'px "Baloo 2", Nunito, sans-serif'; } /* celular em pé: o título cabe na tela */ ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 /* ================= ROTEIRO ================= */
 const CH=[ 'Fugindo de Deus', 'A tempestade', 'Dentro do grande peixe', 'Uma segunda chance' ];
@@ -644,7 +645,7 @@ function gameTap(e){ if(AC) AC.resume(); const g=GS, L=JPH[g.phase-1]; if(!L) re
     if(best && bd<Math.max(70,best.r*2.2)){ best.ok=true; best.t=0; g.lit++; $('gGol').textContent=L.icon+' '+g.lit+' / '+L.goal; pluck(84+(g.lit%5)*2,.06); pluck(91,.04,.07);
       if(g.lit===4) gsay('j10','Isso! Deus ouve a oração de Jonas.'); } }
 }
-addEventListener('pointerup',()=>{ if(MODE==='game') GS.hold=false; });
+addEventListener('pointerup',()=>{ if(MODE==='game') GS.hold=false; }); addEventListener('pointercancel',()=>{ if(MODE==='game') GS.hold=false; });
 addEventListener('keydown',e=>{ if(MODE==='game' && (e.key===' '||e.key==='ArrowUp')){ e.preventDefault(); if(JPH[GS.phase-1].kind==='caminho') pular(); else GS.hold=true; } });
 addEventListener('keyup',e=>{ if(MODE==='game' && (e.key===' '||e.key==='ArrowUp')) GS.hold=false; });
 function faseCompleta(){ const g=GS; g.done=true; g.doneT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
@@ -673,7 +674,7 @@ function gameUpdate(dt){
     if(!g.done && g.banner<1.2){
       g.nextLuz-=dt;
       const ativas=g.luzes.filter(l=>!l.ok).length;
-      if(g.nextLuz<=0 && ativas<3 && g.lit+ativas<L.goal){ const m=90; g.luzes.push({x:lerp(m,W-m,Math.random()), y:lerp(H*.2,H*.6,Math.random()), r:36+Math.random()*10, t:0, ok:false, ph:Math.random()*6}); g.nextLuz=.75+Math.random()*.6; }
+      if(g.nextLuz<=0 && ativas<3 && g.lit+ativas<L.goal){ const m=90; const baixa=innerHeight<=520; g.luzes.push({x:lerp(m,W-m,Math.random()), y: baixa? lerp(H*.42,H*.78,Math.random()) : lerp(H*.2,H*.6,Math.random()), r:Math.max(36,22*720/innerHeight)+Math.random()*10, /* tela baixa: abaixo da legenda e maiores */ t:0, ok:false, ph:Math.random()*6}); g.nextLuz=.75+Math.random()*.6; }
       for(const l of g.luzes){ l.t+=dt; if(!l.ok && l.t>L.life){ l.gone=true; g.hitsBy[1]+=.5; } }
       g.luzes=g.luzes.filter(l=>!l.gone && !(l.ok && l.t>1.2));
       if(g.lit>=L.goal) faseCompleta();
@@ -740,9 +741,9 @@ function gameDraw(){
   // barra de progresso
   const bw=Math.min(320,W-140), bx=W/2-bw/2, by=74; ctx.fillStyle='rgba(255,253,246,.9)'; rr(bx,by,bw,12,6); ctx.fill(); ctx.fillStyle='#FF8A3D'; rr(bx,by,Math.max(12,bw*prog),12,6); ctx.fill(); ctx.font='16px sans-serif'; ctx.textAlign='left'; ctx.fillText(L.meta,bx+bw+6,by+12);
   const quieto = L.kind==='nado'? (!g.hold && g.x<300) : L.kind==='caminho'? g.x<420 : g.lit<2;
-  if(!g.done && g.banner<=0 && quieto){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(L.hint,W/2,H*.92); ctx.fillText(L.hint,W/2,H*.92); ctx.restore(); }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,H*.24-36,bw2,64,32); ctx.fill();
-    ctx.font='800 26px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(L.name,W/2,H*.24+8); ctx.restore(); }
+  if(!g.done && g.banner<=0 && quieto){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(Math.max(22,14*720/innerHeight))+'px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(L.hint,W/2,H*.92); ctx.fillText(L.hint,W/2,H*.92); ctx.restore(); }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(255,253,246,.97)'; const bY=innerHeight<=520? H*.56 : H*.24; rr(W/2-bw2/2,bY-36,bw2,64,32); ctx.fill(); // tela baixa: a legenda fica no alto, a faixa desce
+    ctx.font='800 26px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(L.name,W/2,bY+8); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };

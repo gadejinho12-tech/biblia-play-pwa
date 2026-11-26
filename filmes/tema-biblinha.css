@@ -14,7 +14,7 @@
 }
 h1,h2,h3{font-family:var(--display)}
 
-/* Marca: Bibli(nha) [▶ Play] */
+/* Marca: Clubinho [do Reino] */
 .word{font:800 24px/1 var(--display)!important;color:var(--tinta);letter-spacing:-.01em;display:inline-flex;align-items:center;gap:6px}
 .word b{color:var(--laranja);font-weight:800}
 .word i{font-style:normal}
@@ -65,3 +65,6 @@ body:has(.wrapc){background:linear-gradient(#BDE9FF,#E9F8FF 70%,#FFFDF6)!importa
 
 /* Jogos em tela baixa (celular deitado): a legenda sobe para não cobrir a brincadeira */
 @media (max-height:520px){ body.game #sub{bottom:auto!important;top:calc(48px + env(safe-area-inset-top,0px))!important} body.game #sub .txt{font-size:16px!important} }
+
+/* Filmes no celular deitado: a legenda vai para o céu, em cima, para não cobrir os personagens */
+@media (max-height:520px) and (orientation:landscape){ body:not(.game) #sub{bottom:auto!important;top:calc(50px + env(safe-area-inset-top,0px))!important} body:not(.game) #sub .txt{font-size:15px!important} }

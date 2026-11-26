@@ -26,6 +26,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding:6px 0;background:var(--paper)}
 .top h1{font:800 clamp(22px,5.4vw,32px)/1 var(--display);margin:0;text-align:center;flex:1;text-wrap:balance}
 .pill{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink);font:800 14px var(--body);border-radius:999px;padding:9px 14px;background:var(--card);box-shadow:0 0 0 1px rgba(120,90,50,.15);border:0;cursor:pointer}
+.pill,.seg button{min-height:44px;min-width:44px;justify-content:center} /* alvo de toque bom para dedinhos */
 .pill:focus-visible,.btn:focus-visible,.opt:focus-visible,.choice:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .btn{border:0;border-radius:999px;padding:13px 24px;font:800 17px var(--body);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;justify-content:center}
 .btn.go{color:#fff;background:linear-gradient(180deg,var(--gold2),var(--gold));box-shadow:0 8px 20px rgba(201,138,58,.3)}
@@ -63,6 +64,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-
 .front em{font:800 clamp(11px,2.6vw,14px)/1.1 var(--body);font-style:normal;text-align:center}
 .card.done .front{box-shadow:0 0 0 3px var(--ok), 0 8px 18px rgba(90,60,30,.16)}
 .card.shake .in{animation:shake .35s}
+@media (max-height:520px){ body{padding-block:4px 12px} .wrap{gap:8px} .top{padding:2px 0} }
 @keyframes shake{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-5px)}75%{transform:rotateY(180deg) translateX(5px)}}
 </style>
 <canvas id="confetti"></canvas>
@@ -361,13 +363,18 @@ LEVELS.forEach(l=>{ const b=document.createElement('button'); b.className='choic
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function start(l){ L=l; first=null; lock=false; moves=0; found=0; $('pick').hidden=true; $('game').hidden=false; $('win').hidden=true;
   const ids=shuffle(POOL.slice()).slice(0,l.pairs); const deck=shuffle([...ids,...ids]);
-  const cols = innerWidth<520? Math.min(l.cols,4) : (l.pairs===10? 5 : l.cols);
-  const bd=$('board'); bd.innerHTML=''; bd.style.gridTemplateColumns=`repeat(${cols},1fr)`; bd.style.maxWidth = (cols*128)+'px';
+  const bd=$('board'); bd.innerHTML=''; scrollTo(0,0);
   deck.forEach((id,i)=>{ const c=document.createElement('button'); c.className='card'; c.dataset.id=id; c.setAttribute('aria-label','Carta '+(i+1));
     c.innerHTML='<div class="in"><div class="face back"><span><img src="lili.svg" alt=""></span></div><div class="face front"><em>'+NAME[id]+'</em></div></div>';
     const cv=portrait(id,110,['#fffaf0','#f3e2c0']); cv.style.width='100%'; cv.style.height='auto'; c.querySelector('.front').prepend(cv);
     c.onclick=()=>flip(c); bd.appendChild(c); });
-  upd(); say('mi'); }
+  upd(); fit(); say('mi'); }
+// tabuleiro do tamanho da tela: todas as cartas aparecem sem rolar (celular deitado ou em pé, tablet, computador)
+function fit(){ if(!L || $('game').hidden) return; const bd=$('board'), n=L.pairs*2, g=10;
+  const W=bd.parentElement.clientWidth, H=Math.max(150, innerHeight-(bd.getBoundingClientRect().top+scrollY)-12); let best=null;
+  for(let c=2;c<=n;c++){ const r=Math.ceil(n/c); let w=Math.min(128,(W-(c-1)*g)/c,((H-(r-1)*g)/r)*3/4); if(n%c) w*=.96; if(!best||w>best.w) best={c,w}; }
+  bd.style.gridTemplateColumns=`repeat(${best.c},1fr)`; bd.style.maxWidth=Math.floor(best.c*best.w+(best.c-1)*g)+'px'; }
+addEventListener('resize',fit);
 function upd(){ $('pairs').textContent=found+' / '+L.pairs; $('moves').textContent=moves; }
 function flip(c){ if(lock || c.classList.contains('up') || c.classList.contains('done')) return; ac(); sfx.tap(); c.classList.add('up');
   if(!first){ first=c; return; }

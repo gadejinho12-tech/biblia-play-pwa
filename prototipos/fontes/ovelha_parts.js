@@ -107,16 +107,21 @@ const NPH=[
   { name:'Fase 3 · De volta para casa', voice:['o3','Fase três: leve a ovelhinha para casa! Desenhe o caminho com o dedo, sem passar nos espinhos.'] },
 ];
 function gameReset(){ GS.badBy=[0,0,0]; loadPhase(1); }
-function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, cool:GS.cool||0,
+function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, lw:W, cool:GS.cool||0,
     ovs:[], nextOv:1.2, counted:0, GOAL:10, pops:[],
     lx:W/2, ly:H*.5, hold:0, achada:false, esconde:null, dicaT:5,
     path:[], drawing:false, walkT:-1, falhou:0 });
   camFor();
-  if(n===2){ const lugares=[[-430,'pedra'],[-210,'moita'],[20,'pedra'],[240,'moita'],[450,'pedra']]; GS.lugares=lugares; GS.esconde=lugares[1+Math.floor(Math.random()*4)][0]; }
+  if(n===2){ GS.escIdx=1+Math.floor(Math.random()*4); esconderijos(); }
   if(n===3){ GS.esp=[[.36,.30],[.36,.70],[.55,.50],[.70,.22],[.72,.78]].map(([x,y])=>({x,y})); }
   $('gAn').textContent=NPH[n-1].name.split(' · ')[0]; hud(); gsay(NPH[n-1].voice[0],NPH[n-1].voice[1],true); }
+// aperta os esconderijos para caberem na tela (celular em pé, tablet); refeito se a tela girar
+function esconderijos(){ const half=W/2/(ZOOM*cam.z*PZ()); GS.k=Math.min(1,(half-70)/450);
+  GS.lugares=[[-430,'pedra'],[-210,'moita'],[20,'pedra'],[240,'moita'],[450,'pedra']].map(([x,k])=>[Math.round(x*GS.k),k]); GS.esconde=GS.lugares[GS.escIdx][0]; }
+function reencaixa(){ camFor(); if(GS.phase===2) esconderijos(); if(GS.phase===3 && GS.walkT<0){ GS.drawing=false; GS.path=[]; } }
 function hud(){ const n=GS.phase; $('gGol').textContent = n===1? ('🐑 '+GS.counted+' / '+GS.GOAL) : (n===2? (GS.achada? '🐑 Achou!' : '🔦 Procure') : '🏠 Para casa'); }
-function camFor(){ const narrow=W<700; cam.x=GS.phase===1? 40 : 0; cam.y=GS.phase===1? -120 : -150; cam.z=GS.phase===1? (narrow? 1 : 1.3) : (narrow? .8 : 1); }
+function camFor(){ const narrow=W<700; cam.x=GS.phase===1? 100 : 0; cam.y=GS.phase===1? -120 : -150; cam.z=GS.phase===1? (narrow? 1 : 1.3) : (narrow? .8 : 1);
+  if(GS.phase===1) cam.z=Math.min(cam.z,(W/2-10)/370/(ZOOM*PZ())); } // fase 1: a ovelha aparece cedo e a porteira fica na tela (celular em pé, tablet)
 let gsubT=0;
 function gsay(key,text,force,who){ if(!force && GS.cool>0) return; GS.cool=5; speak({rec:key,text}); whoEl.textContent=who||'Narradora'; txtEl.textContent=text; subEl.classList.add('on'); gsubT=Math.max(2.2,(REC_DUR[key]||2)+.6); }
 function startGame(){ MODE='game'; document.body.classList.add('game'); stopVoice(); P.playing=false;
@@ -137,10 +142,11 @@ cv.addEventListener('pointermove',e=>{ if(MODE!=='game') return; const g=GS, w=t
     const r=Math.min(W,H)*.075;
     for(const s of g.esp){ if(Math.hypot(w.sx-s.x*W,w.sy-s.y*H)<r){ g.drawing=false; g.path=[]; g.falhou=.6; g.badBy[2]+=.5; pluck(52,.07); gsay('o8','Cuidado com os espinhos! Tente outro caminho.'); return; } }
     if(Math.abs(w.sx-W*.88)<W*.07 && Math.abs(w.sy-H*.5)<H*.16){ g.drawing=false; g.walkT=0; pluck(79,.07); pluck(84,.06,.08); } } });
-addEventListener('pointerup',()=>{ if(MODE!=='game') return; const g=GS; g.drag=false; if(g.phase===3 && g.drawing){ g.drawing=false; g.path=[]; } });
+const fimToque=()=>{ if(MODE!=='game') return; const g=GS; g.drag=false; if(g.phase===3 && g.drawing){ g.drawing=false; g.path=[]; } };
+addEventListener('pointerup',fimToque); addEventListener('pointercancel',fimToque); // pointercancel (o navegador tomou o toque) conta como soltar
 function finishPhase(){ const g=GS; g.finished=true; g.finT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
   if(g.phase<3) gsay('o4','Muito bem!',true); else gsay('o9','Parabéns! A ovelhinha voltou para casa. Vamos fazer festa!',true); }
-function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt; if(g.falhou>0) g.falhou-=dt;
+function gameUpdate(dt){ const g=GS; if(g.lw!==W){ g.lw=W; reencaixa(); } if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt; if(g.falhou>0) g.falhou-=dt;
   for(const p of g.pops) p.t+=dt; g.pops=g.pops.filter(p=>p.t<1.4);
   if(g.finished){ g.finT+=dt; if(g.phase<3 && g.finT>3){ loadPhase(g.phase+1); return; }
     if(g.phase===3 && g.finT>4.5 && !g.ended){ g.ended=true; const per=g.badBy.map(b=>b===0?3:(b<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
@@ -167,9 +173,9 @@ function gameDraw(){ const g=GS; LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.6;
     layer(0,()=>{ nightSky(1); ell(-330,-260,24,24,'#f4f1e2'); });
     layer(.5,()=>{ ridge(0,60,.008,4,'#2a3a48','#3a4a58',3000); });
     layer(1,()=>{ ground('#3a5a48','#1e3020'); riacho(-700,700,40);
-      for(const [x,k] of g.lugares){ if(x===g.esconde){ animal('ovelha',x+(k==='pedra'?40:30),4,.62,-1,3); for(let i=1;i<=4;i++) ell(x-40*i,22+(i%2)*6,6,3,'rgba(240,230,210,.8)'); }
-        if(k==='pedra') pedra(x,10,1.5); else moita(x,8,1.3,true); }
-      if(g.finished) person('pastor1',g.esconde-120,0,{pose:'kneel',dir:1}); });
+      const ks=.5+.5*g.k; for(const [x,k] of g.lugares){ if(x===g.esconde){ animal('ovelha',x+(k==='pedra'?40:30)*ks,4,.62*Math.max(.85,ks),-1,3); for(let i=1;i<=4;i++) ell(x-40*i*ks,22+(i%2)*6,6,3,'rgba(240,230,210,.8)'); }
+        if(k==='pedra') pedra(x,10,1.5*ks); else moita(x,8,1.3*ks,true); }
+      if(g.finished) person('pastor1',g.esconde-120*ks,0,{pose:'kneel',dir:1}); });
     // escuridão com o círculo da lanterna
     const off=gameDraw.off||(gameDraw.off=document.createElement('canvas')); if(off.width!==Math.round(W)||off.height!==H){ off.width=Math.round(W); off.height=H; }
     const o=off.getContext('2d'); o.globalCompositeOperation='source-over'; o.clearRect(0,0,off.width,off.height); o.fillStyle=`rgba(6,10,30,${g.finished? Math.max(0,.9-g.finT*.5) : .9})`; o.fillRect(0,0,off.width,off.height);
@@ -182,16 +188,16 @@ function gameDraw(){ const g=GS; LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.6;
     const r=Math.min(W,H)*.075;
     for(const s of g.esp){ const x=s.x*W, y=s.y*H; ell(x,y+4,r*1.05,r*.9,'rgba(0,0,0,.12)'); ell(x,y,r,r*.85,'#3f6a3a'); ctx.strokeStyle='#6a4a2a'; ctx.lineWidth=3; for(let i=0;i<10;i++){ const a=i/10*Math.PI*2; ctx.beginPath(); ctx.moveTo(x+Math.cos(a)*r*.7,y+Math.sin(a)*r*.6); ctx.lineTo(x+Math.cos(a)*r*1.25,y+Math.sin(a)*r*1.05); ctx.stroke(); } }
     const cx=W*.88, cy=H*.5; ctx.fillStyle='#e8d8a8'; rr(cx-W*.07,cy-H*.16,W*.14,H*.32,14); ctx.fill(); ctx.strokeStyle='#8a6a44'; ctx.lineWidth=8; rr(cx-W*.07,cy-H*.16,W*.14,H*.32,14); ctx.stroke();
-    for(let i=0;i<4;i++) animal('ovelha',cx-30+(i%2)*40,cy-30+Math.floor(i/2)*44,.45,1,i); ctx.save(); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText('🏠 Curral',cx,cy-H*.19); ctx.restore();
+    for(let i=0;i<4;i++) animal('ovelha',cx-30+(i%2)*40,cy-30+Math.floor(i/2)*44,.45,1,i); ctx.save(); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText('🏠 Curral',Math.min(cx,W-62),cy-H*.19); ctx.restore();
     if(g.path.length>1){ ctx.save(); ctx.strokeStyle=g.falhou>0?'#ff6f6f':'#fff4c8'; ctx.lineWidth=12; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.globalAlpha=.9; ctx.beginPath(); g.path.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y)); ctx.stroke(); ctx.setLineDash([2,16]); ctx.strokeStyle='#c8a060'; ctx.lineWidth=5; ctx.stroke(); ctx.restore(); }
     let px=W*.12, py=H*.5;
     if(g.walkT>=0 && g.path.length>1){ const k=Math.min(1,g.walkT/2.4), idx=k*(g.path.length-1), i0=Math.floor(idx), i1=Math.min(g.path.length-1,i0+1), f=idx-i0; px=lerp(g.path[i0][0],g.path[i1][0],f); py=lerp(g.path[i0][1],g.path[i1][1],f); }
     if(!g.drawing && g.walkT<0){ glow(px,py,70,'#fff7d0',.35+.15*Math.sin(G*5)); }
     pastorNoMapa(px,py,.95,g.walkT>=0&&!g.finished);
     if(g.finished){ ctx.save(); ctx.translate(W/2,H/2); ctx.scale(.6,.6); ctx.translate(-W/2,-H/2); ctx.restore(); for(let i=0;i<30;i++){ const x=((i*97+G*60)%W), y=((G*90+i*53)%H); ctx.fillStyle=['#ffd75e','#ff8fb3','#ffffff','#8fd0f2'][i%4]; ctx.fillRect(x,y,8,4); } } }
-  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque em cada ovelha' : (g.phase===2? '👆 Arraste a lanterna' : (g.drawing? '' : '👆 Desenhe o caminho até o curral')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.94); ctx.fillText(msg,W/2,H*.94); ctx.restore(); } }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,H*.24-36,bw2,64,32); ctx.fill();
-    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,H*.24+8); ctx.restore(); }
+  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque em cada ovelha' : (g.phase===2? '👆 Arraste a lanterna' : (g.drawing? '' : '👆 Desenhe o caminho até o curral')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(Math.max(20,14*720/innerHeight))+'px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.94); ctx.fillText(msg,W/2,H*.94); ctx.restore(); } }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40), by=innerHeight<=520? H*.56 : H*.24; /* celular deitado: a legenda fica no alto, então o título da fase desce */ ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,by-36,bw2,64,32); ctx.fill();
+    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,by+8); ctx.restore(); }
 }
 function txt2(t,x,y,size,c){ ctx.save(); ctx.font='800 '+size+'px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=c; ctx.fillText(t,x,y); ctx.restore(); }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };

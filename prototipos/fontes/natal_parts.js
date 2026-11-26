@@ -54,7 +54,7 @@ SC.nazare = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6; setCam([-200,-1
     person('maria',-80,0,{pose:'stand',dir:1}); person('jose',90,0,{pose:'hammer',dir:-1}); ctx.fillStyle=vgrad(-30,0,[[0,'#c8915a'],[1,'#8a5a30']]); rr(130,-24,100,20,6); ctx.fill(); });
 };
 SC.anjo_maria = t=>{ const k=ss(0,2,t); LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.75;
-  const tx = TALK==='maria'? -80 : 40, tz = 1.45; cam.x=lerp(cam.x,tx,.04); cam.y=lerp(cam.y,-160,.04); cam.z=lerp(cam.z,tz,.04);
+  const ep=W<700, tx = ep? 10 : (TALK==='maria'? -80 : 40), tz = ep? 1.15 : 1.45; cam.x=lerp(cam.x,tx,.04); // em pé: Maria e o anjo juntos na tela cam.y=lerp(cam.y,-160,.04); cam.z=lerp(cam.z,tz,.04);
   layer(0,()=>{ ctx.fillStyle=vgrad(-H,H,[[0,'#e8d8b8'],[1,'#c8a878']]); ctx.fillRect(-W,-H,W*2,H*2); ctx.fillStyle='rgba(255,240,200,.25)'; rr(-180,-320,120,170,60); ctx.fill(); godRays(80,-700,800,.3*k,G,'#fff0c0'); });
   layer(1,()=>{ ctx.fillStyle=vgrad(0,300,[[0,'#b89870'],[1,'#7a5a3a']]); ctx.fillRect(-2000,0,4000,800);
     person('maria',-110,0,{pose: TALK==='maria'? 'pray' : 'lookup', dir:1, up:true});
@@ -97,12 +97,12 @@ SC.estabulo2 = t=>{ LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; setCam([0,-1
   layer(1,()=>{ ground('#4a5070','#2a3048'); stable(0,0,1); ox(-230,0,.9,1); donkey(240,0,.9,-1,false); manger(0,0,1.1,true); person('maria',-90,0,{pose:'kneel',dir:1}); person('jose',90,0,{pose:'stand',dir:-1});
     const q=ss(0,3,t); person('pastor1',lerp(-420,-170,q),0,{pose: q<1? 'walk':'kneel',dir:1}); person('pastor2',lerp(420,170,q),0,{pose: q<1? 'walk':'kneel',dir:-1,ph:1}); animal('ovelha',lerp(-500,-240,q),14,.8,1,3); });
 };
-SC.magos = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.6; setCam([-300,-220,.9],[200,-220,.95],t/7);
-  layer(0,()=>{ nightSky(.85); bigStar(380,-380,1.2); });
+SC.magos = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.6; setCam([-300,-220,.9],[200,-220,.95],t/7); if(W<700){ cam.x=lerp(-600,240,t/7.5)-60; cam.z=.75; } // em pé: a câmera acompanha os 3 camelos
+  layer(0,()=>{ nightSky(.85); bigStar(W<700? 110 : 380,-380,1.2); });
   layer(.2,()=>ridge(-30,110,.004,2,'#3a3a6a','#4a4a7a')); layer(.5,()=>{ ridge(0,40,.008,5,'#4a4060','#5a5070'); });
   layer(1,()=>{ ground('#7a6a5a','#4a3e34'); const x=lerp(-600,240,t/7.5); camel(x-200,0,1,1,true,'mago3'); camel(x-60,0,1,1,true,'mago2'); camel(x+80,0,1,1,true,'mago1'); });
 };
-SC.presentes = t=>{ LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; const tx = TALK==='maria'? -90 : 40; cam.x=lerp(cam.x,tx,.03); cam.y=lerp(cam.y,-140,.03); cam.z=lerp(cam.z,TALK?1.5:1.1,.03);
+SC.presentes = t=>{ LIGHT.dx=1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; const ep=W<700, tx = ep? 30 : (TALK==='maria'? -90 : 40); cam.x=lerp(cam.x,tx,.03); cam.y=lerp(cam.y,-140,.03); cam.z=lerp(cam.z,ep? .9 : (TALK?1.5:1.1),.03); // em pé: José, Maria e os 3 sábios na tela
   layer(0,()=>{ nightSky(1); bigStar(0,-420,1); });
   layer(1,()=>{ ground('#4a5070','#2a3048'); stable(0,0,1); manger(-20,0,1.05,true); person('maria',-110,0,{pose: TALK==='maria'?'open':'kneel',dir:1}); person('jose',-200,0,{pose:'stand',dir:1});
     const gifts=[['mago1',80,'#f2c24a'],['mago2',170,'#c0a0e8'],['mago3',260,'#a8d8a0']];

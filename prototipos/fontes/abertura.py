@@ -4,14 +4,14 @@
 import os, re, sys
 F = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'filmes')
 TITULOS = {'criacao': 'No princípio', 'noe': 'Muito tempo atrás...', 'davi': 'Os campos de Belém', 'jonas': 'A terra de Israel',
-           'natal': 'Nazaré', 'tempestade': 'O mar da Galileia', 'ovelha': 'Jesus ensinava o povo', 'paes': 'O mar da Galileia'}
+           'natal': 'Nazaré', 'tempestade': 'O mar da Galileia', 'ovelha': 'Jesus ensinava o povo', 'paes': 'O mar da Galileia', 'zaqueu': 'Jericó'}
 
 CENA = r'''/* ===== abertura: a primeira cena, vista de longe, com a câmera chegando perto ===== */
 const ABERTURA_TITULO=%s;
 SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
   setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
   try{ cena(0); } finally{ setCam=orig; }
-  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; { const vw=Math.min(W,720*innerWidth/innerHeight), tw=ctx.measureText(ABERTURA_TITULO).width+16; if(tw>vw-32) ctx.font='800 '+Math.floor(52*(vw-32)/tw)+'px "Baloo 2", Nunito, sans-serif'; } /* celular em pé: o título cabe na tela */ ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 '''
 ENTRA = """  if(l.intro){ $('chapter').classList.remove('on'); subEl.classList.remove('on'); $('summary').hidden=true; TALK=null; words=[]; $('top').textContent='Clubinho do Reino';

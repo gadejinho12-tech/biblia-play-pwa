@@ -36,6 +36,8 @@ R("const scName=P.started? l.sc : 'estabulo';", "const scName=P.started? l.sc : 
 R("(SC[scName]||SC.estabulo)(P.started? P.scT : 6.5)", "(SC[scName]||SC.jerico)(P.started? P.scT : 6.5)")
 R("music(dt, GS.phase===1?'estabulo':(GS.phase===2?'pastores':'magos'));", "music(dt, ['sobe','casa','coracao'][GS.phase-1]||'sobe');")
 s = s.replace('bp_natal_', 'bp_zaqueu_')
+# título da abertura: o lugar da história (o natal.html base traz 'Nazaré')
+s = re.sub(r"const ABERTURA_TITULO=.*?;\n", lambda m: "const ABERTURA_TITULO='Jericó';\n", s, count=1)
 # textos da página
 R('<title>O Nascimento de Jesus</title>', '<title>Zaqueu</title>')
 R('aria-label="Filme ilustrado: O nascimento de Jesus"', 'aria-label="Filme ilustrado: Zaqueu"')

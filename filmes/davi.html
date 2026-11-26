@@ -20,6 +20,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:#1d1712;color:var(--in
   text-align:center;opacity:0;transition:opacity .45s;pointer-events:none}
 #sub.on{opacity:1}
 body.game #sub{bottom:calc(118px + env(safe-area-inset-bottom,0px))}
+body.game #cv{touch-action:none} /* segurar a funda: o dedo não pode virar rolagem (pointercancel) */
 #sub .who{display:inline-block;font:800 11px var(--body);letter-spacing:.2em;text-transform:uppercase;color:#fff;background:rgba(58,44,36,.78);border-radius:999px;padding:4px 10px;margin-bottom:6px}
 #sub .txt{font:700 clamp(17px,4.2vw,24px)/1.38 var(--body);color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.55),0 0 18px rgba(0,0,0,.45);text-wrap:balance}
 #sub .txt .w{transition:color .15s}
@@ -176,7 +177,7 @@ addEventListener('resize',fit);
 /* ===== câmera com profundidade (paralaxe) ===== */
 const cam={x:0,y:-160,z:1};
 const ZOOM=1.22, CY=.42; // enquadramento: personagens maiores e a ação acima das legendas
-const PZ=()=>W<700? .7 : 1; // celular em pé: afasta a câmera pra caber a cena
+const PZ=()=>W<700? .7*Math.min(1,720*innerWidth/innerHeight/W) : 1; // celular em pé: afasta a câmera pra caber a cena (W nunca é menor que 380; em tela bem fina, a parte visível é menor que W)
 function layer(f,fn){ ctx.save(); const z=1+(cam.z*ZOOM*PZ()-1)*f; ctx.translate(W/2,H*CY); ctx.scale(z,z); ctx.translate(-cam.x*f,-cam.y*f); fn(); ctx.restore(); }
 function setCam(a,b,t){ const k=ease(clamp(t,0,1)); cam.x=lerp(a[0],b[0],k); cam.y=lerp(a[1],b[1],k); cam.z=lerp(a[2],b[2],k); }
 
@@ -378,11 +379,13 @@ const BROOK_STONES=[[-230,62,1],[-160,88,0],[-90,58,1],[-20,92,0],[50,66,1],[120
 function brook(picked,glowIdx){
   ctx.fillStyle=vgrad(0,40,[[0,'#8fcc6e'],[1,'#6aa653']]); ctx.fillRect(-2000,0,4000,40);
   ctx.fillStyle=vgrad(30,130,[[0,'#7cc4e4'],[1,'#3a86b8']]); ctx.beginPath(); ctx.moveTo(-2000,34); for(let x=-2000;x<=2000;x+=40) ctx.lineTo(x,34+Math.sin(x*.01+G)*3); ctx.lineTo(2000,128); ctx.lineTo(-2000,128); ctx.fill();
-  ctx.fillStyle=vgrad(120,400,[[0,'#8fcc6e'],[1,'#4f8a3e']]); ctx.fillRect(-2000,124,4000,600);
+  ctx.fillStyle=vgrad(120,400,[[0,'#8fcc6e'],[1,'#4f8a3e']]); ctx.fillRect(-2000,124,4000,1600);
   ctx.strokeStyle='rgba(255,255,255,.55)'; ctx.lineWidth=2.5; for(let i=0;i<14;i++){ const xx=((i*137+G*30)%1400)-700, yy=48+(i%4)*18; ctx.beginPath(); ctx.moveTo(xx,yy); ctx.lineTo(xx+26,yy); ctx.stroke(); }
+  const ss=MODE==='game'? clamp(.9/(ZOOM*cam.z*PZ()),1,1.7) : 1; // câmera longe (celular em pé): pedras maiores pra enxergar
   BROOK_STONES.forEach(([sx,sy,smooth],i)=>{ if(picked && picked[i]) return; const wob = (GS && GS.wob && GS.wob[i]>0)? Math.sin(G*60)*3 : 0;
+    ctx.save(); ctx.translate(sx,sy); ctx.scale(ss,ss); ctx.translate(-sx,-sy);
     if(smooth){ shade(sx+wob,sy,15,10,'#e8e4dc','#9a958c'); ell(sx-5+wob,sy-4,5,2.5,'rgba(255,255,255,.7)'); if(glowIdx) glow(sx,sy,30,'#fff6c8',.25+.15*Math.sin(G*4+i)); }
-    else { ctx.fillStyle=vgrad(sy-14,sy+10,[[0,'#8a8278'],[1,'#4e4840']]); ctx.beginPath(); ctx.moveTo(sx-15+wob,sy+8); ctx.lineTo(sx-10+wob,sy-8); ctx.lineTo(sx-2+wob,sy-15); ctx.lineTo(sx+6+wob,sy-6); ctx.lineTo(sx+14+wob,sy-10); ctx.lineTo(sx+16+wob,sy+8); ctx.closePath(); ctx.fill(); } }); }
+    else { ctx.fillStyle=vgrad(sy-14,sy+10,[[0,'#8a8278'],[1,'#4e4840']]); ctx.beginPath(); ctx.moveTo(sx-15+wob,sy+8); ctx.lineTo(sx-10+wob,sy-8); ctx.lineTo(sx-2+wob,sy-15); ctx.lineTo(sx+6+wob,sy-6); ctx.lineTo(sx+14+wob,sy-10); ctx.lineTo(sx+16+wob,sy+8); ctx.closePath(); ctx.fill(); } ctx.restore(); }); }
 
 SC.pasto = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6;
   if(t<7) setCam([-160,-150,1.35],[-60,-130,1.8],t/7); else if(t<14) setCam([-60,-130,1.8],[140,-150,1.35],(t-7)/3); else setCam([140,-150,1.35],[40,-120,2.0],(t-14)/3);
@@ -443,7 +446,7 @@ SC.funda = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.7;
   const hitT=3.4, fall = t<hitT? 0 : (t-hitT)/1.3;
   let sx=-200+26*.8, sy=-104*.8, flying = t>2.2 && t<hitT;
   if(flying){ const q=(t-2.2)/(hitT-2.2); sx=lerp(-180,180,q); sy=lerp(-84,-200,q)-Math.sin(q*Math.PI)*50; }
-  if(t<2.2) setCam([-80,-170,.95],[-170,-130,1.4],t/2.2); else if(flying){ cam.x=lerp(cam.x,sx,.12); cam.y=lerp(cam.y,sy,.12); cam.z=lerp(cam.z,1.7,.05); } else setCam([150,-200,1.5],[60,-180,.85],(t-hitT)/2);
+  if(t<2.2) setCam([-80,-170,.95],[-170,-130,1.4],t/2.2); else if(flying){ cam.x=lerp(cam.x,sx,.12); cam.y=lerp(cam.y,sy,.12); cam.z=lerp(cam.z,1.7,.05); } else { const vw=Math.min(W,720*innerWidth/innerHeight), zf=Math.min(.85,(vw/2)/(350*ZOOM*PZ())); setCam([150,-200,1.5],[zf<.85? 110 : 60,-180,zf],(t-hitT)/2); } // celular em pé: afasta pra caber Davi e o gigante caído
   valleyBack(.6,'fear');
   layer(1,()=>{ valleyFloor(); goliath(200,fall); davi(-200,0,{pose: t<2.4? 'sling' : 'point', dir:1, fast:true});
     if(flying){ glow(sx,sy,26,'#fff2c0',.7); shade(sx,sy,6,5,'#e8e4dc','#9a958c'); for(let k=1;k<6;k++) ell(sx-k*9,sy+k*2,4-k*.5,3-k*.4,'rgba(255,240,200,.5)'); } });
@@ -466,7 +469,8 @@ const ABERTURA_TITULO='Os campos de Belém';
 SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
   setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
   try{ cena(0); } finally{ setCam=orig; }
-  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center';
+    { const vw=Math.min(W,720*innerWidth/innerHeight), tw=ctx.measureText(ABERTURA_TITULO).width+16; if(tw>vw-32) ctx.font='800 '+Math.floor(52*(vw-32)/tw)+'px "Baloo 2", Nunito, sans-serif'; } /* celular em pé: o título cabe na tela */ ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 /* ================= ROTEIRO ================= */
 const CH=[ 'O pastorzinho corajoso', 'O gigante', 'Coragem que vem de Deus', 'A batalha é do Senhor' ];
@@ -620,8 +624,11 @@ const DPH=[
 function gameReset(){
   Object.assign(GS,{ stage:'stones', picked:{}, nPicked:0, wrong:0, wob:{}, phase:0, throws:0, throwsBy:[0,0,0], misses:0, hits:0, golX:640, lionX:560, lionRun:0, pots:[{x:240,on:true},{x:380,on:true},{x:520,on:true}], shards:[],
     hold:false, holdT:0, ph:0, power:0, stone:null, hit:false, hitT:0, ended:false, cool:0, banner:0, busy:0 });
-  cam.x=0; cam.y=-70; cam.z=W<700? .78 : 1.6;
+  cam.x=STONES_CX; cam.y=-70; cam.z=stonesZ();
 }
+// zoom das pedras calculado pela largura VISÍVEL: Davi (x≈-385) e as 10 pedras (até x≈315) sempre cabem na tela (iPad, celular em pé...)
+const STONES_CX=-35;
+function stonesZ(){ const vw=Math.min(W,720*innerWidth/innerHeight); return Math.min(W<700? .78 : 1.6, (vw/2-16)/(ZOOM*PZ()*355)); }
 let gsubT=0;
 function gsay(key,text,force,who){ if(!force && GS.cool>0) return; GS.cool=5; speak({rec:key,text}); whoEl.textContent=who||'Narradora'; txtEl.textContent=text; subEl.classList.add('on'); gsubT=Math.max(2.2,(REC_DUR[key]||2)+.6); }
 function startGame(){
@@ -662,6 +669,7 @@ function gameRelease(){
   if(AC){ const t0=AC.currentTime, s=AC.createBufferSource(); s.buffer=noiseBuf; const f=AC.createBiquadFilter(); f.type='bandpass'; f.frequency.setValueAtTime(1800,t0); f.frequency.exponentialRampToValueAtTime(400,t0+.4); const g=AC.createGain(); g.gain.setValueAtTime(.25,t0); g.gain.exponentialRampToValueAtTime(.001,t0+.4); s.connect(f); f.connect(g); g.connect(musicGain); s.start(t0); s.stop(t0+.45); }
 }
 addEventListener('pointerup',()=>{ if(MODE==='game') gameRelease(); });
+addEventListener('pointercancel',()=>{ if(MODE==='game') gameRelease(); });
 addEventListener('keydown',e=>{ if(MODE==='game' && e.key===' ' && GS.stage==='sling' && !GS.hold && !GS.stone && !GS.hit && GS.busy<=0){ e.preventDefault(); GS.hold=true; GS.holdT=0; } });
 addEventListener('keyup',e=>{ if(MODE==='game' && e.key===' ') gameRelease(); });
 function onHit(){ const n=GS.phase; GS.hits++;
@@ -678,12 +686,15 @@ function gameUpdate(dt){
   for(const sh of g.shards){ sh.t+=dt; sh.x+=sh.vx*dt; sh.y+=sh.vy*dt; sh.vy+=700*dt; } g.shards=g.shards.filter(q=>q.t<1.4);
   if(dustAt){ dustAt[2]+=dt; if(dustAt[2]>1.2) dustAt=null; }
   const narrow=W<700;
-  if(g.stage==='stones'||g.stage==='wait'){ cam.x=lerp(cam.x,20,.05); cam.y=lerp(cam.y,-70,.05); cam.z=lerp(cam.z,narrow?.78:1.6,.05); return; }
+  if(g.stage==='stones'||g.stage==='wait'){ cam.x=lerp(cam.x,STONES_CX,.05); cam.y=lerp(cam.y,-70,.05); cam.z=lerp(cam.z,stonesZ(),.05); return; }
   const n=g.phase, flyHit=g.stone&&g.stone.res==='hit';
   const right = n===3? g.golX : (n===2? g.lionX : 520);
-  cam.x=lerp(cam.x, flyHit&&n===3? lerp(-182,g.golX,g.stone.t) : (narrow? (right-240)/2 : (n===3? 0 : 150)), .06);
+  // Davi (x≈-250) e o alvo (potes / leão / Golias) sempre cabem na largura VISÍVEL (iPad deitado cortava o Golias)
+  const vw=Math.min(W,720*innerWidth/innerHeight), rgt=(n===1? 560 : (n===2? Math.min(g.lionX,560)+70 : g.golX+90)), half=(rgt+250)/2;
+  const z0=narrow? (n===3? .44 : .45) : (n===3? .82 : 1.05), zfit=(vw/2-12)/(half*ZOOM*PZ()), zz=Math.min(z0,zfit);
+  cam.x=lerp(cam.x, flyHit&&n===3? lerp(-182,g.golX,g.stone.t) : (zz<z0? rgt-half : (()=>{ const hv=(vw/2-12)/(zz*ZOOM*PZ()); return clamp(narrow? (right-240)/2 : (n===3? 0 : 150), rgt-hv, -250+hv); })()), .06);
   cam.y=lerp(cam.y, narrow? (n===3?-300:-200) : (n===3?-200:-150), .05);
-  cam.z=lerp(cam.z, flyHit&&n===3? (narrow? .9 : 1.2) : (narrow? (n===3? .44 : .45) : (n===3? .82 : 1.05)), .05);
+  cam.z=lerp(cam.z, flyHit&&n===3? (narrow? .9 : 1.2) : zz, .05);
   if(n===3 && !g.hit && !flyHit){ if(g.golX>360) g.golX-=dt*14; }
   if(n===2){ if(g.lionRun>0){ g.lionRun+=dt; g.lionX+=dt*320; } else if(g.lionX>240) g.lionX-=dt*12; }
   if(g.hold){ g.holdT+=dt; g.ph+=dt*(6+Math.min(1,g.holdT/.45)*10); g.power=.5-.5*Math.cos(Math.max(0,g.holdT-.3)*2*Math.PI/DPH[n-1].period); }
@@ -694,8 +705,10 @@ function gameUpdate(dt){
   if(g.hit){ g.hitT+=dt; if(g.hitT>4.5 && !g.ended){ g.ended=true; const per=DPH.map((D,i)=>{ const extra=g.throwsBy[i]-D.need; return extra<=0?3:(extra<=2?2:1); }); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
     $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=DPH.map((D,i)=>D.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  ')+' · Pedras certas no riacho: 5 de '+(5+g.wrong)+' toques'; $('gwin').hidden=false; try{ const k='bp_davi_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), st)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(st),'pelo jogo!'),900); } }
 }
-function gaugeDraw(){ const [lo,hi]=zone(); const cx=W/2, cy=H*.9, R=72;
-  ctx.save(); ctx.lineCap='round';
+// tela baixa (celular deitado): 720 px lógicos viram ~340 px de verdade; textos e medidor crescem para continuar legíveis
+const UIS=()=>Math.max(1,(14*720/innerHeight)/20);
+function gaugeDraw(){ const [lo,hi]=zone(), u=UIS(); const cx=W/2, cy=H*.92, R=72;
+  ctx.save(); ctx.translate(cx,cy); ctx.scale(u,u); ctx.translate(-cx,-cy); ctx.lineCap='round';
   ctx.strokeStyle='rgba(58,44,36,.45)'; ctx.lineWidth=22; ctx.beginPath(); ctx.arc(cx,cy,R,Math.PI,2*Math.PI); ctx.stroke();
   ctx.strokeStyle='rgba(251,243,227,.9)'; ctx.lineWidth=14; ctx.beginPath(); ctx.arc(cx,cy,R,Math.PI,2*Math.PI); ctx.stroke();
   ctx.strokeStyle='#7fc46a'; ctx.beginPath(); ctx.arc(cx,cy,R,Math.PI*(1+lo),Math.PI*(1+hi)); ctx.stroke();
@@ -728,9 +741,10 @@ function gameDraw(){
   if(n===3 && g.hit && g.hitT<.25){ ctx.fillStyle=`rgba(255,250,235,${.7*(1-g.hitT/.25)})`; ctx.fillRect(-W,-H,W*3,H*3); }
   if(n===3 && g.hit && g.hitT<1.4){ const q=g.hitT/1.4; ctx.save(); ctx.globalAlpha=1-q; ctx.font='800 '+(70+q*30)+'px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(58,44,36,.6)'; ctx.lineWidth=6; ctx.strokeText('POC!',W/2,H*.3); ctx.fillText('POC!',W/2,H*.3); ctx.restore(); }
   if(g.hold && g.holdT>.3) gaugeDraw();
-  if(!g.hold && !g.stone && !g.hit && g.lionRun===0 && g.busy<=0){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 20px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(58,44,36,.55)'; ctx.lineWidth=5; ctx.strokeText('👆 Segure e solte no verde',W/2,H*.92); ctx.fillText('👆 Segure e solte no verde',W/2,H*.92); ctx.restore(); }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,H*.2-36,bw,64,14); ctx.fill();
-    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(DPH[n-1].name,W/2,H*.2+6); ctx.restore(); }
+  if(!g.hold && !g.stone && !g.hit && g.lionRun===0 && g.busy<=0){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(20*UIS())+'px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(58,44,36,.55)'; ctx.lineWidth=5; ctx.strokeText('👆 Segure e solte no verde',W/2,H*.93); ctx.fillText('👆 Segure e solte no verde',W/2,H*.93); ctx.restore(); }
+  if(g.banner>0 && !g.hold){ const a=Math.min(1,g.banner*1.5), by=innerHeight<=520? H*.76 : H*.2; // tela baixa: a legenda fica no alto, a faixa desce
+    ctx.save(); ctx.globalAlpha=a; const bw=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,by-36,bw,64,14); ctx.fill();
+    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(DPH[n-1].name,W/2,by+6); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };

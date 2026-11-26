@@ -16,6 +16,7 @@
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;overflow:hidden;background:#1d1712;color:var(--ink);font-family:var(--body);-webkit-user-select:none;user-select:none}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+body.game #cv{touch-action:none} /* no jogo o dedo arrasta: sem isso o navegador cancela o arrasto (pointercancel) */
 #sub{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:5;width:min(720px, calc(100% - 32px));
   text-align:center;opacity:0;transition:opacity .45s;pointer-events:none}
 #sub.on{opacity:1}
@@ -431,7 +432,7 @@ const ABERTURA_TITULO='O mar da Galileia';
 SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
   setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
   try{ cena(0); } finally{ setCam=orig; }
-  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; { const vw=Math.min(W,720*innerWidth/innerHeight), tw=ctx.measureText(ABERTURA_TITULO).width+16; if(tw>vw-32) ctx.font='800 '+Math.floor(52*(vw-32)/tw)+'px "Baloo 2", Nunito, sans-serif'; } /* celular em pé: o título cabe na tela */ ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 /* ================= ROTEIRO ================= */
 const CH=[ 'Um dia de ensino', 'A grande tempestade', 'Mestre, salva-nos!', 'Quem é este?' ];
@@ -578,7 +579,9 @@ function gameReset(){ GS.badBy=[0,0,0]; loadPhase(1); }
 function loadPhase(n){ const L=TPH[n-1];
   Object.assign(GS,{ phase:n, puddles:[], waves:[], water:.1, done:0, pT:.5, wT:1.2, calm:0, finished:false, finT:0, ended:false, banner:2.8, lastP:null, cool:GS.cool||0 });
   $('gAn').textContent=L.name.split(' · ')[0]; hud(); gsay(L.voice[0],L.voice[1],true);
-  cam.x=0; cam.y=-120; cam.z=W<700? .82 : 1.0; }
+  GS.lw=W; camFor(); }
+// enquadra o barco inteiro e espaço para as ondas chegarem à vista (cerca de 430 unidades de cada lado)
+function camFor(){ const zz=ZOOM*PZ(); cam.x=0; cam.y=-120; cam.z=Math.min((W<700? .82 : 1.0)*zz,(W/2)/430)/zz; }
 function hud(){ const L=TPH[GS.phase-1]; $('gGol').textContent=(GS.phase===1?'💧 ':'🌊 ')+GS.done+' / '+L.need; }
 let gsubT=0;
 function gsay(key,text,force,who){ if(!force && GS.cool>0) return; GS.cool=5; speak({rec:key,text}); whoEl.textContent=who||'Narradora'; txtEl.textContent=text; subEl.classList.add('on'); gsubT=Math.max(2.2,(REC_DUR[key]||2)+.6); }
@@ -592,15 +595,15 @@ function toWorld(e){ const dpr=cv.width/innerWidth, offX=(cv.width-W*K)/2; const
 function boatRock(){ return GS.calm>0? 0 : Math.sin(G*1.4)*.07; }
 function puddleWorld(p){ const r=boatRock(), by=20+Math.sin(G*1.6)*8*(1-GS.calm); return { x:Math.cos(r)*p.lx - Math.sin(r)*p.ly, y:by+Math.sin(r)*p.lx + Math.cos(r)*p.ly }; }
 function gameTap(e){ if(AC) AC.resume(); const w=toWorld(e); GS.lastP=w;
-  for(const p of GS.puddles){ const q=puddleWorld(p); if(Math.hypot(q.x-w.x,q.y-w.y)<52){ p.dead=true; GS.water=Math.max(0,GS.water-.08); pluck(79,.06); pluck(74,.05,.06); burstAt(q.x,q.y-10);
+  for(const p of GS.puddles){ const q=puddleWorld(p); if(Math.hypot(q.x-w.x,q.y-w.y)<62){ p.dead=true; GS.water=Math.max(0,GS.water-.08); pluck(79,.06); pluck(74,.05,.06); burstAt(q.x,q.y-10);
       if(GS.phase===1){ GS.done++; hud(); if(GS.done%4===0) gsay('t4','Muito bem!'); } return; } } }
 const sparks=[]; function burstAt(x,y){ for(let i=0;i<10;i++){ const a=Math.random()*6.28; sparks.push({x,y,vx:Math.cos(a)*160,vy:Math.sin(a)*160-60,t:0}); } }
 cv.addEventListener('pointermove',e=>{ if(MODE!=='game'||!GS.lastP) return; const w=toWorld(e); const a=GS.lastP; GS.lastP=w;
   for(const wv of GS.waves){ if(wv.state!=='up') continue; const cx=wv.x, cy=60-wv.h*.8; const dx=w.x-a.x, dy=w.y-a.y, L=dx*dx+dy*dy||1; let tt=((cx-a.x)*dx+(cy-a.y)*dy)/L; tt=clamp(tt,0,1);
     if(Math.hypot(a.x+dx*tt-cx,a.y+dy*tt-cy) < Math.max(60,wv.h*.5) && Math.hypot(dx,dy)>4){ wv.state='calm'; burstAt(cx,cy); pluck(88,.05); pluck(84,.05,.08); if(GS.phase>1){ GS.done++; hud(); if(GS.done%4===0) gsay('t4','Muito bem!'); } } } });
-addEventListener('pointerup',()=>{ if(MODE==='game') GS.lastP=null; });
+addEventListener('pointerup',()=>{ if(MODE==='game') GS.lastP=null; }); addEventListener('pointercancel',()=>{ if(MODE==='game') GS.lastP=null; });
 function gameUpdate(dt){ const g=GS, L=TPH[g.phase-1];
-  if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt;
+  if(g.lw!==W){ g.lw=W; camFor(); } if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt;
   for(const s of sparks){ s.t+=dt; s.x+=s.vx*dt; s.y+=s.vy*dt; s.vy+=400*dt; } for(let i=sparks.length-1;i>=0;i--) if(sparks[i].t>.8) sparks.splice(i,1);
   if(g.finished){ g.finT+=dt; g.calm=Math.min(1,g.calm+dt*.5);
     if(g.phase<3 && g.finT>3.2){ loadPhase(g.phase+1); return; }
@@ -612,8 +615,8 @@ function gameUpdate(dt){ const g=GS, L=TPH[g.phase-1];
   if(L.puddleEvery){ g.pT-=dt; if(g.pT<=0 && g.puddles.length<5){ g.pT=L.puddleEvery*(.7+Math.random()*.6); g.puddles.push({lx:-170+Math.random()*340, ly:-36, t:0}); } }
   for(const p of g.puddles){ p.t+=dt; g.water+=dt*.018; } g.puddles=g.puddles.filter(p=>!p.dead);
   // ondas
-  if(L.waveEvery){ g.wT-=dt; const active=g.waves.filter(w=>w.state==='up').length; if(g.wT<=0 && active<3){ g.wT=L.waveEvery*(.8+Math.random()*.4); const side=Math.random()<.5?-1:1; g.waves.push({x:side*(420+Math.random()*120), side, h:0, max:120+Math.random()*80, state:'up', t:0}); } }
-  for(const w of g.waves){ w.t+=dt; if(w.state==='up'){ w.h=Math.min(w.max,w.h+dt*160); w.x-=w.side*dt*(60+g.phase*15); if(Math.abs(w.x)<250){ w.state='crash'; g.water+=.14; g.badBy[g.phase-1]++; gsay('t5','Splash! A onda bateu no barco.'); } } else w.h*=Math.max(0,1-dt*4); }
+  if(L.waveEvery){ g.wT-=dt; const active=g.waves.filter(w=>w.state==='up').length; if(g.wT<=0 && active<3){ g.wT=L.waveEvery*(.8+Math.random()*.4); const side=Math.random()<.5?-1:1; const hv=(W/2)/(ZOOM*cam.z*PZ()), d=Math.min(420+Math.random()*120, hv-70); g.waves.push({x:side*d, side, h:0, max:120+Math.random()*80, state:'up', t:0, sp:clamp((d-250)/230,.45,1)}); } }
+  for(const w of g.waves){ w.t+=dt; if(w.state==='up'){ w.h=Math.min(w.max,w.h+dt*160); w.x-=w.side*dt*(60+g.phase*15)*(w.sp||1); if(Math.abs(w.x)<250){ w.state='crash'; g.water+=.14; g.badBy[g.phase-1]++; gsay('t5','Splash! A onda bateu no barco.'); } } else w.h*=Math.max(0,1-dt*4); }
   g.waves=g.waves.filter(w=>!(w.state!=='up' && w.h<4));
   if(g.water>=1){ g.water=.45; g.puddles=[]; g.badBy[g.phase-1]++; gsay('t8','Ufa! O barco encheu demais. Tire a água, rápido!',true); }
   if(g.done>=L.need){ g.finished=true; g.finT=0; g.waves.forEach(w=>w.state='calm'); g.puddles=[]; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
@@ -627,9 +630,9 @@ function gameDraw(){ const g=GS, storm=g.phase===3&&g.finished? 1-g.calm : (g.ph
     boat(0,by,1,r,{storm:storm>.4,crew:()=>{ crew(storm)();
       if(g.phase===3&&g.finished){ person('jesus',-150,-30,{pose:'armsup',dir:1}); glow(-150,-110,200,'#fff4c8',.4); } else sleepingJesus(-150,-34,1);
       if(g.water>0){ ctx.globalAlpha=.7; ctx.fillStyle='rgba(90,170,230,.8)'; rr(-200,-28-g.water*12,400,6+g.water*12,6); ctx.fill(); ctx.globalAlpha=1; }
-      for(const p of g.puddles){ const pu=1+Math.sin(G*6+p.lx)*.08; ell(p.lx,p.ly,26*pu,11*pu,'#7cc4f0'); ell(p.lx-7,p.ly-3,7,3,'rgba(255,255,255,.7)'); txt2('💧',p.lx,p.ly-16,20,'#fff'); } }});
+      for(const p of g.puddles){ const pu=1+Math.sin(G*6+p.lx)*.08; ell(p.lx,p.ly,36*pu,14*pu,'#7cc4f0'); ell(p.lx-10,p.ly-4,9,4,'rgba(255,255,255,.7)'); txt2('💧',p.lx,p.ly-18,28,'#fff'); } }});
     for(const w of g.waves){ const top=60-w.h, hw=90+w.h*.4; ctx.save(); ctx.globalAlpha=w.state==='up'?1:Math.min(1,w.h/60);
-      ctx.fillStyle=vgrad(top,60,[[0,mix('#5aa8d8','#2e5a80',storm)],[1,'#16344e']]); ctx.beginPath(); ctx.moveTo(w.x-hw,80); ctx.quadraticCurveTo(w.x-hw*.4,top,w.x,top); ctx.quadraticCurveTo(w.x+hw*.4,top,w.x+hw,80); ctx.closePath(); ctx.fill();
+      ctx.fillStyle=vgrad(top,60,[[0,mix('#7cc0ea','#4a86b8',storm)],[1,'#1c4262']]); ctx.beginPath(); ctx.moveTo(w.x-hw,80); ctx.quadraticCurveTo(w.x-hw*.4,top,w.x,top); ctx.quadraticCurveTo(w.x+hw*.4,top,w.x+hw,80); ctx.closePath(); ctx.fill(); if(w.state==='up'){ ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=4; ctx.stroke(); } // onda mais clara e com contorno: dá pra ver no mar escuro
       ctx.fillStyle='rgba(255,255,255,.9)'; for(let i=0;i<5;i++) ell(w.x-24+i*12,top+4+Math.sin(G*6+i)*2,7-i*.6,5,'rgba(255,255,255,.9)');
       if(w.state==='up'){ const pulse=.5+.5*Math.sin(G*6); ctx.strokeStyle=`rgba(255,243,196,${.35+pulse*.4})`; ctx.lineWidth=4; ctx.setLineDash([10,8]); ctx.beginPath(); ctx.moveTo(w.x-60,top+w.h*.3); ctx.lineTo(w.x+60,top+w.h*.3); ctx.stroke(); ctx.setLineDash([]); }
       ctx.restore(); }
@@ -638,9 +641,9 @@ function gameDraw(){ const g=GS, storm=g.phase===3&&g.finished? 1-g.calm : (g.ph
   rain(storm>.3? storm : 0,2);
   // medidor de água
   const bw=Math.min(260,W-160), bx=W/2-bw/2, by2=74; ctx.fillStyle='rgba(251,243,227,.88)'; rr(bx,by2,bw,14,7); ctx.fill(); ctx.fillStyle=g.water>.7?'#e85d5d':'#5eb3f2'; rr(bx,by2,Math.max(14,bw*Math.min(1,g.water)),14,7); ctx.fill(); txt2('💧',bx-16,by2+13,16,'#fff');
-  if(g.banner<=0 && !g.finished && g.done===0){ const msg = g.phase===1? '👆 Toque nas poças 💧' : '👆 Deslize o dedo nas ondas'; ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 20px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.92); ctx.fillText(msg,W/2,H*.92); ctx.restore(); }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(440,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw2/2,H*.24-36,bw2,64,14); ctx.fill();
-    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(TPH[g.phase-1].name,W/2,H*.24+6); ctx.restore(); }
+  if(g.banner<=0 && !g.finished && g.done===0){ const msg = g.phase===1? '👆 Toque nas poças 💧' : '👆 Deslize o dedo nas ondas'; ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(Math.max(20,14*720/innerHeight))+'px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.92); ctx.fillText(msg,W/2,H*.92); ctx.restore(); }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(440,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; const bY=innerHeight<=520? H*.56 : H*.24; rr(W/2-bw2/2,bY-36,bw2,64,14); ctx.fill(); // tela baixa: a legenda fica no alto, a faixa desce
+    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(TPH[g.phase-1].name,W/2,bY+6); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };

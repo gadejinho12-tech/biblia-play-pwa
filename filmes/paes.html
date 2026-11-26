@@ -16,6 +16,7 @@
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;overflow:hidden;background:#1d1712;color:var(--ink);font-family:var(--body);-webkit-user-select:none;user-select:none}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+body.game #cv{touch-action:none} /* no jogo o dedo arrasta: sem isso o navegador cancela o arrasto (pointercancel) */
 #sub{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:5;width:min(720px, calc(100% - 32px));
   text-align:center;opacity:0;transition:opacity .45s;pointer-events:none}
 #sub.on{opacity:1}
@@ -459,7 +460,7 @@ const ABERTURA_TITULO='O mar da Galileia';
 SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
   setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
   try{ cena(0); } finally{ setCam=orig; }
-  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; const tw=ctx.measureText(ABERTURA_TITULO).width; if(tw>W-40) ctx.font='800 '+Math.floor(52*(W-40)/tw)+'px "Baloo 2", Nunito, sans-serif'; /* título cabe no celular em pé */ ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 /* ===== Pães e Peixes: cenário ===== */
 function pao(x,y,s){ ctx.save(); ctx.translate(x,y); ctx.scale(s,s); ell(0,4,30,10,'rgba(0,0,0,.12)'); ctx.fillStyle=vgrad(-22,10,[[0,'#f0c070'],[1,'#c08030']]); ctx.beginPath(); ctx.ellipse(0,-6,30,18,0,0,7); ctx.fill(); ctx.strokeStyle='#a86a28'; ctx.lineWidth=2.5; for(let i=-1;i<=1;i++){ ctx.beginPath(); ctx.moveTo(i*12-6,-16); ctx.lineTo(i*12+4,-2); ctx.stroke(); } ctx.restore(); }
@@ -650,20 +651,24 @@ const NPH=[
   { name:'Fase 3 · Doze cestos', voice:['p3','Fase três: doze cestos! Passe o dedo nos pedacinhos para juntar as sobras.'] },
 ];
 function gameReset(){ GS.badBy=[0,0,0]; loadPhase(1); }
-function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, cool:GS.cool||0,
+function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, lw:W, cool:GS.cool||0,
     itens:[], paes:0, peixes:0, voando:[],
     grupos:[], fome:-1, pao:null, drag:false, dados:0, META:8, solto:null,
     migalhas:[], noCesto:0, cestos:0, POR:5, rastro:[] });
   camFor();
   if(n===1){ const tipos=['pao','pao','pao','pao','pao','peixe','peixe','maca','maca','maca','pedrinha','pedrinha','concha','concha']; tipos.sort(()=>Math.random()-.5);
-    GS.itens=tipos.map((k,i)=>({k, x:-300+(i%7)*105+(Math.floor(i/7)%2)*40, y:-70+Math.floor(i/7)*95, ph:Math.random()*6, ok:false, wob:0})); }
-  if(n===2){ GS.grupos=[[-.42,'povo1'],[-.26,'crianca'],[.24,'mulher'],[.4,'povo2']].map(([fx,id])=>({fx,id,comeu:0,feliz:0})); novaFome(); novoPao(); }
+    GS.itens=tipos.map(k=>({k, x:0, y:0, ph:Math.random()*6, ok:false, wob:0})); lanche(); }
+  if(n===2){ GS.grupos=[[-.38,'povo1'],[-.22,'crianca'],[.22,'mulher'],[.38,'povo2']].map(([fx,id])=>({fx,id,comeu:0,feliz:0})); novaFome(); novoPao(); }
   if(n===3){ espalhaMigalhas(16); }
   $('gAn').textContent=NPH[n-1].name.split(' · ')[0]; hud(); gsay(NPH[n-1].voice[0],NPH[n-1].voice[1],true); }
+// celular/tablet em pé: 3 fileiras de 5, menino e cesto embaixo; deitado: 2 fileiras de 7. Refeito se a tela girar.
+function lanche(){ const narrow=W<700; GS.mx=narrow? -215 : -445; GS.my=narrow? 110 : 0; GS.cx=narrow? 215 : 455; GS.cy=narrow? 120 : 30;
+  GS.itens.forEach((it,i)=>{ it.x=narrow? -210+(i%5)*105 : -300+(i%7)*105+(Math.floor(i/7)%2)*40; it.y=narrow? -215+Math.floor(i/5)*85 : -70+Math.floor(i/7)*95; }); }
+function reencaixa(w0){ const g=GS; camFor(); if(g.phase===1) lanche(); if(g.phase===2 && !g.drag && g.pao && !g.pao.voa) novoPao(); if(g.phase===3) for(const m of g.migalhas) if(!m.ok) m.x*=W/w0; }
 function hud(){ const n=GS.phase; $('gGol').textContent = n===1? ('🥖 '+GS.paes+'/5 · 🐟 '+GS.peixes+'/2') : (n===2? ('🙋 '+GS.dados+' / '+GS.META) : ('🧺 '+GS.cestos+' / 12')); }
-function camFor(){ const narrow=W<700; cam.x=0; cam.y=-130; cam.z=narrow? .85 : 1.15; }
+function camFor(){ const narrow=W<700; cam.x=0; cam.y=-130; cam.z=narrow? .85 : 1.15; if(GS.phase===1 && !narrow) cam.z=Math.min(cam.z,(W/2-10)/505/(ZOOM*PZ())); } // fase 1: menino, cesto e todos os itens dentro da tela (tablet)
 function novaFome(){ const g=GS; const op=g.grupos.map((_,i)=>i).filter(i=>i!==g.fome); g.fome=op[Math.floor(Math.random()*op.length)]; }
-function novoPao(){ GS.pao={x:W*.5, y:H*.84, vx:0, vy:0, voa:false}; }
+function novoPao(){ const [x,y]=toScreen(60,40); GS.pao={x, y:Math.min(y,H*.8), vx:0, vy:0, voa:false}; } // o pão sai do cesto de Jesus (antes ficava embaixo da legenda)
 function espalhaMigalhas(n){ for(let i=0;i<n;i++) GS.migalhas.push({x:W*(.08+Math.random()*.66), y:H*(.5+Math.random()*.34), r:Math.random()*6, ok:false, t:0}); }
 let gsubT=0;
 function gsay(key,text,force,who){ if(!force && GS.cool>0) return; GS.cool=5; speak({rec:key,text}); whoEl.textContent=who||'Narradora'; txtEl.textContent=text; subEl.classList.add('on'); gsubT=Math.max(2.2,(REC_DUR[key]||2)+.6); }
@@ -687,15 +692,16 @@ function varre(x,y){ const g=GS; for(const m of g.migalhas){ if(!m.ok && Math.hy
 cv.addEventListener('pointermove',e=>{ if(MODE!=='game'||!GS.drag) return; const g=GS, w=toWorld(e);
   if(g.phase===2 && g.pao && !g.pao.voa){ g.pao.x=w.sx; g.pao.y=w.sy; }
   if(g.phase===3){ g.rastro.push([w.sx,w.sy,0]); varre(w.sx,w.sy); } });
-addEventListener('pointerup',()=>{ if(MODE!=='game') return; const g=GS; if(!g.drag) return; g.drag=false;
+const fimToque=()=>{ if(MODE!=='game') return; const g=GS; if(!g.drag) return; g.drag=false;
   if(g.phase===2 && g.pao && !g.pao.voa){ let alvo=-1, bd=1e9; g.grupos.forEach((gr,i)=>{ const [sx,sy]=toScreen(gr.fx*W/(ZOOM*cam.z*PZ()),-60); const d=Math.hypot(g.pao.x-sx,g.pao.y-sy); if(d<bd){ bd=d; alvo=i; } });
     if(alvo===g.fome && bd<150){ const gr=g.grupos[alvo]; gr.comeu++; gr.feliz=1.6; g.dados++; hud(); pluck(79,.07); pluck(86,.05,.08); g.pao.voa=true;
       if(g.dados>=g.META) finishPhase(); else { if(g.dados===4) gsay('o4','Muito bem!'); setTimeout(()=>{ if(MODE==='game' && GS.phase===2){ novaFome(); novoPao(); } },500); } }
     else if(bd<150){ g.badBy[1]+=.34; pluck(55,.06); gsay('p6','Esse já comeu! Dê para quem está com a mão levantada.'); novoPao(); }
-    else novoPao(); } });
+    else novoPao(); } };
+addEventListener('pointerup',fimToque); addEventListener('pointercancel',fimToque); // pointercancel (o navegador tomou o toque) conta como soltar
 function finishPhase(){ const g=GS; g.finished=true; g.finT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
   if(g.phase<3) gsay('o4','Muito bem!',true); else gsay('p7','Parabéns! Doze cestos cheios! O lanche do menino virou um banquete!',true); }
-function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt;
+function gameUpdate(dt){ const g=GS; if(g.lw!==W){ const w0=g.lw; g.lw=W; reencaixa(w0); } if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt;
   if(g.finished){ g.finT+=dt; if(g.phase<3 && g.finT>3){ loadPhase(g.phase+1); return; }
     if(g.phase===3 && g.finT>4.5 && !g.ended){ g.ended=true; const per=g.badBy.map(b=>b===0?3:(b<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
       $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=NPH.map((P2,i)=>P2.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  '); $('gwin').hidden=false; try{ const k='bp_paes_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), st)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(st),'pelo jogo!'),900); } }
@@ -710,24 +716,24 @@ function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT
 }
 function gameDraw(){ const g=GS; LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.65;
   if(g.phase===1){ diaMonte(1);
-    layer(1,()=>{ ground('#b8d07a','#8ab060'); person('menino',-430,0,{pose:'open',dir:1}); cesto(420,30,1.1,(g.paes>0)+(g.peixes>0));
+    layer(1,()=>{ ground('#b8d07a','#8ab060'); person('menino',g.mx,g.my,{pose:'open',dir:1}); cesto(g.cx,g.cy,1.1,(g.paes>0)+(g.peixes>0));
       for(const it of g.itens){ if(it.ok) continue; const sh=it.wob>0? Math.sin(G*50)*6 : 0, x=it.x+sh, y=it.y+Math.sin(G*2+it.ph)*3; glow(x,y-10,40,'#fff7d0',.18); ({pao,peixe,maca,pedrinha,concha})[it.k](x,y,1.15); } });
-    for(const v of g.voando){ const [cx,cy]=toScreen(420,-10), k=v.t/.7; ctx.save(); ctx.globalAlpha=1-k*.4; (v.k==='pao'?pao:peixe)(lerp(v.x,cx,k),lerp(v.y,cy,k)-Math.sin(k*Math.PI)*80,.9); ctx.restore(); } }
+    for(const v of g.voando){ const [cx,cy]=toScreen(g.cx,g.cy-40), k=v.t/.7; ctx.save(); ctx.globalAlpha=1-k*.4; (v.k==='pao'?pao:peixe)(lerp(v.x,cx,k),lerp(v.y,cy,k)-Math.sin(k*Math.PI)*80,.9); ctx.restore(); } }
   else if(g.phase===2){ diaMonte(.85); const z=ZOOM*cam.z*PZ();
     layer(1,()=>{ ground('#a8d070','#70a840'); person('jesus',0,60,{pose:'open',dir:1}); cesto(60,80,.9,2);
       g.grupos.forEach((gr,i)=>{ const x=gr.fx*W/z; const fome=i===g.fome; person(gr.id,x,-40,{pose: fome? 'armsup' : (gr.feliz>0? 'armsup' : 'sit'),dir:x<0?1:-1,ph:i});
         if(fome){ glow(x,-120,70,'#fff2c0',.45+.15*Math.sin(G*5)); } if(gr.comeu) pao(x+26,-30,.35); }); });
-    g.grupos.forEach((gr,i)=>{ if(i!==g.fome) return; const [sx,sy]=toScreen(gr.fx*W/z,-40); ctx.save(); ctx.font='800 34px sans-serif'; ctx.textAlign='center'; ctx.fillText('🙋',sx+34,sy-150+Math.sin(G*5)*4); ctx.restore(); });
+    g.grupos.forEach((gr,i)=>{ if(i!==g.fome) return; const [sx,sy]=toScreen(gr.fx*W/z+24,-150); ctx.save(); ctx.font='800 34px sans-serif'; ctx.textAlign='center'; ctx.fillText('🙋',Math.min(sx,W-24),sy+Math.sin(G*5)*4); ctx.restore(); });
     const p=g.pao; if(p){ if(!g.drag && !p.voa) glow(p.x,p.y,70,'#fff7d0',.3+.15*Math.sin(G*5)); pao(p.x,p.y,1.2*Math.max(.1,p.s||1)); } }
   else { diaMonte(.55);
-    layer(1,()=>{ ground('#98c060','#609030'); person('filipe',-430,-30,{pose:'kneel',dir:1}); });
-    for(const m of g.migalhas) farelo(m.x,m.y,m.r);
+    layer(1,()=>{ ground('#98c060','#609030'); person('filipe',-Math.min(430,W/2/(ZOOM*cam.z*PZ())-70),-30,{pose:'kneel',dir:1}); });
+    for(const m of g.migalhas){ ctx.save(); ctx.translate(m.x,m.y); ctx.scale(1.35,1.35); farelo(0,0,m.r); ctx.restore(); }
     if(g.rastro.length>1){ ctx.save(); ctx.strokeStyle='rgba(255,247,200,.55)'; ctx.lineWidth=40; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); g.rastro.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y)); ctx.stroke(); ctx.restore(); }
     const [cx,cy]=cestoTela(); cesto(cx,cy,1.3,0); ctx.save(); ctx.fillStyle='#e0a858'; for(let i=0;i<g.noCesto;i++) ell(cx-30+i*15,cy-52,9,6,'#e0a858'); ctx.restore();
     for(let i=0;i<12;i++){ const x=W*.06+i*Math.min(52,W*.05), y=H*.36; ctx.save(); ctx.globalAlpha=i<g.cestos?1:.25; cesto(x,y,.42,i<g.cestos?1:0); ctx.restore(); } }
-  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque só nos pães e nos peixes' : (g.phase===2? (g.drag? '' : '👆 Arraste o pão para quem levantou a mão') : (g.drag? '' : '👆 Passe o dedo nos pedacinhos')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.95); ctx.fillText(msg,W/2,H*.95); ctx.restore(); } }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,H*.24-36,bw2,64,32); ctx.fill();
-    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,H*.24+8); ctx.restore(); }
+  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque só nos pães e nos peixes' : (g.phase===2? (g.drag? '' : '👆 Arraste o pão para quem levantou a mão') : (g.drag? '' : '👆 Passe o dedo nos pedacinhos')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(Math.max(20,14*720/innerHeight))+'px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.95); ctx.fillText(msg,W/2,H*.95); ctx.restore(); } }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40), by=innerHeight<=520? H*.56 : H*.24; /* celular deitado: a legenda fica no alto, então o título da fase desce */ ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,by-36,bw2,64,32); ctx.fill();
+    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,by+8); ctx.restore(); }
 }
 function txt2(t,x,y,size,c){ ctx.save(); ctx.font='800 '+size+'px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=c; ctx.fillText(t,x,y); ctx.restore(); }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
