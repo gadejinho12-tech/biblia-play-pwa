@@ -108,11 +108,11 @@ function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, f
   if(n===3){ espalhaMigalhas(16); }
   $('gAn').textContent=NPH[n-1].name.split(' · ')[0]; hud(); gsay(NPH[n-1].voice[0],NPH[n-1].voice[1],true); }
 // celular/tablet em pé: 3 fileiras de 5, menino e cesto embaixo; deitado: 2 fileiras de 7. Refeito se a tela girar.
-function lanche(){ const narrow=W<700; GS.mx=narrow? -215 : -430; GS.my=narrow? 110 : 0; GS.cx=narrow? 215 : 420; GS.cy=narrow? 120 : 30;
-  GS.itens.forEach((it,i)=>{ it.x=narrow? -210+(i%5)*105 : -300+(i%7)*105+(Math.floor(i/7)%2)*40; it.y=narrow? -250+Math.floor(i/5)*90 : -70+Math.floor(i/7)*95; }); }
+function lanche(){ const narrow=W<700; GS.mx=narrow? -215 : -445; GS.my=narrow? 110 : 0; GS.cx=narrow? 215 : 455; GS.cy=narrow? 120 : 30;
+  GS.itens.forEach((it,i)=>{ it.x=narrow? -210+(i%5)*105 : -300+(i%7)*105+(Math.floor(i/7)%2)*40; it.y=narrow? -215+Math.floor(i/5)*85 : -70+Math.floor(i/7)*95; }); }
 function reencaixa(w0){ const g=GS; camFor(); if(g.phase===1) lanche(); if(g.phase===2 && !g.drag && g.pao && !g.pao.voa) novoPao(); if(g.phase===3) for(const m of g.migalhas) if(!m.ok) m.x*=W/w0; }
 function hud(){ const n=GS.phase; $('gGol').textContent = n===1? ('🥖 '+GS.paes+'/5 · 🐟 '+GS.peixes+'/2') : (n===2? ('🙋 '+GS.dados+' / '+GS.META) : ('🧺 '+GS.cestos+' / 12')); }
-function camFor(){ const narrow=W<700; cam.x=0; cam.y=-130; cam.z=narrow? .85 : 1.15; if(GS.phase===1 && !narrow) cam.z=Math.min(cam.z,(W/2-10)/490/(ZOOM*PZ())); } // fase 1: menino, cesto e todos os itens dentro da tela (tablet)
+function camFor(){ const narrow=W<700; cam.x=0; cam.y=-130; cam.z=narrow? .85 : 1.15; if(GS.phase===1 && !narrow) cam.z=Math.min(cam.z,(W/2-10)/505/(ZOOM*PZ())); } // fase 1: menino, cesto e todos os itens dentro da tela (tablet)
 function novaFome(){ const g=GS; const op=g.grupos.map((_,i)=>i).filter(i=>i!==g.fome); g.fome=op[Math.floor(Math.random()*op.length)]; }
 function novoPao(){ const [x,y]=toScreen(60,40); GS.pao={x, y:Math.min(y,H*.8), vx:0, vy:0, voa:false}; } // o pão sai do cesto de Jesus (antes ficava embaixo da legenda)
 function espalhaMigalhas(n){ for(let i=0;i<n;i++) GS.migalhas.push({x:W*(.08+Math.random()*.66), y:H*(.5+Math.random()*.34), r:Math.random()*6, ok:false, t:0}); }
