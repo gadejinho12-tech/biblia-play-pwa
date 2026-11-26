@@ -6,7 +6,10 @@ window.BP_CONTA = {
   SUPABASE_URL: '',
   SUPABASE_ANON_KEY: '',
 
-  // Links de pagamento da Kiwify (um para cada plano)
+  // Links de pagamento da Kiwify (um para cada plano). Ficam vazios até ligar o login,
+  // para ninguém pagar antes de o acesso funcionar. Quando ligar, usar:
+  //   mensal R$ 14,90/mês  → https://pay.kiwify.com.br/vMYkAzH
+  //   anual  R$ 149,90/ano → https://pay.kiwify.com.br/5AaelZx   (o antigo jBVV1nl, de R$ 119, foi desativado)
   KIWIFY_MENSAL: '',
   KIWIFY_ANUAL: '',
 
