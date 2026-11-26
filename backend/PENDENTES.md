@@ -2,13 +2,15 @@
 
 Regra combinada com o dono: o que custa dinheiro fica para depois. Fazemos primeiro o que é de graça.
 
-## 1. Agora: novos filmes e jogos (um de cada vez)
+## 1. Novos filmes e jogos (pausado: o dono achou a quantidade boa por enquanto)
 Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jogo com 3 fases diferentes → teste → publicar.
 
 ### Novo Testamento
 - [x] **A Ovelha Perdida** (Lucas 15:3-7) — publicada
 - [x] **Pães e Peixes** (João 6:1-14) — publicado
-- [x] **Zaqueu** (Lucas 19:1-10) — pronto (filmes/zaqueu.html), aguardando publicação
+- [x] **Zaqueu** (Lucas 19:1-10) — publicado
+- [x] Abertura em todos os filmes (câmera de longe + musiquinha + nome do lugar) — publicada
+- [x] Jogos clássicos atualizados com Ovelha Perdida, Pães e Peixes e Zaqueu (quiz +15 perguntas, memória +3 personagens, caça-palavras +3 listas)
 - [ ] Ideias depois: O Bom Samaritano, Jesus e as crianças, O filho que voltou (filho pródigo), A pesca maravilhosa
 
 ### Antigo Testamento (depois)

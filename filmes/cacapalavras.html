@@ -127,6 +127,8 @@ jonas:{ robe:['#e3b27a','#a8703f'], sash:'#5f9a4c', skin:['#e8b48a','#c98f62'], 
   povo2:{ robe:['#7fc4c0','#3f8a86'], sash:'#6b4423', skin:['#f0c39a','#d69b6c'], hair:'#6b4423', s:.86 },
   povo3:{ robe:['#ec9fa6','#b8687a'], sash:'#c98a3a', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', longhair:true, s:.84 },
   crianca:{ robe:['#ffd27a','#d9a441'], sash:'#c0503a', skin:['#f6cfa6','#e2ab7c'], hair:'#6b4423', s:.62 },
+zaqueu:{ robe:['#a86ac8','#6a3a8a'], sash:'#f2c24a', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', cap:'#f2c24a', s:.72 },
+menino:{ robe:['#7fb4e0','#4a80b0'], sash:'#f2c24a', skin:['#e8b48a','#c98f62'], hair:'#3a2a1a', s:.6 },
 jesus:{ robe:['#f6f0e0','#d2c6a6'], sash:'#c0483a', skin:['#e3ad79','#c48a5a'], hair:'#6b4423', beard:true, beardC:'#6b4423', longhair:true, s:1 },
   pedro:{ robe:['#6f9ac8','#3e6a98'], sash:'#7a5a3a', skin:['#e2ab7c','#c48a5a'], hair:'#6a5a4a', beard:true, beardC:'#7a6a5a', s:1 },
   joao:{ robe:['#9cc77a','#5f9a4c'], sash:'#7a5a3a', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', s:.9 },
@@ -345,6 +347,9 @@ const STORIES=[
   { id:'jonas', name:'Jonas', who:'jonas', ref:'Jonas 1–4' },
   { id:'natal', name:'O Nascimento de Jesus', who:'maria', ref:'Lucas 2 · Mateus 2' },
   { id:'tempestade', name:'Jesus Acalma a Tempestade', who:'jesus', ref:'Marcos 4' },
+  { id:'ovelha', name:'A Ovelha Perdida', who:'pastor1', ref:'Lucas 15' },
+  { id:'paes', name:'Pães e Peixes', who:'menino', ref:'João 6' },
+  { id:'zaqueu', name:'Zaqueu', who:'zaqueu', ref:'Lucas 19' },
 ];
 
 // configuração da Área dos Pais
@@ -357,6 +362,9 @@ const WORDS={
   jonas:['JONAS','PEIXE','NAVIO','MAR','NINIVE','PERDAO','ORACAO','PRAIA','VENTO','CHANCE'],
   natal:['JESUS','MARIA','JOSE','BELEM','ESTRELA','ANJO','PASTOR','MAGOS','OURO','PRESENTE','MANJEDOURA','PAZ'],
   tempestade:['JESUS','BARCO','VENTO','ONDAS','CALMA','PEDRO','FE','MEDO','MAR','CHUVA'],
+  ovelha:['OVELHA','PASTOR','CEM','PERDIDA','ACHOU','FESTA','CEU','ALEGRIA','JESUS','OMBROS'],
+  paes:['PAES','PEIXES','MENINO','LANCHE','CESTOS','DOZE','JESUS','GRAMA','REPARTIR','POVO'],
+  zaqueu:['ZAQUEU','ARVORE','JERICO','JESUS','CASA','MOEDAS','DEVOLVER','ALEGRIA','CORACAO','POBRES'],
 };
 const LV=[ {id:'f',name:'Fácil',size:8,n:5,dirs:[[0,1],[1,0]],max:7,t:[90,180]}, {id:'m',name:'Médio',size:10,n:7,dirs:[[0,1],[1,0],[1,1]],max:9,t:[150,300]}, {id:'d',name:'Difícil',size:12,n:9,dirs:[[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]],max:12,t:[240,480]} ];
 const COLORS=['#f2a65e','#7fb6e8','#8fd07a','#e88a9a','#b99be8','#ffd75e','#7fd0c8','#f0a0c0','#a8c860'];
