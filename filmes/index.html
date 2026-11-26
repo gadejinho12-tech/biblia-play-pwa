@@ -7,8 +7,8 @@
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <meta name="theme-color" content="#4FB8EE">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Biblinha Play">
-<title>Biblinha Play</title>
+<meta name="apple-mobile-web-app-title" content="Amiguinhos de Deus">
+<title>Amiguinhos de Deus</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
@@ -142,7 +142,7 @@ footer nav{display:flex;gap:16px;flex-wrap:wrap}
 @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
 </style>
 <style>
-/* ===== Tema Biblinha Play (proposta 1: dia ensolarado, 3 a 7 anos) — por cima do tema antigo ===== */
+/* ===== Tema Amiguinhos de Deus (proposta 1: dia ensolarado, 3 a 7 anos) — por cima do tema antigo ===== */
 :root{
   --noite:#2B3A55; --noite2:#3A4C6E; --noite3:#22304A;
   --estrela:#FFC93C; --estrela2:#FFD966; --ouro:#FF8A3D;
@@ -237,7 +237,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
 </defs></svg>
 
 <header class="bar gut"><div class="in">
-  <a class="brand" href="#topo" aria-label="Biblinha Play, início"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word"><span>Bibli<b>nha</b></span><span class="pl">Play</span></span></a>
+  <a class="brand" href="#topo" aria-label="Amiguinhos de Deus, início"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word"><span>Amiguinhos <b>de Deus</b></span></span></a>
   <a class="pill" href="arca.html" aria-label="Minha Arca e moedinhas">🪙 <b id="purse">0</b><span class="lbl"> · Minha Arca</span></a>
   <button class="pill gift" id="bau" aria-label="Baú do dia">🎁<span class="lbl"> Baú do dia</span><span class="dot" id="bauDot"></span></button>
   <a class="pill" id="acct" href="assinar.html" hidden>⭐<span class="lbl"> Assinar</span></a>
@@ -284,7 +284,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
 </div></div>
 
 <footer class="gut"><div class="in">
-  <a class="brand" href="#topo"><svg aria-hidden="true" width="30" height="30"><use href="#logo"/></svg><span class="word" style="font-size:20px"><span>Bibli<b>nha</b></span><span class="pl">Play</span></span></a>
+  <a class="brand" href="#topo"><svg aria-hidden="true" width="30" height="30"><use href="#logo"/></svg><span class="word" style="font-size:20px"><span>Amiguinhos <b>de Deus</b></span></span></a>
   <span>Assista, brinque e aprenda.</span>
   <nav><a href="pais.html">Área dos pais</a><a href="marca.html">Identidade visual</a></nav>
 </div></footer>
@@ -292,7 +292,7 @@ function bpAddCoins(n,why){ n=Math.round(n); if(!(n>0)) return; try{ localStorag
 <div class="bau-ov" id="bauOv" hidden><div class="bau-card" role="dialog" aria-modal="true" aria-labelledby="bauT"><b id="bauT">Baú do dia!</b><button class="chest" id="chest" aria-label="Abrir o baú">🧰</button><p id="bauMsg">Toque no baú para abrir</p><button class="btn play" id="bauOk" hidden>Oba! 🎉</button></div></div>
 
 <script>
-/* arte.js — o mesmo desenho dos personagens dos filmes do Biblinha Play */
+/* arte.js — o mesmo desenho dos personagens dos filmes do Amiguinhos de Deus */
 let ctx=null; let G=0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
 const ss=(a,b,x)=>{ const t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };

@@ -1,4 +1,4 @@
-/* Biblinha Play — toques da marca em todas as telas:
+/* Amiguinhos de Deus — toques da marca em todas as telas:
    a Lili nas capas e finais, no botão da estante, e o aviso para deitar o celular nos filmes e jogos. */
 (function(){
   const pagina = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '') || 'index';
