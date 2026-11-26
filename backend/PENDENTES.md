@@ -37,6 +37,11 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [x] Tempestade fase 3: o dono decidiu não gravar fala nova
 - Atenção: os build_*.py antigos (criacao, noe, davi, jonas, natal, tempestade, jogos) não funcionam mais; o HTML em filmes/ é a fonte de verdade. Ovelha, Pães e Zaqueu ainda são gerados pelos build_*.py (fontes sincronizadas).
 
+## Você sabia? (26/11)
+- [x] 10 curiosidades com a voz da narradora (filmes/curiosidades.js + filmes/audio/curiosidades/): "curiosidade do dia" na estante e a da história no fim de cada filme
+- [ ] Ir acrescentando mais (meta: várias por história); gravar com prototipos/fontes/gravar_curiosidades.py
+- [ ] Isca grátis: ao ligar o login, deixar 1 filme liberado (hoje conta-config GRATIS tem criacao e noe; o dono falou em 1 filme — confirmar qual) + curiosidades abertas para todos
+
 ## 2. De graça, quando der
 - [x] Supabase biblia-play reativado (26/11) e webhook da Kiwify testado: funcionou (registro de teste apagado)
 - [ ] Antes de vender: gerar token novo do webhook na Kiwify (o atual apareceu num print) e atualizar o segredo KIWIFY_TOKEN no Supabase
