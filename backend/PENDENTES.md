@@ -1,4 +1,7 @@
-# Pendências do Biblinha Play (atualizado em 26/11/2026)
+# Pendências do Amiguinhos de Deus (antigo Biblinha Play) — atualizado em 26/11/2026
+
+> 26/11: nome trocado de "Biblinha Play" para **Amiguinhos de Deus** (já existe um app "BiblinhaPlay" e a marca "Biblinha e Turminha" no INPI).
+> Antes de investir: conferir "AMIGUINHOS DE DEUS" no INPI (busca.inpi.gov.br) e o domínio amiguinhosdedeus.com.br no registro.br.
 
 Regra combinada com o dono: o que custa dinheiro fica para depois. Fazemos primeiro o que é de graça.
 
@@ -21,13 +24,17 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [ ] Mais fases por jogo e filmes mais longos
 
 ## 2. De graça, quando der
-- [ ] Imagem do produto na Kiwify (300×250) com a Lili
-- [ ] Reativar o Supabase biblia-play (está pausado) e testar o webhook da Kiwify ("Testar Webhook")
-- [ ] Decidir sobre o webhook antigo "Lino - Clube MEI 100%" na Kiwify
+- [x] Supabase biblia-play reativado (26/11) e webhook da Kiwify testado: funcionou (registro de teste apagado)
+- [ ] Antes de vender: gerar token novo do webhook na Kiwify (o atual apareceu num print) e atualizar o segredo KIWIFY_TOKEN no Supabase
+- [ ] Lembrete: o Supabase grátis pausa após ~7 dias sem uso; reativar quando precisar
+- [x] Imagem do produto na Kiwify feita com o nome novo (prototipos/kiwify/amiguinhos-produto-600x500.png)
+- [x] Webhook "Lino - Clube MEI 100%" limitado ao produto Club MEI 100% (26/11); não recebe mais vendas do Biblinha
+- [ ] (Voxia/Clube MEI, quando voltar a vender) marcar também "Reembolso" e "Chargeback" nesse webhook
 - [ ] Pesquisa da marca "Biblinha Play" no INPI
 
 ## 3. Quando tiver dinheiro
-- [ ] Domínio biblinhaplay.com.br (Registro.br, pedido 32696872) → DNS para o GitHub Pages → página de vendas na Kiwify
+- [ ] NÃO pagar o pedido 32696872 (biblinhaplay.com.br). Registrar o domínio do nome novo (ex.: amiguinhosdedeus.com.br) → DNS para o GitHub Pages → página de vendas na Kiwify
+- [ ] Na Kiwify: renomear o produto para "Amiguinhos de Deus" e trocar a imagem (prototipos/kiwify/amiguinhos-produto-600x500.png); fatura do cartão com até 10 letras (ex.: "AMIGUINHOS")
 - [ ] Ligar o login no site (ramo `assinatura-supabase`: conta-config.js com Supabase + links da Kiwify)
 - [ ] Compra real do plano mensal → entrar com o e-mail da compra → reembolso em 7 dias
 - [ ] (Opcional) ElevenLabs para vozes ainda mais naturais (a chave precisa ir no cabeçalho `xi-api-key`)
