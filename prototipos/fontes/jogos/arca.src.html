@@ -57,8 +57,8 @@ function render(){ const coins=bpCoins(); $('coins').textContent='🪙 '+coins; 
     b.appendChild(sticker(tab,id,96,!has)); b.insertAdjacentHTML('beforeend',`<b>${has?name:'?'}</b><span class="price">${has?'✓ Na arca':'🪙 '+cost}</span>`);
     b.setAttribute('aria-label', has? name+', já está na arca' : 'Comprar por '+cost+' moedas'); b.onclick=()=>buy(tab,id,name,cost,b); g.appendChild(b); } }
 function buy(kind,id,name,cost,b){ ac(); const own=kind==='A'?ownA:ownD; if(own.includes(id)){ sfx.tap(); fresh=id; freshT=1.2; return; }
-  const c=bpCoins(); if(c<cost){ sfx.bad(); bpToast('Faltam '+(cost-c)+' 🪙 — jogue mais um pouquinho!'); return; }
-  try{ localStorage.setItem('bp_moedas',c-cost); }catch(e){ return; } own.push(id); save(); sfx.win(); confetti(); bpToast((kind==='A'?'O '+name+' entrou na arca! 🎉':name+' na arca! 🎀')); fresh=id; freshT=2.5; render(); const nb=$('grid').querySelector(`[data-id="${id}"]`); if(nb) nb.classList.add('pop'); }
+  const c=bpCoins(); if(c<cost){ sfx.bad(); bpToast((cost-c===1?'Falta ':'Faltam ')+(cost-c)+' 🪙 — jogue mais um pouquinho!'); return; }
+  try{ localStorage.setItem('bp_moedas',c-cost); }catch(e){ return; } own.push(id); save(); sfx.win(); confetti(); bpToast((kind==='A'?(['pomba','ovelha','tartaruga','girafa','zebra'].includes(id)?'A ':'O ')+name+' entrou na arca! 🎉':name+' na arca! 🎀')); fresh=id; freshT=2.5; render(); const nb=$('grid').querySelector(`[data-id="${id}"]`); if(nb) nb.classList.add('pop'); }
 $('tA').onclick=()=>{ tab='A'; sfx.tap(); render(); }; $('tD').onclick=()=>{ tab='D'; sfx.tap(); render(); };
 /* cena: a arca na colina; os animais comprados ficam na frente e os enfeites em lugares fixos */
 const SLOTS={pomba:[150,-150],ovelha:[-170,0],coelho:[-120,8],tartaruga:[-60,14],leao:[60,10],elefante:[150,4],girafa:[-235,-4],macaco:[110,-178],zebra:[220,6],urso:[0,16],cavalo:[-290,2],pavao:[285,8]};

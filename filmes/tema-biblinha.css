@@ -14,7 +14,7 @@
 }
 h1,h2,h3{font-family:var(--display)}
 
-/* Marca: Bibli(nha) [▶ Play] */
+/* Marca: Clubinho [do Reino] */
 .word{font:800 24px/1 var(--display)!important;color:var(--tinta);letter-spacing:-.01em;display:inline-flex;align-items:center;gap:6px}
 .word b{color:var(--laranja);font-weight:800}
 .word i{font-style:normal}

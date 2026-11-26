@@ -20,6 +20,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:#1d1712;color:var(--in
   text-align:center;opacity:0;transition:opacity .45s;pointer-events:none}
 #sub.on{opacity:1}
 body.game #sub{bottom:calc(118px + env(safe-area-inset-bottom,0px))}
+body.game #cv{touch-action:none} /* jogo de arrastar: o dedo não pode virar rolagem (pointercancel) */
 #sub .who{display:inline-block;font:800 11px var(--body);letter-spacing:.2em;text-transform:uppercase;color:#fff;background:rgba(58,44,36,.78);border-radius:999px;padding:4px 10px;margin-bottom:6px}
 #sub .txt{font:700 clamp(17px,4.2vw,24px)/1.38 var(--body);color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.55),0 0 18px rgba(0,0,0,.45);text-wrap:balance}
 #sub .txt .w{transition:color .15s}
@@ -176,7 +177,7 @@ addEventListener('resize',fit);
 /* ===== câmera com profundidade (paralaxe) ===== */
 const cam={x:0,y:-160,z:1};
 const ZOOM=1.22, CY=.42; // enquadramento: personagens maiores e a ação acima das legendas
-const PZ=()=>W<700? .7 : 1; // celular em pé: afasta a câmera pra caber a cena
+const PZ=()=>W<700? .7*Math.min(1,720*innerWidth/innerHeight/W) : 1; // celular em pé: afasta a câmera pra caber a cena (W nunca é menor que 380; em tela bem fina, a parte visível é menor que W)
 function layer(f,fn){ ctx.save(); const z=1+(cam.z*ZOOM*PZ()-1)*f; ctx.translate(W/2,H*CY); ctx.scale(z,z); ctx.translate(-cam.x*f,-cam.y*f); fn(); ctx.restore(); }
 function setCam(a,b,t){ const k=ease(clamp(t,0,1)); cam.x=lerp(a[0],b[0],k); cam.y=lerp(a[1],b[1],k); cam.z=lerp(a[2],b[2],k); }
 
@@ -433,7 +434,8 @@ const ABERTURA_TITULO='No princípio';
 SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
   setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
   try{ cena(0); } finally{ setCam=orig; }
-  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center';
+    { const vw=Math.min(W,720*innerWidth/innerHeight), tw=ctx.measureText(ABERTURA_TITULO).width+16; if(tw>vw-32) ctx.font='800 '+Math.floor(52*(vw-32)/tw)+'px "Baloo 2", Nunito, sans-serif'; } /* celular em pé: o título cabe na tela */ ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 /* ================= ROTEIRO ================= */
 const CH=[ 'No princípio', 'Um mundo cheio de cores', 'Peixes, aves e animais', 'Feitos com amor' ];
@@ -594,6 +596,7 @@ function toScreen(e){ const dpr=cv.width/innerWidth, offX=(cv.width-W*K)/2; retu
 function gameTap(e){ if(AC) AC.resume(); if(GS.stage!=='play'||!GS.cur) return; const p=toScreen(e); if(Math.hypot(p.x-GS.px,p.y-GS.py)<110){ GS.drag=true; GS.ox=GS.px-p.x; GS.oy=GS.py-p.y; pluck(74,.05); } }
 cv.addEventListener('pointermove',e=>{ if(MODE!=='game'||!GS.drag) return; const p=toScreen(e); GS.px=p.x+GS.ox; GS.py=p.y+GS.oy; });
 addEventListener('pointerup',()=>{ if(MODE!=='game'||!GS.drag) return; GS.drag=false; drop(); });
+addEventListener('pointercancel',()=>{ if(MODE!=='game'||!GS.drag) return; GS.drag=false; GS.px=W/2; GS.py=H*.5; }); // gesto interrompido: a peça volta pro meio
 function drop(){
   const it=GS.cur, x=GS.px, y=GS.py;
   if(Math.hypot(x-W/2,y-H*.5)<55){ GS.px=W/2; GS.py=H*.5; return; } // soltou no mesmo lugar: nada acontece
@@ -647,8 +650,9 @@ function gameDraw(){
     drawItem(GS.cur,x+sh,y,Math.min(1,popS(GS.pop,0))*1.55,{});
     if(!GS.drag && GS.idle>4){ const z=ITEM_ZONE[GS.cur]; const ty = z==='mar'? (b.land+H)/2 : (z==='terra'? (b.sky+b.land)/2 : b.sky*.45); const tx = z==='dia'? W/4 : (z==='noite'? W*.75 : W/2+120);
       const k=(G*1.2)%1; ctx.save(); ctx.globalAlpha=1-k; ctx.font='34px sans-serif'; ctx.textAlign='center'; ctx.fillText('👆',lerp(W/2,tx,k),lerp(H*.5,ty,k)); ctx.restore(); } }
-  if(GS.banner>0){ const a=Math.min(1,GS.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw=Math.min(420,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,H*.2-36,bw,64,14); ctx.fill();
-    ctx.font='800 26px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(PHASES[ph-1].name,W/2,H*.2+6); ctx.restore(); }
+  if(GS.banner>0){ const a=Math.min(1,GS.banner*1.5), by=innerHeight<=520? H*.8 : H*.2; // tela baixa: a legenda fica no alto, a faixa desce
+    ctx.save(); ctx.globalAlpha=a; const bw=Math.min(420,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,by-36,bw,64,14); ctx.fill();
+    ctx.font='800 26px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(PHASES[ph-1].name,W/2,by+6); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };

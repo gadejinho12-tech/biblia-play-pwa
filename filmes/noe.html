@@ -20,6 +20,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:#1d1712;color:var(--in
   text-align:center;opacity:0;transition:opacity .45s;pointer-events:none}
 #sub.on{opacity:1}
 body.game #sub{bottom:calc(118px + env(safe-area-inset-bottom,0px))}
+body.game #cv{touch-action:none} /* tocar nos animais: o dedo não vira rolagem */
 #sub .who{display:inline-block;font:800 11px var(--body);letter-spacing:.2em;text-transform:uppercase;color:#fff;background:rgba(58,44,36,.78);border-radius:999px;padding:4px 10px;margin-bottom:6px}
 #sub .txt{font:700 clamp(17px,4.2vw,24px)/1.38 var(--body);color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.55),0 0 18px rgba(0,0,0,.45);text-wrap:balance}
 #sub .txt .w{transition:color .15s}
@@ -466,7 +467,8 @@ const ABERTURA_TITULO='Muito tempo atrás...';
 SC.abertura = t=>{ const prim=SCRIPT.find(l=>!l.intro && l.card==null).sc, cena=SC[prim]; const k=ease(ss(0,6.2,t)); const orig=setCam;
   setCam=(a)=>{ cam.x=a[0]; cam.y=lerp(a[1]-200,a[1],k); cam.z=lerp(a[2]*.5,a[2],k); setCam=()=>{}; };
   try{ cena(0); } finally{ setCam=orig; }
-  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
+  const al=clamp(t/1.2,0,1)*clamp((6.4-t)/1,0,1); if(al>0){ ctx.save(); ctx.setTransform(K,0,0,K,(cv.width-W*K)/2,0); ctx.globalAlpha=al; ctx.font='800 52px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center';
+    { const vw=Math.min(W,720*innerWidth/innerHeight), tw=ctx.measureText(ABERTURA_TITULO).width+16; if(tw>vw-32) ctx.font='800 '+Math.floor(52*(vw-32)/tw)+'px "Baloo 2", Nunito, sans-serif'; } /* celular em pé: o título cabe na tela */ ctx.lineWidth=8; ctx.strokeStyle='rgba(43,58,85,.55)'; ctx.fillStyle='#fffdf6'; ctx.strokeText(ABERTURA_TITULO,W/2,H*.3); ctx.fillText(ABERTURA_TITULO,W/2,H*.3); ctx.restore(); }
 };
 /* ================= ROTEIRO ================= */
 const CH=[ 'Um homem que ouvia Deus', 'Obedecer e não desistir', 'Todos a salvo', 'A promessa no céu' ];
@@ -639,13 +641,13 @@ function startGame(){
   $('ghud').hidden=false; $('gpad').hidden=false;
   if(!AC) audioInit(); if(AC) AC.resume();
   setTimeout(()=>gsay('g1','Agora é a sua vez! Ajude Noé a levar os animais até a arca, antes da chuva. Toque nos animais para chamá-los!',true),400);
-  setTimeout(()=>{ if(MODE==='game' && GS.phase===1) gsay(LEVELS[0].voice[0],LEVELS[0].voice[1],true); },7600);
+  setTimeout(()=>{ if(MODE==='game' && GS.phase===1 && !GS.won) gsay(LEVELS[0].voice[0],LEVELS[0].voice[1],true); },7600);
 }
 function leaveGame(){ MODE='film'; document.body.classList.remove('game'); stopVoice(); $('ghud').hidden=true; $('gpad').hidden=true; $('gwin').hidden=true; subEl.classList.remove('on'); $('ctrl').hidden=false; $('top').hidden=false; }
 function groundAt(x){ for(const [a,b] of GW.GAPS) if(x>a&&x<b) return null; return 0; }
 function callAnimal(a){ a.follow=true; pluck(76,.07); pluck(81,.06,.1);
   const n=GS.animals.filter(q=>q.follow).length, N=GS.animals.length; $('gAn').textContent='🐾 '+n+' / '+N;
-  if(n===N) gsay('g7','Todos os animais! Agora, corra para a arca!',true); else if(n%2===0) gsay('g2','Um par completo!'); else gsay('g6','Venha comigo!'); }
+  if(n===N) gsay('g7','Todos os animais! Agora, corra para a arca!',true); else if(GS.animals.filter(q=>q.follow&&q.type===a.type).length===2) gsay('g2','Um par completo!'); else gsay('g6','Venha comigo!'); } // "par completo" só quando os dois do mesmo bicho já vêm
 function gameTap(e){ // tocar num animal perto também chama ele
   const dpr=cv.width/innerWidth, offX=(cv.width-W*K)/2; const lx=(e.clientX*dpr-offX)/K, ly=e.clientY*dpr/K;
   const z=ZOOM*cam.z, wx=(lx-W/2)/z+cam.x, wy=(ly-H*CY)/z+cam.y;
@@ -662,17 +664,18 @@ function gameUpdate(dt){
   if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); }
   $('gRain').style.width=(g.rain*100)+'%';
   const dir=(keys.R?1:0)-(keys.L?1:0);
-  if(!g.won){ if(dir){ p.vx+=dir*(p.ground?2600:1500)*dt; p.face=dir; } else p.vx*=Math.pow(p.ground?.0008:.2,dt); }
+  if(!g.won){ if(dir){ p.vx+=dir*(p.ground?2600:1500)*dt; p.face=dir; } else if(!(p.hop && !p.ground)) p.vx*=Math.pow(p.ground?.0008:.2,dt); }
   else p.vx*=.9;
   p.vx=clamp(p.vx,-270,270);
   if(p.buf>0) p.buf-=dt; if(p.coyote>0) p.coyote-=dt;
-  if(p.buf>0 && (p.ground||p.coyote>0) && !g.won){ p.vy=-640; p.ground=false; p.coyote=0; p.buf=0; pluck(74,.04); }
-  p.vy+=((p.vy<0&&keys.J)?1250:2200)*dt; const py=p.y; p.x=clamp(p.x+p.vx*dt,40,GW.END-40); p.y+=p.vy*dt;
+  if(p.buf>0 && (p.ground||p.coyote>0) && !g.won){ p.vy=-640; p.ground=false; p.coyote=0; p.buf=0; pluck(74,.04);
+    if(!dir){ p.hop=true; p.vx=p.face*270; } } // criança pequena aperta um botão de cada vez: sem seta, o pulo já vai pra frente e atravessa o riacho
+  p.vy+=((p.vy<0&&(keys.J||p.hop))?1250:2200)*dt; const py=p.y; p.x=clamp(p.x+p.vx*dt,40,GW.END-40); p.y+=p.vy*dt;
   let landed=false;
   if(p.vy>=0){ for(const pl of GW.PLATS) if(p.x>pl.x-8&&p.x<pl.x+pl.w+8&&py<=pl.y+2&&p.y>=pl.y){ p.y=pl.y; landed=true; }
     if(!landed && groundAt(p.x)!==null && py<=2 && p.y>=0){ p.y=0; landed=true; } }
-  if(landed){ p.ground=true; p.vy=0; if(p.y===0) p.safeX=p.x; } else { if(p.ground) p.coyote=.1; p.ground=false; }
-  if(p.y>320){ g.falls++; g.fallsBy[g.phase-1]++; p.x=p.safeX-40; p.y=-200; p.vy=0; p.vx=0; gsay('g3','Splash! Tente pular um pouquinho antes.'); }
+  if(landed){ p.ground=true; p.vy=0; p.hop=false; if(p.y===0) p.safeX=p.x; } else { if(p.ground) p.coyote=.1; p.ground=false; }
+  if(p.y>320){ g.falls++; g.fallsBy[g.phase-1]++; const gp=GW.GAPS.find(([a,b])=>p.x>a-20&&p.x<b+20); p.x= gp? (p.face>=0? gp[0]-140 : gp[1]+140) : p.safeX-40; p.x=clamp(p.x,60,GW.END-60); p.y=-40; p.vy=0; p.vx=0; p.hop=false; gsay('g3','Splash! Tente pular um pouquinho antes.'); }
   g.trail.unshift({x:p.x,y:p.y}); if(g.trail.length>400) g.trail.length=400;
   let k=0;
   for(const a of g.animals){
@@ -711,8 +714,9 @@ function gameDraw(){
     const p=GS.p; person('noe',p.x,p.y,{pose: !p.ground? 'armsup' : (Math.abs(p.vx)>25? 'walk' : (GS.won?'armsup':'stand')), dir:p.face, staff:true});
   });
   rain(r>.15? r : 0, 1.2);
-  if(GS.banner>0){ const a=Math.min(1,GS.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,H*.2-36,bw,64,14); ctx.fill();
-    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(GW.name,W/2,H*.2+6); ctx.restore(); }
+  if(GS.banner>0){ const a=Math.min(1,GS.banner*1.5), by=innerHeight<=520? H*.8 : H*.2; // tela baixa: a legenda fica no alto, a faixa desce (entre os botões)
+    ctx.save(); ctx.globalAlpha=a; const bw=Math.min(460,W-40); ctx.fillStyle='rgba(251,243,227,.96)'; rr(W/2-bw/2,by-36,bw,64,14); ctx.fill();
+    ctx.font='800 25px Fraunces, Georgia, serif'; ctx.textAlign='center'; ctx.fillStyle='#3a2c24'; ctx.fillText(GW.name,W/2,by+6); ctx.restore(); }
 }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
 $('gAgain').onclick=startGame; $('gFilm').onclick=()=>{ leaveGame(); seekChapter(0); };

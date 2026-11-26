@@ -726,11 +726,11 @@ function gameDraw(){ const g=GS; LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6;
   else { jerico(.85); const z=ZOOM*cam.z*PZ();
     layer(1,()=>{ chaoRua(); const [bx]=[-.36*W/z]; person('zaqueu',bx-40,2,{pose:'open',dir:1}); bau(bx+40,0,1,8);
       for(const p of g.pessoas){ const x=p.fx*W/z; person(p.id,x,4,{pose:p.n>=4? 'armsup' : 'stand',dir:-1}); for(let k=0;k<p.n;k++) moeda(x-24+k*16,14,.8); } });
-    for(const p of g.pessoas){ const [sx,sy]=toScreen(p.fx*W/z,-190); ctx.save(); ctx.fillStyle=p.n>=4?'#62BD45':'#fff'; ctx.beginPath(); ctx.ellipse(sx+30,sy,34,26,0,0,7); ctx.fill(); ctx.font='800 26px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=p.n>=4?'#fff':'#2B3A55'; ctx.fillText(p.n+'/4',sx+30,sy+9); ctx.restore(); }
+    for(const p of g.pessoas){ const [sx,sy]=toScreen(p.fx*W/z,-190); ctx.save(); ctx.fillStyle=p.n>=4?'#62BD45':'#fff'; const bx=Math.min(sx+30,W-40); /* não corta na borda (celular em pé) */ ctx.beginPath(); ctx.ellipse(bx,sy,34,26,0,0,7); ctx.fill(); ctx.font='800 26px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=p.n>=4?'#fff':'#2B3A55'; ctx.fillText(p.n+'/4',bx,sy+9); ctx.restore(); }
     if(g.moeda){ if(!g.drag) glow(g.moeda.x,g.moeda.y,60,'#fff7d0',.3+.15*Math.sin(G*5)); moeda(g.moeda.x,g.moeda.y,1.5); } }
   if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque no botão que brilha: esquerda, direita...' : (g.phase===2? '' : (g.drag? '' : '👆 Arraste a moeda até uma pessoa')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.95); ctx.fillText(msg,W/2,H*.95); ctx.restore(); } }
-  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40); ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,H*.24-36,bw2,64,32); ctx.fill();
-    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,H*.24+8); ctx.restore(); }
+  if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40), by=innerHeight<=520 && g.phase!==2? H*.56 : H*.24; /* celular deitado: a legenda fica no alto, então o título da fase desce (menos na fase 2, onde cobriria as coisas que acendem) */ ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,by-36,bw2,64,32); ctx.fill();
+    ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,by+8); ctx.restore(); }
 }
 function txt2(t,x,y,size,c){ ctx.save(); ctx.font='800 '+size+'px Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=c; ctx.fillText(t,x,y); ctx.restore(); }
 $('toGame').onclick=startGame; $('coverGame').onclick=()=>{ if(!AC) audioInit(); startGame(); };
