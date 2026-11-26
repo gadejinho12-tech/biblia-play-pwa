@@ -32,7 +32,7 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 ### Decisões do dono (pendentes)
 - [x] Nome: o dono decidiu manter **Clubinho do Reino** (26/11)
 - [x] Quiz do Daniel: fica como está até o filme ficar pronto
-- [x] assinar.html: "4 meses grátis" no anual (12 × 14,90 = 178,80; 178,80 − 119 = 59,80 ≈ 4 meses)
+- [x] Plano anual passa a ser R$ 149,90 (R$ 12,49 por mês; 12 × 14,90 = 178,80 → economia de R$ 28,90 ≈ 2 meses grátis). Falta o dono mudar o preço na Kiwify.
 - [x] Pontos bíblicos discutíveis: o dono decidiu deixar como estão: magos no estábulo (Mt 2:11 diz "casa"); dono oferecendo o estábulo; "Mestre! Acorda!" dito por Pedro; motivo da fuga de Jonas; Davi "espanta" o leão; Pães cita detalhes de Marcos/Mateus
 - [x] Tempestade fase 3: o dono decidiu não gravar fala nova
 - Atenção: os build_*.py antigos (criacao, noe, davi, jonas, natal, tempestade, jogos) não funcionam mais; o HTML em filmes/ é a fonte de verdade. Ovelha, Pães e Zaqueu ainda são gerados pelos build_*.py (fontes sincronizadas).
@@ -47,7 +47,7 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 
 ## 3. Quando tiver dinheiro
 - [ ] NÃO pagar o pedido 32696872 (biblinhaplay.com.br). Registrar o domínio do nome novo (ex.: clubinhodoreino.com.br) → DNS para o GitHub Pages → página de vendas na Kiwify
-- [ ] (De graça, o dono faz no painel; o Claude não tem acesso à Kiwify) Na Kiwify: renomear o produto para "Clubinho do Reino" e trocar a imagem (prototipos/kiwify/clubinho-produto-600x500.png); fatura do cartão com até 10 letras (ex.: "CLUBINHO")
+- [ ] (De graça, o dono faz no painel; o Claude não tem acesso à Kiwify) Na Kiwify: mudar o preço do plano anual para R$ 149,90, renomear o produto para "Clubinho do Reino" e trocar a imagem (prototipos/kiwify/clubinho-produto-600x500.png); fatura do cartão com até 10 letras (ex.: "CLUBINHO")
 - [ ] Ligar o login no site (ramo `assinatura-supabase`: conta-config.js com Supabase + links da Kiwify)
 - [ ] Compra real do plano mensal → entrar com o e-mail da compra → reembolso em 7 dias
 - [ ] (Opcional) ElevenLabs para vozes ainda mais naturais (a chave precisa ir no cabeçalho `xi-api-key`)

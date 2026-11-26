@@ -95,7 +95,7 @@ input:focus{border-color:var(--ouro);outline:none}
 </div></section>
 <main class="gut"><div class="in">
   <div class="plans">
-    <div class="plan best"><span class="tag">Mais escolhido · 4 meses grátis</span><h2>Anual</h2><div class="price" id="pAnual">R$ 119<small> /ano</small></div><p class="note" id="pAnualMes">Sai por R$ 9,92 por mês.</p><a class="btn play" id="bAnual" href="#">Assinar o anual</a></div>
+    <div class="plan best"><span class="tag">Mais escolhido · 2 meses grátis</span><h2>Anual</h2><div class="price" id="pAnual">R$ 149,90<small> /ano</small></div><p class="note" id="pAnualMes">Sai por R$ 12,49 por mês.</p><a class="btn play" id="bAnual" href="#">Assinar o anual</a></div>
     <div class="plan"><span class="tag">Flexível</span><h2>Mensal</h2><div class="price" id="pMensal">R$ 14,90<small> /mês</small></div><p class="note">Cancele quando quiser.</p><a class="btn dark" id="bMensal" href="#">Assinar o mensal</a></div>
   </div>
   <p class="soon" id="soon" hidden>Os pagamentos abrem em breve. Por enquanto, tudo está liberado para experimentar!</p>
@@ -109,8 +109,8 @@ input:focus{border-color:var(--ouro);outline:none}
 <script>
 const $=id=>document.getElementById(id), C=window.BP_CONTA||{}, de=new URLSearchParams(location.search).get('de');
 if(de) $('lockmsg').hidden=false;
-$('pMensal').firstChild.textContent=C.PRECO_MENSAL||'R$ 14,90'; $('pAnual').firstChild.textContent=(C.PRECO_ANUAL||'R$ 119,00').replace(',00','');
-$('pAnualMes').textContent='Sai por '+(C.PRECO_ANUAL_MES||'R$ 9,92')+' por mês.';
+$('pMensal').firstChild.textContent=C.PRECO_MENSAL||'R$ 14,90'; $('pAnual').firstChild.textContent=(C.PRECO_ANUAL||'R$ 149,90').replace(',00','');
+$('pAnualMes').textContent='Sai por '+(C.PRECO_ANUAL_MES||'R$ 12,49')+' por mês.';
 if(de) $('bEntrar').href='entrar.html?de='+encodeURIComponent(de);
 for(const [b,u] of [['bMensal',C.KIWIFY_MENSAL],['bAnual',C.KIWIFY_ANUAL]]){ if(u){ $(b).href=u; $(b).target='_blank'; $(b).rel='noopener'; } else { $(b).removeAttribute('href'); $(b).setAttribute('aria-disabled','true'); $(b).style.opacity=.55; $('soon').hidden=false; } }
 // já é assinante? volta para onde estava

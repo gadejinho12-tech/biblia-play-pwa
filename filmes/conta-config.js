@@ -12,8 +12,8 @@ window.BP_CONTA = {
 
   // Preços mostrados na página "Assinar"
   PRECO_MENSAL: 'R$ 14,90',
-  PRECO_ANUAL: 'R$ 119,00',
-  PRECO_ANUAL_MES: 'R$ 9,92',
+  PRECO_ANUAL: 'R$ 149,90',
+  PRECO_ANUAL_MES: 'R$ 12,49',
 
   // O que é grátis (o resto pede assinatura)
   GRATIS: ['criacao', 'noe', 'memoria', 'arca', 'ajudante', 'pais', 'marca', 'assinar', 'entrar', 'index'],
