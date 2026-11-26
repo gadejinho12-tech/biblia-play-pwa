@@ -21,8 +21,10 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [ ] Mais fases por jogo e filmes mais longos
 
 ## 2. De graça, quando der
-- [ ] Imagem do produto na Kiwify (300×250) com a Lili
-- [ ] Reativar o Supabase biblia-play (está pausado) e testar o webhook da Kiwify ("Testar Webhook")
+- [x] Supabase biblia-play reativado (26/11) e webhook da Kiwify testado: funcionou (registro de teste apagado)
+- [ ] Antes de vender: gerar token novo do webhook na Kiwify (o atual apareceu num print) e atualizar o segredo KIWIFY_TOKEN no Supabase
+- [ ] Lembrete: o Supabase grátis pausa após ~7 dias sem uso; reativar quando precisar
+- [x] Imagem do produto na Kiwify feita (prototipos/kiwify/biblinha-produto-600x500.png)
 - [ ] Decidir sobre o webhook antigo "Lino - Clube MEI 100%" na Kiwify
 - [ ] Pesquisa da marca "Biblinha Play" no INPI
 
