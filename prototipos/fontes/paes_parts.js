@@ -97,17 +97,20 @@ const NPH=[
   { name:'Fase 3 · Doze cestos', voice:['p3','Fase três: doze cestos! Passe o dedo nos pedacinhos para juntar as sobras.'] },
 ];
 function gameReset(){ GS.badBy=[0,0,0]; loadPhase(1); }
-function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, cool:GS.cool||0,
+function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, lw:W, cool:GS.cool||0,
     itens:[], paes:0, peixes:0, voando:[],
     grupos:[], fome:-1, pao:null, drag:false, dados:0, META:8, solto:null,
     migalhas:[], noCesto:0, cestos:0, POR:5, rastro:[] });
   camFor();
   if(n===1){ const tipos=['pao','pao','pao','pao','pao','peixe','peixe','maca','maca','maca','pedrinha','pedrinha','concha','concha']; tipos.sort(()=>Math.random()-.5);
-    const narrow=W<700; GS.mx=narrow? -215 : -430; GS.my=narrow? 110 : 0; GS.cx=narrow? 215 : 420; GS.cy=narrow? 120 : 30; // celular/tablet em pé: 3 fileiras de 5, menino e cesto embaixo
-    GS.itens=tipos.map((k,i)=>({k, x:narrow? -210+(i%5)*105 : -300+(i%7)*105+(Math.floor(i/7)%2)*40, y:narrow? -250+Math.floor(i/5)*90 : -70+Math.floor(i/7)*95, ph:Math.random()*6, ok:false, wob:0})); }
+    GS.itens=tipos.map(k=>({k, x:0, y:0, ph:Math.random()*6, ok:false, wob:0})); lanche(); }
   if(n===2){ GS.grupos=[[-.38,'povo1'],[-.22,'crianca'],[.22,'mulher'],[.38,'povo2']].map(([fx,id])=>({fx,id,comeu:0,feliz:0})); novaFome(); novoPao(); }
   if(n===3){ espalhaMigalhas(16); }
   $('gAn').textContent=NPH[n-1].name.split(' · ')[0]; hud(); gsay(NPH[n-1].voice[0],NPH[n-1].voice[1],true); }
+// celular/tablet em pé: 3 fileiras de 5, menino e cesto embaixo; deitado: 2 fileiras de 7. Refeito se a tela girar.
+function lanche(){ const narrow=W<700; GS.mx=narrow? -215 : -430; GS.my=narrow? 110 : 0; GS.cx=narrow? 215 : 420; GS.cy=narrow? 120 : 30;
+  GS.itens.forEach((it,i)=>{ it.x=narrow? -210+(i%5)*105 : -300+(i%7)*105+(Math.floor(i/7)%2)*40; it.y=narrow? -250+Math.floor(i/5)*90 : -70+Math.floor(i/7)*95; }); }
+function reencaixa(w0){ const g=GS; camFor(); if(g.phase===1) lanche(); if(g.phase===2 && !g.drag && g.pao && !g.pao.voa) novoPao(); if(g.phase===3) for(const m of g.migalhas) if(!m.ok) m.x*=W/w0; }
 function hud(){ const n=GS.phase; $('gGol').textContent = n===1? ('🥖 '+GS.paes+'/5 · 🐟 '+GS.peixes+'/2') : (n===2? ('🙋 '+GS.dados+' / '+GS.META) : ('🧺 '+GS.cestos+' / 12')); }
 function camFor(){ const narrow=W<700; cam.x=0; cam.y=-130; cam.z=narrow? .85 : 1.15; if(GS.phase===1 && !narrow) cam.z=Math.min(cam.z,(W/2-10)/490/(ZOOM*PZ())); } // fase 1: menino, cesto e todos os itens dentro da tela (tablet)
 function novaFome(){ const g=GS; const op=g.grupos.map((_,i)=>i).filter(i=>i!==g.fome); g.fome=op[Math.floor(Math.random()*op.length)]; }
@@ -135,15 +138,16 @@ function varre(x,y){ const g=GS; for(const m of g.migalhas){ if(!m.ok && Math.hy
 cv.addEventListener('pointermove',e=>{ if(MODE!=='game'||!GS.drag) return; const g=GS, w=toWorld(e);
   if(g.phase===2 && g.pao && !g.pao.voa){ g.pao.x=w.sx; g.pao.y=w.sy; }
   if(g.phase===3){ g.rastro.push([w.sx,w.sy,0]); varre(w.sx,w.sy); } });
-addEventListener('pointerup',()=>{ if(MODE!=='game') return; const g=GS; if(!g.drag) return; g.drag=false;
+const fimToque=()=>{ if(MODE!=='game') return; const g=GS; if(!g.drag) return; g.drag=false;
   if(g.phase===2 && g.pao && !g.pao.voa){ let alvo=-1, bd=1e9; g.grupos.forEach((gr,i)=>{ const [sx,sy]=toScreen(gr.fx*W/(ZOOM*cam.z*PZ()),-60); const d=Math.hypot(g.pao.x-sx,g.pao.y-sy); if(d<bd){ bd=d; alvo=i; } });
     if(alvo===g.fome && bd<150){ const gr=g.grupos[alvo]; gr.comeu++; gr.feliz=1.6; g.dados++; hud(); pluck(79,.07); pluck(86,.05,.08); g.pao.voa=true;
       if(g.dados>=g.META) finishPhase(); else { if(g.dados===4) gsay('o4','Muito bem!'); setTimeout(()=>{ if(MODE==='game' && GS.phase===2){ novaFome(); novoPao(); } },500); } }
     else if(bd<150){ g.badBy[1]+=.34; pluck(55,.06); gsay('p6','Esse já comeu! Dê para quem está com a mão levantada.'); novoPao(); }
-    else novoPao(); } });
+    else novoPao(); } };
+addEventListener('pointerup',fimToque); addEventListener('pointercancel',fimToque); // pointercancel (o navegador tomou o toque) conta como soltar
 function finishPhase(){ const g=GS; g.finished=true; g.finT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
   if(g.phase<3) gsay('o4','Muito bem!',true); else gsay('p7','Parabéns! Doze cestos cheios! O lanche do menino virou um banquete!',true); }
-function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt;
+function gameUpdate(dt){ const g=GS; if(g.lw!==W){ const w0=g.lw; g.lw=W; reencaixa(w0); } if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt;
   if(g.finished){ g.finT+=dt; if(g.phase<3 && g.finT>3){ loadPhase(g.phase+1); return; }
     if(g.phase===3 && g.finT>4.5 && !g.ended){ g.ended=true; const per=g.badBy.map(b=>b===0?3:(b<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
       $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=NPH.map((P2,i)=>P2.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  '); $('gwin').hidden=false; try{ const k='bp_paes_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), st)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(st),'pelo jogo!'),900); } }
@@ -173,7 +177,7 @@ function gameDraw(){ const g=GS; LIGHT.dx=-1; LIGHT.rim='#ffd6a0'; LIGHT.rimA=.6
     if(g.rastro.length>1){ ctx.save(); ctx.strokeStyle='rgba(255,247,200,.55)'; ctx.lineWidth=40; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); g.rastro.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y)); ctx.stroke(); ctx.restore(); }
     const [cx,cy]=cestoTela(); cesto(cx,cy,1.3,0); ctx.save(); ctx.fillStyle='#e0a858'; for(let i=0;i<g.noCesto;i++) ell(cx-30+i*15,cy-52,9,6,'#e0a858'); ctx.restore();
     for(let i=0;i<12;i++){ const x=W*.06+i*Math.min(52,W*.05), y=H*.36; ctx.save(); ctx.globalAlpha=i<g.cestos?1:.25; cesto(x,y,.42,i<g.cestos?1:0); ctx.restore(); } }
-  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque só nos pães e nos peixes' : (g.phase===2? (g.drag? '' : '👆 Arraste o pão para quem levantou a mão') : (g.drag? '' : '👆 Passe o dedo nos pedacinhos')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.95); ctx.fillText(msg,W/2,H*.95); ctx.restore(); } }
+  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque só nos pães e nos peixes' : (g.phase===2? (g.drag? '' : '👆 Arraste o pão para quem levantou a mão') : (g.drag? '' : '👆 Passe o dedo nos pedacinhos')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(Math.max(20,14*720/innerHeight))+'px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.95); ctx.fillText(msg,W/2,H*.95); ctx.restore(); } }
   if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40), by=innerHeight<=520? H*.56 : H*.24; /* celular deitado: a legenda fica no alto, então o título da fase desce */ ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,by-36,bw2,64,32); ctx.fill();
     ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,by+8); ctx.restore(); }
 }

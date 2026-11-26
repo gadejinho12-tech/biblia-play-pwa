@@ -109,7 +109,7 @@ const NPH=[
 const COISAS=[['🍞','pão',.18,.5],['🏺','jarro',.39,.46],['🍇','uvas',.61,.5],['🪔','lamparina',.82,.46],['🪑','banco',.3,.78],['🧺','cesto',.7,.78]];
 const NOTAS=[72,74,76,79,81,84];
 function gameReset(){ GS.badBy=[0,0,0]; loadPhase(1); }
-function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, cool:GS.cool||0,
+function loadPhase(n){ Object.assign(GS,{ phase:n, banner:2.8, finished:false, finT:0, ended:false, lw:W, cool:GS.cool||0,
     alt:0, lado:0, wob:0, aperta:[0,0],
     seq:[], rodada:0, mostra:-1, mostraT:0, entrada:0, luz:-1, luzT:0, espera:0,
     pessoas:[], moeda:null, drag:false });
@@ -140,14 +140,15 @@ function gameTap(e){ if(AC) AC.resume(); const w=toWorld(e); const g=GS; if(g.ba
     else { g.badBy[1]+=.5; pluck(50,.07); gsay('z5','Quase! Olhe de novo.',true); g.mostra=0; g.mostraT=-1.4; g.entrada=0; g.idx=-1; } }
   else if(g.phase===3){ const m=g.moeda; if(m && Math.hypot(w.sx-m.x,w.sy-m.y)<Math.min(W,H)*.12){ g.drag=true; } } }
 cv.addEventListener('pointermove',e=>{ if(MODE!=='game'||!GS.drag) return; const w=toWorld(e); if(GS.phase===3 && GS.moeda){ GS.moeda.x=w.sx; GS.moeda.y=w.sy; } });
-addEventListener('pointerup',()=>{ if(MODE!=='game') return; const g=GS; if(!g.drag) return; g.drag=false;
+const fimToque=()=>{ if(MODE!=='game') return; const g=GS; if(!g.drag) return; g.drag=false;
   if(g.phase===3 && g.moeda){ const z=ZOOM*cam.z*PZ(); let alvo=null, bd=1e9; for(const p of g.pessoas){ const [sx,sy]=toScreen(p.fx*W/z,-70); const d=Math.hypot(g.moeda.x-sx,g.moeda.y-sy); if(d<bd){ bd=d; alvo=p; } }
     if(alvo && bd<Math.min(W,H)*.2){ if(alvo.n<4){ alvo.n++; pluck(79+alvo.n*2,.07); if(alvo.n===4){ alvo.feliz=2; pluck(88,.06,.1); hud(); if(g.pessoas.every(p=>p.n>=4)){ g.moeda=null; finishPhase(); return; } else gsay('o4','Muito bem!'); } novaMoeda(); }
       else { g.badBy[2]+=.34; gsay('z6','Essa pessoa já recebeu as quatro moedas!'); novaMoeda(); } }
-    else novaMoeda(); } });
+    else novaMoeda(); } };
+addEventListener('pointerup',fimToque); addEventListener('pointercancel',fimToque); // pointercancel (o navegador tomou o toque) conta como soltar
 function finishPhase(){ const g=GS; g.finished=true; g.finT=0; [72,76,79,84].forEach((m,i)=>pluck(m,.08,i*.12));
   if(g.phase===1) gsay('z4','Lá de cima, Zaqueu viu Jesus!',true); else if(g.phase<3) gsay('o4','Muito bem!',true); else gsay('z7','Parabéns! Zaqueu devolveu tudo com alegria. Jesus mudou o coração dele!',true); }
-function gameUpdate(dt){ const g=GS; if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt; if(g.wob>0) g.wob-=dt; g.aperta=g.aperta.map(a=>Math.max(0,a-dt));
+function gameUpdate(dt){ const g=GS; if(g.lw!==W){ g.lw=W; camFor(); if(g.phase===3 && !g.drag && g.moeda) novaMoeda(); } /* a tela girou: reenquadra */ if(g.cool>0) g.cool-=dt; if(gsubT>0){ gsubT-=dt; if(gsubT<=0) subEl.classList.remove('on'); } if(g.banner>0) g.banner-=dt; if(g.wob>0) g.wob-=dt; g.aperta=g.aperta.map(a=>Math.max(0,a-dt));
   if(g.finished){ g.finT+=dt; if(g.phase<3 && g.finT>3.2){ loadPhase(g.phase+1); return; }
     if(g.phase===3 && g.finT>4.5 && !g.ended){ g.ended=true; const per=g.badBy.map(b=>b===0?3:(b<=2?2:1)); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
       $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=NPH.map((P2,i)=>P2.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  '); $('gwin').hidden=false; try{ const k='bp_zaqueu_estrelas'; localStorage.setItem(k, Math.max(+(localStorage.getItem(k)||0), st)); }catch(e){} if(window.bpAddCoins) setTimeout(()=>bpAddCoins(2*Math.round(st),'pelo jogo!'),900); } }
@@ -169,14 +170,14 @@ function gameDraw(){ const g=GS; LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.6;
     glow(W*.08,H*.15,120,'#ffd27a',.25);
     COISAS.forEach(([e,nome,fx,fy],i)=>{ const x=fx*W, y=fy*H, ac=g.luz===i && g.luzT>0, r=Math.min(W,H)*.1*(ac?1.12:1); glow(x,y,r*1.7,'#fff2c0',ac?.75:.1);
       ctx.save(); ctx.fillStyle=ac?'#FFC93C':'#fffdf6'; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill(); ctx.lineWidth=4; ctx.strokeStyle=ac?'#E0A21B':'#e8dcc4'; ctx.stroke(); ctx.font=Math.round(r*1.05)+'px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(e,x,y+3); ctx.restore(); });
-    ctx.save(); ctx.font='800 24px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(g.mostra>=0? '👀 Olhe a ordem...' : ('👆 Sua vez: '+g.entrada+' / '+g.seq.length),W*.5,H*.96); ctx.restore();
+    ctx.save(); ctx.font='800 '+Math.round(Math.max(24,15*720/innerHeight))+'px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(g.mostra>=0? '👀 Olhe a ordem...' : ('👆 Sua vez: '+g.entrada+' / '+g.seq.length),W*.5,H*.96); ctx.restore();
     if(g.finished){ ctx.save(); ctx.translate(W*.5,H*.9); person('jesus',-60,0,{pose:'open',dir:1,s:.6}); person('zaqueu',40,0,{pose:'armsup',dir:-1,s:.6}); ctx.restore(); } }
   else { jerico(.85); const z=ZOOM*cam.z*PZ();
     layer(1,()=>{ chaoRua(); const [bx]=[-.36*W/z]; person('zaqueu',bx-40,2,{pose:'open',dir:1}); bau(bx+40,0,1,8);
       for(const p of g.pessoas){ const x=p.fx*W/z; person(p.id,x,4,{pose:p.n>=4? 'armsup' : 'stand',dir:-1}); for(let k=0;k<p.n;k++) moeda(x-24+k*16,14,.8); } });
     for(const p of g.pessoas){ const [sx,sy]=toScreen(p.fx*W/z,-190); ctx.save(); ctx.fillStyle=p.n>=4?'#62BD45':'#fff'; const bx=Math.min(sx+30,W-40); /* não corta na borda (celular em pé) */ ctx.beginPath(); ctx.ellipse(bx,sy,34,26,0,0,7); ctx.fill(); ctx.font='800 26px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle=p.n>=4?'#fff':'#2B3A55'; ctx.fillText(p.n+'/4',bx,sy+9); ctx.restore(); }
     if(g.moeda){ if(!g.drag) glow(g.moeda.x,g.moeda.y,60,'#fff7d0',.3+.15*Math.sin(G*5)); moeda(g.moeda.x,g.moeda.y,1.5); } }
-  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque no botão que brilha: esquerda, direita...' : (g.phase===2? '' : (g.drag? '' : '👆 Arraste a moeda até uma pessoa')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 22px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.95); ctx.fillText(msg,W/2,H*.95); ctx.restore(); } }
+  if(g.banner<=0 && !g.finished){ const msg = g.phase===1? '👆 Toque no botão que brilha: esquerda, direita...' : (g.phase===2? '' : (g.drag? '' : '👆 Arraste a moeda até uma pessoa')); if(msg){ ctx.save(); ctx.globalAlpha=.75+.25*Math.sin(G*4); ctx.font='800 '+Math.round(Math.max(20,14*720/innerHeight))+'px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='rgba(30,40,60,.55)'; ctx.lineWidth=5; ctx.strokeText(msg,W/2,H*.95); ctx.fillText(msg,W/2,H*.95); ctx.restore(); } }
   if(g.banner>0){ const a=Math.min(1,g.banner*1.5); ctx.save(); ctx.globalAlpha=a; const bw2=Math.min(460,W-40), by=innerHeight<=520 && g.phase!==2? H*.56 : H*.24; /* celular deitado: a legenda fica no alto, então o título da fase desce (menos na fase 2, onde cobriria as coisas que acendem) */ ctx.fillStyle='rgba(255,253,246,.97)'; rr(W/2-bw2/2,by-36,bw2,64,32); ctx.fill();
     ctx.font='800 25px "Baloo 2", Nunito, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#2B3A55'; ctx.fillText(NPH[g.phase-1].name,W/2,by+8); ctx.restore(); }
 }
