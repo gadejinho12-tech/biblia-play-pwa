@@ -1,0 +1,66 @@
+{
+ "nome": "prodigo",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Lucas, capítulo quinze, Jesus contou a história de um filho que foi embora de casa?",
+   "card": {
+    "emoji": "📖",
+    "txt": "o filho que voltou",
+    "big": "Lucas 15"
+   }
+  },
+  {
+   "t": "Um pai tinha dois filhos. O mais novo pediu a sua parte do dinheiro, e foi morar bem longe.",
+   "card": {
+    "emoji": "🎒",
+    "txt": "o filho foi para longe"
+   }
+  },
+  {
+   "t": "Lá, ele gastou tudo! O dinheiro acabou, e ele foi cuidar de porcos, passando fome.",
+   "card": {
+    "emoji": "🐷",
+    "txt": "o dinheiro acabou"
+   }
+  },
+  {
+   "t": "Então ele pensou: Na casa do meu pai tem comida de sobra! Vou voltar e pedir perdão.",
+   "card": {
+    "emoji": "💭",
+    "txt": "vou voltar pra casa"
+   }
+  },
+  {
+   "t": "Quando ele ainda estava longe, o pai viu, correu, abraçou e beijou o filho!",
+   "card": {
+    "emoji": "🏃",
+    "txt": "o pai correu para abraçar"
+   }
+  },
+  {
+   "t": "E o pai fez uma festa, com roupa nova, anel e sandálias. Meu filho voltou!",
+   "card": {
+    "emoji": "🎉",
+    "txt": "uma festa de alegria!"
+   }
+  },
+  {
+   "t": "Deus é assim: sempre espera a gente de braços abertos!",
+   "card": {
+    "emoji": "💛",
+    "txt": "braços abertos"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

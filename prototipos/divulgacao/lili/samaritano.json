@@ -1,0 +1,67 @@
+{
+ "nome": "samaritano",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Lucas, capítulo dez, Jesus contou a história de um bom samaritano?",
+   "card": {
+    "emoji": "📖",
+    "txt": "o bom samaritano",
+    "big": "Lucas 10"
+   }
+  },
+  {
+   "t": "Um homem estava viajando, quando uns ladrões pegaram as coisas dele, e deixaram ele machucado na estrada.",
+   "card": {
+    "emoji": "🤕",
+    "txt": "um homem machucado na estrada"
+   }
+  },
+  {
+   "t": "Passou um sacerdote... e foi embora. Passou outro homem... e também foi embora.",
+   "card": {
+    "emoji": "🚶",
+    "txt": "dois passaram e não ajudaram",
+    "big": "2"
+   }
+  },
+  {
+   "t": "Aí passou um samaritano. Ele sentiu pena, parou, e cuidou das feridas do homem.",
+   "card": {
+    "emoji": "🩹",
+    "txt": "o samaritano parou para ajudar"
+   }
+  },
+  {
+   "t": "Colocou o homem no seu animal, levou até uma hospedaria, e ainda pagou para cuidarem dele!",
+   "card": {
+    "emoji": "🫏",
+    "txt": "ele cuidou até o fim"
+   }
+  },
+  {
+   "t": "Jesus perguntou: Quem foi o amigo de verdade? E disse: Vá, e faça o mesmo!",
+   "card": {
+    "emoji": "❓",
+    "txt": "vá e faça o mesmo!"
+   }
+  },
+  {
+   "t": "Ajudar quem precisa é amar como Jesus ama!",
+   "card": {
+    "emoji": "💛",
+    "txt": "ame e ajude"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

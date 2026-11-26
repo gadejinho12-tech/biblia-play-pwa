@@ -1,0 +1,68 @@
+{
+ "nome": "pesca",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Lucas, capítulo cinco, Pedro pescou tanto peixe que a rede quase rasgou?",
+   "card": {
+    "emoji": "📖",
+    "txt": "uma pesca maravilhosa",
+    "big": "Lucas 5"
+   }
+  },
+  {
+   "t": "Pedro era pescador. Ele passou a noite inteira pescando, e não pegou nenhum peixinho.",
+   "card": {
+    "emoji": "🎣",
+    "txt": "nenhum peixinho",
+    "big": "0"
+   }
+  },
+  {
+   "t": "Jesus entrou no barco dele e disse: Vá para o fundo, e jogue as redes!",
+   "card": {
+    "emoji": "⛵",
+    "txt": "jogue as redes!"
+   }
+  },
+  {
+   "t": "Pedro disse: Mestre, a gente trabalhou a noite toda... mas, porque o senhor está dizendo, eu vou jogar.",
+   "card": {
+    "emoji": "🤔",
+    "txt": "porque Jesus mandou"
+   }
+  },
+  {
+   "t": "E foi tanto peixe, mas tanto peixe, que as redes começaram a rasgar!",
+   "card": {
+    "emoji": "🐟🐟🐟",
+    "txt": "as redes rasgando!"
+   }
+  },
+  {
+   "t": "Eles chamaram o outro barco para ajudar, e os dois barcos ficaram cheios!",
+   "card": {
+    "emoji": "🚣",
+    "txt": "barcos cheios de peixe",
+    "big": "2"
+   }
+  },
+  {
+   "t": "Quando a gente obedece a Jesus, ele faz coisas incríveis!",
+   "card": {
+    "emoji": "💛",
+    "txt": "obedeça a Jesus"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

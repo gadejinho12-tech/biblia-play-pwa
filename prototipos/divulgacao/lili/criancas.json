@@ -1,0 +1,66 @@
+{
+ "nome": "criancas",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Marcos, capítulo dez, tem uma história que fala de crianças como você?",
+   "card": {
+    "emoji": "📖",
+    "txt": "Jesus e as crianças",
+    "big": "Marcos 10"
+   }
+  },
+  {
+   "t": "As famílias levavam as crianças para perto de Jesus, para ele abençoar.",
+   "card": {
+    "emoji": "👨‍👩‍👧",
+    "txt": "as crianças foram ver Jesus"
+   }
+  },
+  {
+   "t": "Mas os discípulos acharam que Jesus estava muito ocupado, e mandaram as crianças embora.",
+   "card": {
+    "emoji": "🙅",
+    "txt": "os discípulos não deixaram"
+   }
+  },
+  {
+   "t": "Jesus não gostou nada disso! Ele disse: Deixem as crianças virem a mim! Não impeçam!",
+   "card": {
+    "emoji": "🗣️",
+    "txt": "deixem as crianças virem a mim!"
+   }
+  },
+  {
+   "t": "Porque o Reino de Deus é de quem é como elas.",
+   "card": {
+    "emoji": "👑",
+    "txt": "o Reino de Deus é delas"
+   }
+  },
+  {
+   "t": "Então Jesus pegou as crianças no colo, colocou as mãos sobre elas, e abençoou cada uma.",
+   "card": {
+    "emoji": "🤗",
+    "txt": "Jesus abraçou e abençoou"
+   }
+  },
+  {
+   "t": "Jesus ama você, e sempre tem tempo pra você!",
+   "card": {
+    "emoji": "💛",
+    "txt": "Jesus ama você!"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

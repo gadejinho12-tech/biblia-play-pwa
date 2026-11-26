@@ -1,0 +1,68 @@
+{
+ "nome": "daniel",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Daniel, capítulo seis, tem a história de um homem que dormiu perto de leões?",
+   "card": {
+    "emoji": "📖",
+    "txt": "uma noite com os leões",
+    "big": "Daniel 6"
+   }
+  },
+  {
+   "t": "Daniel amava a Deus, e orava três vezes por dia, com a janela aberta.",
+   "card": {
+    "emoji": "🙏",
+    "txt": "Daniel orava todo dia",
+    "big": "3×"
+   }
+  },
+  {
+   "t": "Uns homens maus, com inveja, convenceram o rei a fazer uma lei: por trinta dias, ninguém podia orar a Deus.",
+   "card": {
+    "emoji": "📜",
+    "txt": "uma lei contra a oração",
+    "big": "30 dias"
+   }
+  },
+  {
+   "t": "Mas Daniel continuou orando, como sempre! Por isso, ele foi colocado numa cova cheia de leões.",
+   "card": {
+    "emoji": "🦁",
+    "txt": "a cova dos leões"
+   }
+  },
+  {
+   "t": "E sabe o que Deus fez? Mandou um anjo, que fechou a boca dos leões!",
+   "card": {
+    "emoji": "👼",
+    "txt": "Deus fechou a boca dos leões"
+   }
+  },
+  {
+   "t": "De manhã, o rei correu até a cova, e Daniel estava lá, sem nenhum arranhão!",
+   "card": {
+    "emoji": "😃",
+    "txt": "sem nenhum arranhão!"
+   }
+  },
+  {
+   "t": "Quem confia em Deus pode orar sempre, porque Deus cuida de nós!",
+   "card": {
+    "emoji": "💛",
+    "txt": "ore sempre, Deus cuida"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}
