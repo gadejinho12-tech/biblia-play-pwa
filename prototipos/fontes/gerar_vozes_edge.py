@@ -26,6 +26,10 @@ ELENCO = {
     'Jonas':        ('en-US-BrianMultilingualNeural', '-4%', '+0Hz', None),
     'Marinheiro':   ('pt-BR-AntonioNeural', '+4%', '+0Hz', None),
     'José':         ('en-US-BrianMultilingualNeural', '-4%', '+0Hz', {'fator': .96}),
+    'Filipe':       ('en-US-BrianMultilingualNeural', '+0%', '+0Hz', None),
+    'André':        ('pt-BR-AntonioNeural', '+4%', '+0Hz', {'fator': .95}),
+    'Menino':       ('en-US-BrianMultilingualNeural', '+6%', '+0Hz', {'fator': 1.28}),
+    'Pastor':       ('en-US-BrianMultilingualNeural', '-2%', '+0Hz', {'fator': .97}),
     'Maria':        ('pt-BR-ThalitaMultilingualNeural', '-8%', '+0Hz', None),
     'Anjo':         ('pt-BR-ThalitaMultilingualNeural', '-10%', '+0Hz', {'eco': True}),
 }

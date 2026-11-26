@@ -29,6 +29,7 @@ const ARQUIVOS=[
   './natal.html',
   './noe.html',
   './ovelha.html',
+  './paes.html',
   './pais.html',
   './quiz.html',
   './tempestade.html',

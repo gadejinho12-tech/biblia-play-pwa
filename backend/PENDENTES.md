@@ -7,7 +7,7 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 
 ### Novo Testamento
 - [x] **A Ovelha Perdida** (Lucas 15:3-7) — pronta (filmes/ovelha.html), aguardando publicação
-- [ ] **Pães e Peixes** (João 6:1-14) — roteiro em aprovação (prototipos/roteiros/paes-e-peixes.md)
+- [x] **Pães e Peixes** (João 6:1-14) — pronto (filmes/paes.html), aguardando publicação
 - [ ] **Zaqueu** (Lucas 19:1-10)
 - [ ] Ideias depois: O Bom Samaritano, Jesus e as crianças, O filho que voltou (filho pródigo), A pesca maravilhosa
 
