@@ -20,7 +20,7 @@ ELENCO = {
     'Vizinho':      ('pt-BR-AntonioNeural', '+6%', '+0Hz', None),
     'Davi':         ('en-US-BrianMultilingualNeural', '+0%', '+0Hz', {'fator': 1.12}),
     'Saul':         ('pt-BR-AntonioNeural', '-4%', '+0Hz', {'fator': .95}),
-    'Golias':       ('pt-BR-AntonioNeural', '-8%', '+0Hz', {'fator': .76, 'eco': True}),
+    'Golias':       ('pt-BR-AntonioNeural', '-8%', '+0Hz', {'fator': .76, 'eco': True, 'volume': -15.5}),
     'Jesus':        ('pt-BR-AntonioNeural', '-8%', '+0Hz', {'fator': .97}),
     'Pedro':        ('en-US-BrianMultilingualNeural', '+0%', '+0Hz', None),
     'Jonas':        ('en-US-BrianMultilingualNeural', '-4%', '+0Hz', None),
@@ -49,12 +49,16 @@ def gera(texto, v, saida):
         if r.returncode == 0 and os.path.getsize(bruto) > 1000 and duracao(bruto) >= len(texto) * 0.045: break
     else:
         raise SystemExit('falhou: ' + texto[:60] + '\n' + r.stderr[-400:])
-    if fx:
-        f = fx.get('fator', 1); filtros = []
-        if f != 1: filtros.append('asetrate=24000*%s,aresample=24000,atempo=%s' % (f, round(1 / f, 4)))
-        if fx.get('eco'): filtros.append('aecho=0.85:0.6:55|110:0.2|0.12')
-        subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', bruto, '-af', ','.join(filtros), '-b:a', '64k', saida], check=True)
-        os.remove(bruto)
+    # todas as vozes no mesmo volume (o gigante um pouco mais forte)
+    f = (fx or {}).get('fator', 1); filtros = []
+    if f != 1: filtros.append('asetrate=24000*%s,aresample=24000,atempo=%s' % (f, round(1 / f, 4)))
+    if (fx or {}).get('eco'): filtros.append('aecho=0.85:0.6:55|110:0.2|0.12')
+    filtros.append('loudnorm=I=%s:TP=-1.5:LRA=11' % (fx or {}).get('volume', -18))
+    filtros.append('aresample=24000')
+    final = saida if fx else saida + '.norm.mp3'
+    subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', bruto, '-af', ','.join(filtros), '-ac', '1', '-b:a', '64k', final], check=True)
+    if fx: os.remove(bruto)
+    else: os.replace(final, saida)
 
 def duracao(arq):
     return float(subprocess.check_output(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', arq]).decode())
