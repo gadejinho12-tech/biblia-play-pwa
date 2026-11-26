@@ -25,7 +25,8 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [ ] Antes de vender: gerar token novo do webhook na Kiwify (o atual apareceu num print) e atualizar o segredo KIWIFY_TOKEN no Supabase
 - [ ] Lembrete: o Supabase grátis pausa após ~7 dias sem uso; reativar quando precisar
 - [x] Imagem do produto na Kiwify feita (prototipos/kiwify/biblinha-produto-600x500.png)
-- [ ] Decidir sobre o webhook antigo "Lino - Clube MEI 100%" na Kiwify
+- [x] Webhook "Lino - Clube MEI 100%" limitado ao produto Club MEI 100% (26/11); não recebe mais vendas do Biblinha
+- [ ] (Voxia/Clube MEI, quando voltar a vender) marcar também "Reembolso" e "Chargeback" nesse webhook
 - [ ] Pesquisa da marca "Biblinha Play" no INPI
 
 ## 3. Quando tiver dinheiro
