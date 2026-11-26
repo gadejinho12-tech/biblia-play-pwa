@@ -1,7 +1,7 @@
 [
  ["v01","Narrador","Em Belém vivia um menino chamado Davi. Ele era o mais novo da família, e cuidava das ovelhas do seu pai."],
  ["v02","Narrador","Davi tocava harpa, cantava para Deus e treinava com a sua funda. Quando um leão aparecia, ele protegia as ovelhas com coragem."],
- ["v03","Davi","O Senhor é o meu pastor! Com Ele, eu não tenho medo de nada."],
+ ["v03","Davi","O Senhor é o meu pastor, e nada me faltará! Com Ele, eu não tenho medo."],
  ["v04","Narrador","Um dia, o exército de Israel e o exército dos filisteus ficaram frente a frente, cada um num monte, com um vale no meio."],
  ["v05","Golias","Eu sou Golias! Mandem alguém lutar comigo! Se ele vencer, nós seremos seus servos!"],
  ["v06","Narrador","Golias era um gigante de quase três metros. Durante quarenta dias ele gritava, e todos os soldados tremiam de medo."],
@@ -11,7 +11,7 @@
  ["v10","Davi","O Senhor me livrou do leão e do urso. Ele também vai me livrar desse gigante!"],
  ["v11","Narrador","O rei deu a sua armadura para Davi... mas ela era grande e pesada demais! Davi preferiu ir do jeito que era: com a sua funda e a sua fé."],
  ["v12","Narrador","No riacho, Davi escolheu cinco pedras bem lisinhas, e guardou na sua bolsa de pastor."],
- ["v13","Golias","Ha ha ha! Você vem me enfrentar com um pedaço de pau? Venha cá, menino!"],
+ ["v13","Golias","Rá, rá, rá, rá! Você vem me enfrentar com um pedaço de pau? Venha cá, menino!"],
  ["v14","Davi","Você vem com espada e lança, mas eu vou em nome do Senhor dos Exércitos!"],
  ["v15","Narrador","Davi correu, girou a funda e lançou uma pedra. Ela acertou bem na testa do gigante... e Golias caiu no chão!"],
  ["v16","Narrador","Os filisteus fugiram, e o povo de Israel comemorou! Deus deu a vitória ao menino que confiou nele."],
@@ -27,6 +27,6 @@
  ["g4","Narrador","Fraquinho! Solte quando a seta chegar no verde."],
  ["g5","Narrador","Forte demais! Solte um pouquinho antes."],
  ["g6","Narrador","Acertou! A batalha é do Senhor!"],
- ["g7","Golias","Ha ha! Errou!"],
+ ["g7","Golias","Rá, rá, rá! Errou!"],
  ["g8","Narrador","Muito bem! Cinco pedras na bolsa!"]
 ]

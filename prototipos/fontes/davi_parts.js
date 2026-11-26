@@ -133,7 +133,7 @@ const SCRIPT=[
   {card:0},
   {sc:'pasto', ...N('Em Belém vivia um menino chamado Davi. Ele era o mais novo da família, e cuidava das ovelhas do seu pai.')},
   {sc:'pasto', ...N('Davi tocava harpa, cantava para Deus e treinava com a sua funda. Quando um leão aparecia, ele protegia as ovelhas com coragem.')},
-  {sc:'pasto', ...DAVI('O Senhor é o meu pastor! Com Ele, eu não tenho medo de nada. (Salmo 23:1)')},
+  {sc:'pasto', ...DAVI('O Senhor é o meu pastor, e nada me faltará! Com Ele, eu não tenho medo. (Salmo 23:1)')},
   {card:1},
   {sc:'vale', ...N('Um dia, o exército de Israel e o exército dos filisteus ficaram frente a frente, cada um num monte, com um vale no meio. (1 Samuel 17:3)')},
   {sc:'golias', ...GOL('Eu sou Golias! Mandem alguém lutar comigo! Se ele vencer, nós seremos seus servos! (1 Samuel 17:9)')},
@@ -145,7 +145,7 @@ const SCRIPT=[
   {sc:'saul', ...DAVI('O Senhor me livrou do leão e do urso. Ele também vai me livrar desse gigante! (1 Samuel 17:37)')},
   {sc:'saul', ...N('O rei deu a sua armadura para Davi... mas ela era grande e pesada demais! Davi preferiu ir do jeito que era: com a sua funda e a sua fé.')},
   {sc:'riacho', ...N('No riacho, Davi escolheu cinco pedras bem lisinhas, e guardou na sua bolsa de pastor. (1 Samuel 17:40)')},
-  {sc:'duelo', ...GOL('Ha ha ha! Você vem me enfrentar com um pedaço de pau? Venha cá, menino!')},
+  {sc:'duelo', ...GOL('Rá, rá, rá, rá! Você vem me enfrentar com um pedaço de pau? Venha cá, menino!')},
   {sc:'duelo', ...DAVI('Você vem com espada e lança, mas eu vou em nome do Senhor dos Exércitos! (1 Samuel 17:45)')},
   {card:3},
   {sc:'funda', ...N('Davi correu, girou a funda e lançou uma pedra. Ela acertou bem na testa do gigante... e Golias caiu no chão! (1 Samuel 17:49)')},
@@ -251,7 +251,7 @@ function gameUpdate(dt){
   if(g.hold){ g.holdT+=dt; g.ph+=dt*(6+Math.min(1,g.holdT/.45)*10); g.power=.5-.5*Math.cos(Math.max(0,g.holdT-.3)*2*Math.PI/DPH[n-1].period); }
   if(g.stone){ const s=g.stone; s.t+=dt/(s.res==='hit'&&n===3? 1.3 : .8); if(s.t>=1){ g.stone=null;
       if(s.res==='hit') onHit();
-      else { g.misses++; if(n===3) gsay('g7','Ha ha! Errou!',true,'Golias'); else gsay(s.res==='short'?'g4':'g5', s.res==='short'?'Fraquinho! Solte quando a seta chegar no verde.':'Forte demais! Solte um pouquinho antes.',true);
+      else { g.misses++; if(n===3) gsay('g7','Rá, rá, rá! Errou!',true,'Golias'); else gsay(s.res==='short'?'g4':'g5', s.res==='short'?'Fraquinho! Solte quando a seta chegar no verde.':'Forte demais! Solte um pouquinho antes.',true);
         if(n===3) setTimeout(()=>{ if(MODE==='game' && !GS.hit) gsay(s.res==='short'?'g4':'g5', s.res==='short'?'Fraquinho! Solte quando a seta chegar no verde.':'Forte demais! Solte um pouquinho antes.',true); },1500); } } }
   if(g.hit){ g.hitT+=dt; if(g.hitT>4.5 && !g.ended){ g.ended=true; const per=DPH.map((D,i)=>{ const extra=g.throwsBy[i]-D.need; return extra<=0?3:(extra<=2?2:1); }); const st=Math.round(per.reduce((a,b)=>a+b,0)/3);
     $('gStars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st); $('gRes').textContent=DPH.map((D,i)=>D.name.split(' · ')[0]+': '+'⭐'.repeat(per[i])).join('  ·  ')+' · Pedras certas no riacho: 5 de '+(5+g.wrong)+' toques'; $('gwin').hidden=false; } }
