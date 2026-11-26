@@ -1,0 +1,69 @@
+{
+ "nome": "davi",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Primeiro Samuel, capítulo dezessete, tem a história de um menino corajoso chamado Davi?",
+   "card": {
+    "emoji": "📖",
+    "txt": "um menino corajoso chamado Davi",
+    "big": "1 Samuel 17"
+   }
+  },
+  {
+   "t": "O exército de Israel estava com medo de um gigante chamado Golias. Ele tinha quase três metros de altura!",
+   "card": {
+    "emoji": "😨",
+    "txt": "um gigante chamado Golias",
+    "big": "3 metros"
+   }
+  },
+  {
+   "t": "Todo dia, Golias gritava e desafiava o povo de Deus. E ninguém tinha coragem de lutar com ele.",
+   "card": {
+    "emoji": "📣",
+    "txt": "ninguém tinha coragem"
+   }
+  },
+  {
+   "t": "Davi era só um pastor de ovelhas. Mas ele confiava em Deus, e disse: eu vou!",
+   "card": {
+    "emoji": "🙋",
+    "txt": "Davi confiava em Deus"
+   }
+  },
+  {
+   "t": "Ele pegou cinco pedrinhas lisas no riacho, e a sua funda.",
+   "card": {
+    "emoji": "🪨",
+    "txt": "pedrinhas lisas",
+    "big": "5"
+   }
+  },
+  {
+   "t": "Davi disse ao gigante: você vem com espada, mas eu venho em nome do Senhor! E com uma pedrinha só, o gigante caiu!",
+   "card": {
+    "emoji": "🎯",
+    "txt": "com uma pedrinha só!",
+    "big": "1"
+   }
+  },
+  {
+   "t": "Quando a gente confia em Deus, não precisa ter medo dos gigantes!",
+   "card": {
+    "emoji": "💪",
+    "txt": "com Deus, coragem!"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

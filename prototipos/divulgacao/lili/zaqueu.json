@@ -1,0 +1,68 @@
+{
+ "nome": "zaqueu",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Lucas, capítulo dezenove, tem a história de um homem bem baixinho chamado Zaqueu?",
+   "card": {
+    "emoji": "📖",
+    "txt": "um homem baixinho chamado Zaqueu",
+    "big": "Lucas 19"
+   }
+  },
+  {
+   "t": "Zaqueu morava em Jericó. Ele era cobrador de impostos, e muito rico.",
+   "card": {
+    "emoji": "💰",
+    "txt": "cobrador de impostos, muito rico",
+    "big": "Jericó"
+   }
+  },
+  {
+   "t": "Um dia, Jesus passou pela cidade. Mas tinha tanta gente, que Zaqueu não conseguia ver nada!",
+   "card": {
+    "emoji": "👀",
+    "txt": "Zaqueu não conseguia ver Jesus"
+   }
+  },
+  {
+   "t": "Então ele correu na frente, e subiu numa árvore chamada sicômoro.",
+   "card": {
+    "emoji": "🌳",
+    "txt": "ele subiu numa árvore!"
+   }
+  },
+  {
+   "t": "Jesus parou bem embaixo da árvore e disse: Zaqueu, desça depressa! Hoje eu vou ficar na sua casa!",
+   "card": {
+    "emoji": "😮",
+    "txt": "Jesus chamou Zaqueu pelo nome"
+   }
+  },
+  {
+   "t": "Zaqueu ficou tão feliz, que mudou o coração. Deu metade do que tinha aos pobres, e devolveu quatro vezes mais a quem ele tinha enganado.",
+   "card": {
+    "emoji": "💛",
+    "txt": "Zaqueu mudou o coração",
+    "big": "½ + 4×"
+   }
+  },
+  {
+   "t": "Jesus conhece você pelo nome, e quer morar no seu coração!",
+   "card": {
+    "emoji": "⭐",
+    "txt": "Jesus conhece você pelo nome"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

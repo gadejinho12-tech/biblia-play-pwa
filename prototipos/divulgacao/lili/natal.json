@@ -1,0 +1,68 @@
+{
+ "nome": "natal",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Lucas, capítulo dois, conta como foi o nascimento de Jesus?",
+   "card": {
+    "emoji": "📖",
+    "txt": "o nascimento de Jesus",
+    "big": "Lucas 2"
+   }
+  },
+  {
+   "t": "Um anjo avisou Maria que ela ia ser a mãe de Jesus, o Filho de Deus!",
+   "card": {
+    "emoji": "👼",
+    "txt": "um anjo visitou Maria"
+   }
+  },
+  {
+   "t": "Maria e José viajaram até a cidade de Belém. Mas lá não tinha lugar para eles ficarem.",
+   "card": {
+    "emoji": "🫏",
+    "txt": "não tinha lugar",
+    "big": "Belém"
+   }
+  },
+  {
+   "t": "E foi assim que Jesus nasceu, e foi deitado numa manjedoura, onde os animais comiam.",
+   "card": {
+    "emoji": "⭐",
+    "txt": "Jesus nasceu!"
+   }
+  },
+  {
+   "t": "Naquela noite, os anjos contaram a boa notícia para os pastores, que correram para ver o bebê!",
+   "card": {
+    "emoji": "🐑",
+    "txt": "os pastores foram ver Jesus"
+   }
+  },
+  {
+   "t": "E uns sábios do Oriente seguiram uma estrela, e trouxeram presentes: ouro, incenso e mirra.",
+   "card": {
+    "emoji": "🎁",
+    "txt": "presentes para Jesus",
+    "big": "3"
+   }
+  },
+  {
+   "t": "Jesus é o maior presente que Deus deu pra nós!",
+   "card": {
+    "emoji": "💛",
+    "txt": "o maior presente de Deus"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}
