@@ -1,0 +1,67 @@
+{
+ "nome": "boaz",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, no livro de Rute, tem a história de um homem muito bondoso chamado Boaz?",
+   "card": {
+    "emoji": "📖",
+    "txt": "um homem bondoso chamado Boaz",
+    "big": "Rute"
+   }
+  },
+  {
+   "t": "Rute cuidava da sua sogra, Noemi, que tinha ficado sozinha. Ela disse: Aonde você for, eu irei!",
+   "card": {
+    "emoji": "🤝",
+    "txt": "aonde você for, eu irei!"
+   }
+  },
+  {
+   "t": "As duas foram morar em Belém. E, para ter comida, Rute foi catar os restinhos de trigo que ficavam no campo.",
+   "card": {
+    "emoji": "🌾",
+    "txt": "Rute catava espigas",
+    "big": "Belém"
+   }
+  },
+  {
+   "t": "O campo era de Boaz. Quando ele viu Rute trabalhando, foi muito gentil com ela.",
+   "card": {
+    "emoji": "😊",
+    "txt": "Boaz foi gentil"
+   }
+  },
+  {
+   "t": "Boaz deu água e comida pra Rute. E ainda mandou os trabalhadores deixarem cair umas espigas a mais, de propósito, só pra ela pegar!",
+   "card": {
+    "emoji": "🎁",
+    "txt": "espigas a mais, de propósito!"
+   }
+  },
+  {
+   "t": "Depois, Boaz e Rute se casaram, e tiveram um filhinho. E sabe quem nasceu dessa família? O rei Davi, e muito tempo depois, Jesus!",
+   "card": {
+    "emoji": "👑",
+    "txt": "da família de Boaz veio Jesus!"
+   }
+  },
+  {
+   "t": "Deus usa a bondade da gente pra abençoar muitas pessoas. Seja bondoso como Boaz!",
+   "card": {
+    "emoji": "💛",
+    "txt": "seja bondoso como Boaz"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

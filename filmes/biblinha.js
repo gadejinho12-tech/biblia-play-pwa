@@ -66,14 +66,7 @@
     atualiza();
   }
 
-  // "Você sabia?" no resumo do fim de cada filme (curiosidade daquela história)
-  function curiosidade(){
-    if(!FILMES.includes(pagina)) return;
-    const pg=document.querySelector('#summary .page'); if(!pg) return;
-    const por=()=>{ if(pg.querySelector('.vs')) return; window.vocesabia(pg,{historia:pagina, antes:pg.querySelector('.row')}); };
-    if(window.vocesabia) por(); else { const sc=document.createElement('script'); sc.src='curiosidades.js'; sc.onload=por; document.head.appendChild(sc); }
-  }
 
-  function iniciar(){ marcar(); aviso(); curiosidade(); }
+  function iniciar(){ marcar(); aviso(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar); else iniciar();
 })();
