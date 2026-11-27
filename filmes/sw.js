@@ -1,6 +1,6 @@
 // Clubinho do Reino Filmes — funciona sem internet depois do primeiro acesso.
 // IMPORTANTE: ao publicar uma versão nova, aumente a VERSAO para os aparelhos baixarem tudo de novo.
-const VERSAO='filmes-v21';
+const VERSAO='filmes-v23';
 const ARQUIVOS=[
   './',
   './ajudante.html',
@@ -11,18 +11,6 @@ const ARQUIVOS=[
   './tema-biblinha.css',
   './biblinha.js',
   './lili.svg',
-  './curiosidades.js',
-  './audio/curiosidades/c01.mp3',
-  './audio/curiosidades/c02.mp3',
-  './audio/curiosidades/c03.mp3',
-  './audio/curiosidades/c04.mp3',
-  './audio/curiosidades/c05.mp3',
-  './audio/curiosidades/c06.mp3',
-  './audio/curiosidades/c07.mp3',
-  './audio/curiosidades/c08.mp3',
-  './audio/curiosidades/c09.mp3',
-  './audio/curiosidades/c10.mp3',
-  './audio/curiosidades/c11.mp3',
   './lili-festa.svg',
   './conta.js',
   './entrar.html',

@@ -38,7 +38,7 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - Atenção: os build_*.py antigos (criacao, noe, davi, jonas, natal, tempestade, jogos) não funcionam mais; o HTML em filmes/ é a fonte de verdade. Ovelha, Pães e Zaqueu ainda são gerados pelos build_*.py (fontes sincronizadas).
 
 ## Você sabia? (26/11)
-- [x] 10 curiosidades com a voz da narradora (filmes/curiosidades.js + filmes/audio/curiosidades/): "curiosidade do dia" na estante e a da história no fim de cada filme
+- [x] 10 curiosidades com a voz da narradora (filmes/curiosidades.js + filmes/audio/curiosidades/). 27/11: o dono pediu para TIRAR do app por enquanto (arquivos guardados); o "Você sabia?" fica só nas redes sociais (vídeos da Lili)
 - [ ] Ir acrescentando mais (meta: várias por história); gravar com prototipos/fontes/gravar_curiosidades.py
 - [ ] Isca grátis: ao ligar o login, deixar 1 filme liberado (hoje conta-config GRATIS tem criacao e noe; o dono falou em 1 filme — confirmar qual) + curiosidades abertas para todos
 
