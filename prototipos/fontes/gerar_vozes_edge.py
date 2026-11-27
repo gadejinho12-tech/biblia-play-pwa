@@ -34,6 +34,10 @@ ELENCO = {
     'Povo':         ('pt-BR-AntonioNeural', '+8%', '+0Hz', {'fator': 1.03}),
     'Maria':        ('pt-BR-ThalitaMultilingualNeural', '-8%', '+0Hz', None),
     'Anjo':         ('pt-BR-ThalitaMultilingualNeural', '-10%', '+0Hz', {'eco': True}),
+    'Rute':         ('pt-BR-ThalitaMultilingualNeural', '-8%', '+0Hz', None),
+    'Noemi':        ('pt-BR-ThalitaMultilingualNeural', '-10%', '+0Hz', {'fator': .9}),
+    'Boaz':         ('pt-BR-AntonioNeural', '-8%', '+0Hz', {'fator': .95}),
+    'Trabalhador':  ('en-US-BrianMultilingualNeural', '+0%', '+0Hz', None),
 }
 HOMENS = ('en-US-BrianMultilingualNeural', '-4%', '+0Hz', None)
 
