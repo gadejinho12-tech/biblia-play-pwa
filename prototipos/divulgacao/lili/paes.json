@@ -1,0 +1,69 @@
+{
+ "nome": "paes",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em João, capítulo seis, tem uma história de um lanche muito especial?",
+   "card": {
+    "emoji": "📖",
+    "big": "João 6",
+    "txt": "um lanche muito especial"
+   }
+  },
+  {
+   "t": "Uma multidão enorme foi ouvir Jesus. Eram mais de cinco mil pessoas! E todo mundo estava com fome.",
+   "card": {
+    "emoji": "👨‍👩‍👧‍👦",
+    "big": "5.000",
+    "txt": "pessoas com fome"
+   }
+  },
+  {
+   "t": "Aí apareceu um menino com um lanche pequenininho: cinco pães e dois peixinhos.",
+   "card": {
+    "emoji": "🍞🐟",
+    "big": "5 + 2",
+    "txt": "o lanche de um menino"
+   }
+  },
+  {
+   "t": "Jesus pegou os pães, agradeceu a Deus, e mandou repartir com todo mundo.",
+   "card": {
+    "emoji": "🙏",
+    "txt": "Jesus agradeceu a Deus"
+   }
+  },
+  {
+   "t": "E sabe o que aconteceu? Todos comeram até ficar satisfeitos!",
+   "card": {
+    "emoji": "😋",
+    "txt": "todos comeram até ficar satisfeitos"
+   }
+  },
+  {
+   "t": "E ainda sobraram doze cestos cheios de pedaços de pão!",
+   "card": {
+    "emoji": "🧺",
+    "big": "12",
+    "txt": "cestos cheios sobraram!"
+   }
+  },
+  {
+   "t": "Nas mãos de Jesus, o pouco vira muito. Por isso, agradeça a Deus e reparta o que você tem!",
+   "card": {
+    "emoji": "💛",
+    "txt": "agradeça e reparta"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

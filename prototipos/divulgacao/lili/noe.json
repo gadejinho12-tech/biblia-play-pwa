@@ -1,0 +1,68 @@
+{
+ "nome": "noe",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Gênesis, capítulo seis, Deus pediu para um homem chamado Noé construir um barco gigante?",
+   "card": {
+    "emoji": "📖",
+    "txt": "um barco gigante",
+    "big": "Gênesis 6"
+   }
+  },
+  {
+   "t": "Noé amava a Deus e obedeceu. Construiu uma arca enorme, mais comprida que um campo de futebol!",
+   "card": {
+    "emoji": "🚢",
+    "txt": "Noé obedeceu a Deus"
+   }
+  },
+  {
+   "t": "Depois, os animais foram entrando na arca, de dois em dois!",
+   "card": {
+    "emoji": "🦒🐘",
+    "txt": "de dois em dois",
+    "big": "2 + 2"
+   }
+  },
+  {
+   "t": "Então choveu quarenta dias e quarenta noites! Mas dentro da arca, todos estavam seguros.",
+   "card": {
+    "emoji": "🌧️",
+    "txt": "dias e noites de chuva",
+    "big": "40"
+   }
+  },
+  {
+   "t": "Quando a chuva passou, Noé soltou uma pomba. E ela voltou com uma folhinha de oliveira no bico!",
+   "card": {
+    "emoji": "🕊️",
+    "txt": "a pomba trouxe uma folhinha"
+   }
+  },
+  {
+   "t": "Aí Deus colocou um arco-íris no céu, como sinal da sua promessa.",
+   "card": {
+    "emoji": "🌈",
+    "txt": "o sinal da promessa de Deus"
+   }
+  },
+  {
+   "t": "Quando a gente obedece a Deus, ele cuida de nós!",
+   "card": {
+    "emoji": "💛",
+    "txt": "obedecer e confiar"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

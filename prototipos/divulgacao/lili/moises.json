@@ -1,0 +1,66 @@
+{
+ "nome": "moises",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Êxodo, capítulo catorze, Deus abriu um caminho no meio do mar?",
+   "card": {
+    "emoji": "📖",
+    "txt": "um caminho no meio do mar",
+    "big": "Êxodo 14"
+   }
+  },
+  {
+   "t": "O povo de Deus tinha saído do Egito com Moisés. Mas o faraó mudou de ideia, e foi atrás deles com o seu exército!",
+   "card": {
+    "emoji": "🏃",
+    "txt": "o faraó foi atrás do povo"
+   }
+  },
+  {
+   "t": "Na frente deles estava o mar Vermelho. E agora? O povo ficou com muito medo!",
+   "card": {
+    "emoji": "🌊",
+    "txt": "o mar Vermelho na frente"
+   }
+  },
+  {
+   "t": "Moisés disse: Não tenham medo! O Senhor vai lutar por vocês!",
+   "card": {
+    "emoji": "🗣️",
+    "txt": "não tenham medo!"
+   }
+  },
+  {
+   "t": "Moisés estendeu a mão sobre o mar, e Deus mandou um vento muito forte, a noite toda.",
+   "card": {
+    "emoji": "🌬️",
+    "txt": "um vento muito forte"
+   }
+  },
+  {
+   "t": "A água se abriu, como duas paredes! E o povo atravessou o mar pisando no chão seco!",
+   "card": {
+    "emoji": "🧱🌊",
+    "txt": "chão seco no meio do mar"
+   }
+  },
+  {
+   "t": "Quando parece que não tem saída, Deus abre um caminho!",
+   "card": {
+    "emoji": "💛",
+    "txt": "Deus abre caminhos"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

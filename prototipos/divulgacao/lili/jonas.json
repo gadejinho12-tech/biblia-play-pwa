@@ -1,0 +1,68 @@
+{
+ "nome": "jonas",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, no livro de Jonas, tem a história de um homem que foi parar dentro de um peixe enorme?",
+   "card": {
+    "emoji": "📖",
+    "txt": "um peixe enorme!",
+    "big": "Jonas"
+   }
+  },
+  {
+   "t": "Deus pediu para Jonas ir até a cidade de Nínive, levar uma mensagem. Mas Jonas não quis ir!",
+   "card": {
+    "emoji": "🙅",
+    "txt": "Jonas não quis ir",
+    "big": "Nínive"
+   }
+  },
+  {
+   "t": "Ele fugiu num barco, para bem longe. Aí veio uma tempestade muito forte!",
+   "card": {
+    "emoji": "⛈️",
+    "txt": "uma tempestade forte"
+   }
+  },
+  {
+   "t": "Jonas caiu no mar, e Deus mandou um grande peixe, que engoliu Jonas!",
+   "card": {
+    "emoji": "🐋",
+    "txt": "um grande peixe"
+   }
+  },
+  {
+   "t": "Jonas ficou três dias e três noites dentro do peixe. Lá dentro, ele orou e pediu perdão a Deus.",
+   "card": {
+    "emoji": "🙏",
+    "txt": "dias e noites orando",
+    "big": "3"
+   }
+  },
+  {
+   "t": "Então o peixe colocou Jonas na praia, e ele foi até Nínive. O povo ouviu, se arrependeu, e Deus perdoou a cidade!",
+   "card": {
+    "emoji": "🏙️",
+    "txt": "Deus perdoou Nínive"
+   }
+  },
+  {
+   "t": "Deus sempre dá uma nova chance pra quem volta pra ele!",
+   "card": {
+    "emoji": "💛",
+    "txt": "uma nova chance"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

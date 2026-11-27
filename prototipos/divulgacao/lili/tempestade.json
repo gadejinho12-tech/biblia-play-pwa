@@ -1,0 +1,66 @@
+{
+ "nome": "tempestade",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Marcos, capítulo quatro, Jesus fez o vento e o mar ficarem quietinhos?",
+   "card": {
+    "emoji": "📖",
+    "txt": "o vento e o mar obedeceram",
+    "big": "Marcos 4"
+   }
+  },
+  {
+   "t": "Jesus e os seus amigos entraram num barco para atravessar o mar.",
+   "card": {
+    "emoji": "⛵",
+    "txt": "um passeio de barco"
+   }
+  },
+  {
+   "t": "Jesus estava cansado, e dormiu num travesseiro.",
+   "card": {
+    "emoji": "😴",
+    "txt": "Jesus dormiu"
+   }
+  },
+  {
+   "t": "De repente, veio uma tempestade muito forte! As ondas entravam no barco, e os discípulos ficaram com medo.",
+   "card": {
+    "emoji": "🌊",
+    "txt": "uma tempestade muito forte!"
+   }
+  },
+  {
+   "t": "Eles acordaram Jesus: Mestre, não se importa com a gente?",
+   "card": {
+    "emoji": "😨",
+    "txt": "os discípulos ficaram com medo"
+   }
+  },
+  {
+   "t": "Jesus se levantou e falou ao vento e ao mar: Fique quieto! Acalme-se! E tudo ficou calminho.",
+   "card": {
+    "emoji": "🙌",
+    "txt": "o mar ficou calminho"
+   }
+  },
+  {
+   "t": "Com Jesus pertinho, a gente não precisa ter medo!",
+   "card": {
+    "emoji": "💛",
+    "txt": "Jesus está com você"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

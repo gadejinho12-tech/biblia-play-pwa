@@ -1,0 +1,10 @@
+{"nome":"ovelha","falas":[
+ {"t":"Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!","card":{"emoji":"👋","txt":"Oi! Eu sou a Lili"}},
+ {"t":"Sabia que, em Lucas, capítulo quinze, Jesus contou a história de um pastor que tinha cem ovelhas?","card":{"emoji":"📖","big":"Lucas 15","txt":"um pastor com 100 ovelhas"}},
+ {"t":"Um dia, uma ovelhinha se perdeu.","card":{"emoji":"😢","big":"1","txt":"ovelhinha se perdeu"}},
+ {"t":"E sabe o que o pastor fez? Deixou as noventa e nove em segurança, e foi procurar aquela uma, até encontrar!","card":{"emoji":"🔦","big":"99 ➜ 1","txt":"ele foi buscar a que se perdeu"}},
+ {"t":"Quando achou, colocou a ovelhinha nos ombros, e fez uma festa com os amigos!","card":{"emoji":"🎉","txt":"festa: ele achou a ovelhinha!"}},
+ {"t":"Jesus contou essa história pra mostrar que Deus ama cada um de nós.","card":{"emoji":"❤️","txt":"Deus ama cada um de nós"}},
+ {"t":"Você é muito importante pra Deus!","card":{"emoji":"⭐","big":"Você!","txt":"é muito importante pra Deus"}},
+ {"t":"Quer ver mais histórias como essa? Vem pro Clubinho do Reino!","fim":true}
+]}

@@ -1,0 +1,67 @@
+{
+ "nome": "ester",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que tem um livro da Bíblia com o nome de uma rainha muito corajosa? O livro de Ester!",
+   "card": {
+    "emoji": "📖",
+    "txt": "uma rainha corajosa",
+    "big": "Ester"
+   }
+  },
+  {
+   "t": "Ester era uma moça judia, criada pelo seu primo Mardoqueu. E um dia, ela virou rainha!",
+   "card": {
+    "emoji": "👑",
+    "txt": "Ester virou rainha"
+   }
+  },
+  {
+   "t": "Mas um homem mau chamado Hamã queria acabar com todo o povo dela.",
+   "card": {
+    "emoji": "😠",
+    "txt": "o plano de Hamã"
+   }
+  },
+  {
+   "t": "Mardoqueu disse a Ester: Quem sabe você virou rainha justamente para um momento como este?",
+   "card": {
+    "emoji": "💬",
+    "txt": "para um momento como este"
+   }
+  },
+  {
+   "t": "Ester orou e jejuou, com o seu povo, por três dias. E teve coragem de ir falar com o rei, mesmo sem ser chamada!",
+   "card": {
+    "emoji": "🙏",
+    "txt": "três dias de oração",
+    "big": "3"
+   }
+  },
+  {
+   "t": "O rei estendeu o seu cetro de ouro, ouviu Ester, e o povo foi salvo!",
+   "card": {
+    "emoji": "🌟",
+    "txt": "o povo foi salvo!"
+   }
+  },
+  {
+   "t": "Deus pode usar você também, para ajudar os outros. Seja corajoso!",
+   "card": {
+    "emoji": "💛",
+    "txt": "seja corajoso!"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}

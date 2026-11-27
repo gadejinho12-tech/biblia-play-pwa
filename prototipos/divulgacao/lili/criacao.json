@@ -1,0 +1,69 @@
+{
+ "nome": "criacao",
+ "falas": [
+  {
+   "t": "Oi! Eu sou a Lili, a ovelhinha do Clubinho do Reino!",
+   "card": {
+    "emoji": "👋",
+    "txt": "Oi! Eu sou a Lili"
+   }
+  },
+  {
+   "t": "Sabia que, em Gênesis, capítulo um, conta como Deus criou o mundo?",
+   "card": {
+    "emoji": "📖",
+    "txt": "Deus criou o mundo",
+    "big": "Gênesis 1"
+   }
+  },
+  {
+   "t": "No primeiro dia, Deus disse: Haja luz! E a luz apareceu.",
+   "card": {
+    "emoji": "💡",
+    "txt": "haja luz!",
+    "big": "Dia 1"
+   }
+  },
+  {
+   "t": "Depois Deus fez o céu, o mar, a terra, e as plantas cheias de flores e frutas.",
+   "card": {
+    "emoji": "🌻",
+    "txt": "céu, mar, terra e plantas"
+   }
+  },
+  {
+   "t": "Fez o sol, a lua e as estrelas, os peixes e os passarinhos.",
+   "card": {
+    "emoji": "☀️🌙",
+    "txt": "sol, lua e estrelas"
+   }
+  },
+  {
+   "t": "No sexto dia, Deus fez os animais, e fez as pessoas, parecidas com ele.",
+   "card": {
+    "emoji": "🦁",
+    "txt": "animais e pessoas",
+    "big": "Dia 6"
+   }
+  },
+  {
+   "t": "Deus olhou tudo o que tinha feito, e viu que era muito bom! E no sétimo dia, ele descansou.",
+   "card": {
+    "emoji": "😊",
+    "txt": "era muito bom!",
+    "big": "Dia 7"
+   }
+  },
+  {
+   "t": "Deus fez você com muito amor. Você é especial!",
+   "card": {
+    "emoji": "💛",
+    "txt": "você é especial"
+   }
+  },
+  {
+   "t": "Quer ver mais histórias como essa? Vem pro Clubinho do Reino!",
+   "fim": true
+  }
+ ]
+}
