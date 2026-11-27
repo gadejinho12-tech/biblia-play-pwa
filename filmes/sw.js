@@ -22,6 +22,7 @@ const ARQUIVOS=[
   './audio/curiosidades/c08.mp3',
   './audio/curiosidades/c09.mp3',
   './audio/curiosidades/c10.mp3',
+  './audio/curiosidades/c11.mp3',
   './lili-festa.svg',
   './conta.js',
   './entrar.html',

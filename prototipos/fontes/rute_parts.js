@@ -92,9 +92,8 @@ SC.proposito = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.65; const ep=W<
     [[-70,70],[30,115],[-70,150],[30,92],[-70,180],[30,60]].forEach(([sx,lx],i)=>{ const k=clamp((t-3.8-i*.7)/.6,0,1); if(k<=0) return; espigaChao(lerp(sx+24,lx,k),lerp(-70,10+(i%3)*5,k)-Math.sin(k*Math.PI)*40,1,true); });
     person('rute',205,2,{pose:'kneel',dir:-1}); cesta(258,6,.7,.55); fileira(74,.75,52); }); };
 SC.casa = t=>{ LIGHT.dx=-1; LIGHT.rim='#ffd890'; LIGHT.rimA=.8; setCam([0,-150,zc(1.3,190)],[0,-150,zc(1.5,165)],t/8);
-  layer(0,()=>{ ctx.fillStyle=vgrad(-H,H,[[0,'#e8d4ac'],[1,'#c8ac80']]); ctx.fillRect(-W*2,-H*2,W*4,H*4); ctx.fillStyle='#a8845a'; ctx.fillRect(-W*2,-2,W*4,H*4);
-    ctx.fillStyle=vgrad(-250,-120,[[0,'#f0a060'],[1,'#f8d090']]); rr(140,-250,120,120,14); ctx.fill(); ctx.strokeStyle='#8a6a44'; ctx.lineWidth=8; rr(140,-250,120,120,14); ctx.stroke(); ell(220,-200,12,12,'#fff4c8'); });
-  layer(1,()=>{ glow(-200,-210,190,'#ffd27a',.45); ctx.fillStyle='#5a3a22'; rr(-208,-230,16,22,4); ctx.fill(); ell(-200,-234,5,7,'#ffb030');
+  layer(0,()=>{ ctx.fillStyle=vgrad(-H,H,[[0,'#e8d4ac'],[1,'#c8ac80']]); ctx.fillRect(-W*2,-H*2,W*4,H*4); });
+  layer(1,()=>{ ctx.fillStyle=vgrad(-50,300,[[0,'#b08c60'],[1,'#8a6a44']]); ctx.fillRect(-2000,-50,4000,900); ctx.fillStyle=vgrad(-250,-150,[[0,'#f0a060'],[1,'#f8d090']]); rr(150,-250,100,100,12); ctx.fill(); ctx.strokeStyle='#8a6a44'; ctx.lineWidth=8; rr(150,-250,100,100,12); ctx.stroke(); ell(215,-205,10,10,'#fff4c8'); glow(-200,-210,190,'#ffd27a',.45); ctx.fillStyle='#5a3a22'; rr(-208,-230,16,22,4); ctx.fill(); ell(-200,-234,5,7,'#ffb030');
     person('noemi',-85,0,{pose:'armsup',dir:1}); person('rute',85,2,{pose:'open',dir:-1}); cesta(5,8,1.15,1); brilhos(5,-70,60,6); }); };
 SC.familia = t=>{ LIGHT.dx=1; LIGHT.rim='#fff1c8'; LIGHT.rimA=.7; setCam([0,-165,zc(1.25,220)],[0,-165,zc(1.5,165)],t/9); fundoBelem(1);
   layer(1,()=>{ chaoFlor(); arco(0,0); const bb=ss(3.2,4.8,t); person('boaz',-55,0,{pose:'stand',dir:1});
