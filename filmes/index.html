@@ -339,6 +339,10 @@ jonas:{ robe:['#e3b27a','#a8703f'], sash:'#5f9a4c', skin:['#e8b48a','#c98f62'], 
   crianca:{ robe:['#ffd27a','#d9a441'], sash:'#c0503a', skin:['#f6cfa6','#e2ab7c'], hair:'#6b4423', s:.62 },
 jesus:{ robe:['#f6f0e0','#d2c6a6'], sash:'#c0483a', skin:['#e3ad79','#c48a5a'], hair:'#6b4423', beard:true, beardC:'#6b4423', longhair:true, s:1 },
 zaqueu:{ robe:['#a86ac8','#6a3a8a'], sash:'#f2c24a', skin:['#e2ab7c','#c48a5a'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', cap:'#f2c24a', s:.72 },
+rute:{ robe:['#e8896a','#b8573e'], sash:'#f2c24a', skin:['#e8b48a','#c98f62'], hair:'#3a2a1a', scarf:'#8fcfc9', s:.9 },
+  noemi:{ robe:['#8f7cb4','#5c4a84'], sash:'#e8d8b0', skin:['#e2b08a','#c08c66'], hair:'#cfcac2', scarf:'#e4dcec', s:.88 },
+  boaz:{ robe:['#5486c6','#2c548e'], sash:'#e8b860', skin:['#d8a07a','#b07850'], hair:'#8a6440', beard:true, beardC:'#9a7450', cap:'#f0e2bf', s:1.04 },
+  trab1:{ robe:['#c9a46a','#8a6a3a'], sash:'#6b4423', skin:['#c98f62','#a8714a'], hair:'#241b14', cap:'#a87848', beard:true, beardC:'#2a1e14', s:.98 },
   pedro:{ robe:['#6f9ac8','#3e6a98'], sash:'#7a5a3a', skin:['#e2ab7c','#c48a5a'], hair:'#6a5a4a', beard:true, beardC:'#7a6a5a', s:1 },
   joao:{ robe:['#9cc77a','#5f9a4c'], sash:'#7a5a3a', skin:['#f0c39a','#d69b6c'], hair:'#4a3320', s:.9 },
   andre:{ robe:['#eeb07a','#b96f3e'], sash:'#5a3a22', skin:['#d8a07a','#b07850'], hair:'#3a2a1a', beard:true, beardC:'#3a2a1a', s:.96 },
@@ -623,6 +627,15 @@ const SCENES={
     for(const [cx,cy,r] of [[130,60,30],[160,46,36],[192,60,30]]) ell(cx,cy,r,r*.8,'#6aa84a');
     person('jesus',250,182,{pose:'lookup',s:.32,dir:-1,up:true}); vChip('🌳 Suba, Zaqueu!',8,8); },
 
+  // Rute e Boaz — Rute recolhe as espigas no campo dourado; uma cai "de propósito", com brilho
+  rute(t){ vSky('#9fd6f4','#fbeccc'); vCloud(70,26,1.2,.9); vCloud(250,22,1.3,.85); vHills(112,'#d8c878'); vGround(140,'#ecc862','#c89a3a');
+    const espiga=(x,y,s,a)=>{ ctx.save(); ctx.translate(x,y); ctx.scale(s,s); ctx.rotate(a||0); ctx.strokeStyle='#b8922e'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-16); ctx.stroke(); for(let i=0;i<4;i++){ ell(-2,-17-i*3.4,2.2,3,'#f6cf4e',-.4); ell(2,-18-i*3.4,2.2,3,'#e0aa30',.4); } ctx.restore(); };
+    for(let i=0;i<34;i++) espiga(4+i*9.6,142+(i%3)*2,1+Math.sin(i)*.1,Math.sin(t*1.5+i)*.08);
+    person('trab1',250,176,{pose:'stand',s:.32,dir:-1}); person('boaz',290,178,{pose:'point',s:.32,dir:-1});
+    const u=(t*.6)%1, k=Math.min(1,u/.35), ex=lerp(232,160,k), ey=lerp(150,176,k)-Math.sin(k*Math.PI)*22; glow(ex,ey-8,22,'#fff4b0',.6); espiga(ex,ey,1.2,k<1? k*6 : 1.4); vStar4(ex+8,ey-16,4,.5+.5*Math.sin(t*6));
+    person('rute',110,182,{pose:'kneel',s:.34,dir:1}); ctx.save(); ctx.translate(70,184); ctx.fillStyle='#a8703a'; ctx.beginPath(); ctx.moveTo(-14,-14); ctx.lineTo(14,-14); ctx.lineTo(10,0); ctx.lineTo(-10,0); ctx.closePath(); ctx.fill(); for(let i=0;i<5;i++) ell(-9+i*4.5,-16,3,2.2,'#f2c94c'); ctx.restore();
+    vChip('🌾 O Campo de Boaz',8,8); },
+
   // Tempestade — deslize o dedo para acalmar o mar
   tempestade(t){ const L=7, u=t%L; const calm=u<3.2?0:Math.min(1,(u-3.2)/1.4)*(u<6.4?1:1-(u-6.4)/.6);
     vSky(mix('#3a4660','#8cc8ef',calm),mix('#6a7690','#e7f4f6',calm)); if(calm<.6){ ctx.save(); ctx.globalAlpha=(1-calm)*.9; vCloud(60,30,1.6,.7); vCloud(200,24,1.8,.65); vCloud(290,40,1.3,.7); ctx.restore(); }
@@ -697,6 +710,7 @@ const FILMS=[
   { id:'noe', t:'AT', title:'Noé e a Arca', ref:'Gênesis 6–9', lesson:'Obedecer, não desistir e confiar nas promessas de Deus.', game:'Corrida para a Arca' },
   { id:'davi', t:'AT', title:'Davi e Golias', ref:'1 Samuel 17', lesson:'Deus é maior que qualquer gigante: quem confia nele tem coragem.', game:'A Funda de Davi' },
   { id:'jonas', t:'AT', title:'Jonas e o Grande Peixe', ref:'Jonas 1–4', lesson:'Deus dá uma segunda chance e ama todas as pessoas.', game:'Nade, Jonas!' },
+  { id:'rute', t:'AT', title:'Rute e Boaz', ref:'Rute 1–4', lesson:'Rute foi leal, Boaz foi bondoso, e Deus transformou a tristeza em alegria.', game:'O Campo de Boaz' },
   { id:'natal', t:'NT', title:'O Nascimento de Jesus', ref:'Lucas 2 · Mateus 2', lesson:'Jesus é o maior presente de Deus para o mundo, porque Deus ama você.', game:'A Estrela de Belém' },
   { id:'tempestade', t:'NT', title:'Jesus Acalma a Tempestade', ref:'Marcos 4', lesson:'Jesus tem poder sobre tudo: quando temos medo, podemos chamar por Ele.', game:'Silêncio, Mar!' },
   { id:'ovelha', t:'NT', title:'A Ovelha Perdida', ref:'Lucas 15', lesson:'Para Deus, você é muito importante. Ele nunca desiste de você.', game:'Ache a Ovelhinha!' },
