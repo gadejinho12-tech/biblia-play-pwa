@@ -47,6 +47,9 @@ body{background:radial-gradient(120% 90% at 70% 0%,var(--noite2),var(--noite) 60
 .small{font:800 14px var(--body);color:var(--tinta2);background:none;border:0;cursor:pointer;text-decoration:underline;padding:0;justify-self:start}
 .ok{font-size:56px;line-height:1;text-align:center}
 .off{background:rgba(240,185,74,.18);border-radius:14px;padding:12px 14px;color:#6a4a10;font-weight:800}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff!important;color:#2B3A55!important;box-shadow:inset 0 0 0 2px #D8E2EC,0 4px 0 #D8E2EC!important;margin:6px 0 4px}
+.gbtn svg{width:24px;height:24px;flex:none}
+.ou{display:flex;align-items:center;gap:10px;margin:14px 0 6px;color:#5B6A86;font-weight:800;font-size:14px}.ou:before,.ou:after{content:"";flex:1;height:2px;background:#E3EEF5}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"><link rel="stylesheet" href="tema-biblinha.css"><script src="biblinha.js" defer></script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -73,7 +76,13 @@ body{background:radial-gradient(120% 90% at 70% 0%,var(--noite2),var(--noite) 60
 <main class="gut wrapc">
   <form class="card" id="s1">
     <h1>Entrar</h1>
-    <p>Digite o e-mail que você usou para assinar. Vamos mandar um código de 6 números. Não precisa de senha.</p>
+    <div id="gBox" hidden>
+      <p>Entre com a mesma conta do Google (o mesmo e-mail) que você usou para assinar.</p>
+      <button class="btn gbtn" id="gBtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Entrar com Google</button>
+      <div class="msg" id="mg" aria-live="polite"></div>
+      <div class="ou"><span>ou receba um código no e-mail</span></div>
+    </div>
+    <p id="pCod">Digite o e-mail que você usou para assinar. Vamos mandar um código de 6 números. Não precisa de senha.</p>
     <label for="email" style="font-weight:900">Seu e-mail</label>
     <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="voce@email.com" required>
     <button class="btn play" id="send" type="submit">Receber o código</button>
@@ -100,6 +109,12 @@ body{background:radial-gradient(120% 90% at 70% 0%,var(--noite2),var(--noite) 60
 const $=id=>document.getElementById(id), de=new URLSearchParams(location.search).get('de'), B=window.BPConta;
 const show=n=>['s1','s2','s3'].forEach((id,i)=>$(id).hidden=i!==n-1);
 if(!B||!B.ON){ $('off').hidden=false; $('send').disabled=true; }
+// Entrar com Google (fica escondido até o Google estar ligado no Supabase)
+const embutido=/FBAN|FBAV|Instagram|Line\/|TikTok|musical_ly|Bytedance|WhatsApp|; wv\)/i.test(navigator.userAgent);
+if(B&&B.ON&&B.config.GOOGLE){ $('gBox').hidden=false; $('pCod').textContent='Digite o e-mail que você usou para assinar. Vamos mandar um código de 6 números.';
+  $('gBtn').onclick=async()=>{ if(embutido){ $('mg').className='msg err'; $('mg').textContent='O Google não deixa entrar por dentro do Instagram, TikTok ou WhatsApp. Toque nos três pontinhos e escolha "Abrir no navegador", ou use o código no e-mail aqui embaixo.'; return; }
+    $('gBtn').disabled=true; $('mg').className='msg'; $('mg').textContent='Abrindo o Google…';
+    try{ await B.google(location.href.split('#')[0]); }catch(err){ $('gBtn').disabled=false; $('mg').className='msg err'; $('mg').textContent='Não deu para abrir o Google agora. Tente de novo ou use o código no e-mail.'; } }; }
 function done(o){ show(3); if(o&&o.ativo){ $('t3').textContent='Tudo liberado!'; $('p3').textContent='Assinatura ativa para '+o.email+'.'; $('go').href=(de||'index')+'.html'; $('go').textContent=de?'Continuar de onde parei':'Ir para a estante'; }
   else { $('t3').textContent='Você entrou, mas…'; $('p3').textContent='Não achamos assinatura ativa para '+(o?o.email:'esse e-mail')+'. Se você acabou de pagar, espere 1 minutinho e entre de novo. Se usou outro e-mail na compra, saia e entre com ele.'; $('go').href='assinar.html'; $('go').textContent='Ver os planos'; } }
 $('s1').onsubmit=async e=>{ e.preventDefault(); if(!B||!B.ON) return; const em=$('email').value.trim(); if(!/^\S+@\S+\.\S+$/.test(em)){ $('m1').className='msg err'; $('m1').textContent='Confira o e-mail: parece que falta alguma coisa.'; return; }

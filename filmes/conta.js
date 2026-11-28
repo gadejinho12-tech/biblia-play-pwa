@@ -44,8 +44,10 @@
   }
   async function sendCode(email){ const s = await sb(); const { error } = await s.auth.signInWithOtp({ email: email.trim().toLowerCase(), options:{ shouldCreateUser:true } }); if(error) throw error; }
   async function verify(email, code){ const s = await sb(); const { error } = await s.auth.verifyOtp({ email: email.trim().toLowerCase(), token: code.trim(), type:'email' }); if(error) throw error; return refresh(); }
+  // Entrar com Google: volta para a mesma página já conectado
+  async function google(volta){ const s = await sb(); const { error } = await s.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: volta || location.href.split('#')[0], queryParams:{ prompt:'select_account' } } }); if(error) throw error; }
   async function logout(){ try{ const s = await sb(); if(s) await s.auth.signOut(); }catch(e){} setCache(null); }
-  window.BPConta = { ON, isFree, isSub, refresh, sendCode, verify, logout, cache, pageId, config: C };
+  window.BPConta = { ON, isFree, isSub, refresh, sendCode, verify, google, logout, cache, pageId, config: C };
   // portão: página paga sem assinatura → página "Assinar" (e volta depois)
   if(ON && !isFree(pageId()) && !isSub()) location.replace('assinar.html?de=' + encodeURIComponent(pageId()));
   else if(ON && cache() && navigator.onLine !== false) refresh().catch(()=>{});
