@@ -42,6 +42,8 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [ ] Ir acrescentando mais (meta: várias por história); gravar com prototipos/fontes/gravar_curiosidades.py
 - [ ] Isca grátis: ao ligar o login, deixar 1 filme liberado (hoje conta-config GRATIS tem criacao e noe; o dono falou em 1 filme — confirmar qual) + curiosidades abertas para todos
 
+- [x] Filme Rute e Boaz + jogo O Campo de Boaz (27/11)
+
 ## 2. De graça, quando der
 - [x] Supabase biblia-play reativado (26/11) e webhook da Kiwify testado: funcionou (registro de teste apagado)
 - [ ] Antes de vender: gerar token novo do webhook na Kiwify (o atual apareceu num print) e atualizar o segredo KIWIFY_TOKEN no Supabase
@@ -55,7 +57,8 @@ Para cada filme: roteiro e fases aprovados pelo dono → cenas → vozes → jog
 - [x] Kiwify (26/11, feito pelo dono via Cowork): produto e produtor "Clubinho do Reino", fatura KIWIFY*CLUBINHO, imagem nova, descrição nova, suporte bennetfour@gmail.com
 - [x] Plano anual NOVO R$ 149,90 → https://pay.kiwify.com.br/5AaelZx (até 12x). Mensal R$ 14,90 → https://pay.kiwify.com.br/vMYkAzH (igual). O anual antigo de R$ 119 (jBVV1nl) virou "Anual antigo" com o link desativado (não excluído)
 - [ ] Página de vendas da Kiwify aponta para o endereço provisório do GitHub Pages: trocar quando o domínio estiver no ar
-- [ ] Ligar o login no site: refazer em cima do main atual (o ramo `assinatura-supabase` está velho e ainda tem o link anual antigo jBVV1nl). Usar os links novos que estão anotados em filmes/conta-config.js
+- [x] Login ligado (28/11): Supabase + links da Kiwify em filmes/conta-config.js; grátis só A Criação. Testado pelo dono (código por e-mail + assinatura de teste, já apagada)
+- [x] SMTP trocado para clubinhodoreinoofc@gmail.com (senha de app nova, 27/11). Futuro: serviço transacional (Resend/Brevo) quando o volume crescer
 - [ ] Compra real do plano mensal → entrar com o e-mail da compra → reembolso em 7 dias
 - [ ] (Opcional) ElevenLabs para vozes ainda mais naturais (a chave precisa ir no cabeçalho `xi-api-key`)
 

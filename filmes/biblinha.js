@@ -2,7 +2,7 @@
    a Lili nas capas e finais, no botão da estante, e o aviso para deitar o celular nos filmes e jogos. */
 (function(){
   const pagina = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '') || 'index';
-  const FILMES = ['criacao','noe','davi','jonas','natal','tempestade','ovelha','paes','zaqueu'];
+  const FILMES = ['criacao','noe','davi','jonas','natal','tempestade','ovelha','paes','zaqueu','rute'];
   const JOGOS = ['memoria','quiz','cacapalavras'];
 
   // ícone da aba

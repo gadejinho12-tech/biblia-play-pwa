@@ -1,6 +1,6 @@
 // Clubinho do Reino Filmes — funciona sem internet depois do primeiro acesso.
 // IMPORTANTE: ao publicar uma versão nova, aumente a VERSAO para os aparelhos baixarem tudo de novo.
-const VERSAO='filmes-v21';
+const VERSAO='filmes-v24';
 const ARQUIVOS=[
   './',
   './ajudante.html',
@@ -32,6 +32,7 @@ const ARQUIVOS=[
   './paes.html',
   './pais.html',
   './quiz.html',
+  './rute.html',
   './tempestade.html',
   './zaqueu.html',
   './manifest.json',

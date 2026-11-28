@@ -12,6 +12,7 @@ window.CURIOSIDADES = [
   { id:'c08', historia:'ovelha',     texto:'Você sabia que o bom pastor deixou noventa e nove ovelhas para procurar uma só que estava perdida?', ref:'Lucas 15:4' },
   { id:'c09', historia:'paes',       texto:'Você sabia que, depois que todo mundo comeu, ainda sobraram doze cestos cheios de pão?', ref:'João 6:13' },
   { id:'c10', historia:'zaqueu',     texto:'Você sabia que Zaqueu subiu numa árvore chamada sicômoro, que é parecida com uma figueira?', ref:'Lucas 19:4' },
+  { id:'c11', historia:'rute',       texto:'Você sabia que Rute foi a bisavó do rei Davi? O filhinho dela, Obede, foi o avô de Davi!', ref:'Rute 4:17' },
 ];
 
 window.vocesabia = function(onde, opcoes){
